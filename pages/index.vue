@@ -1,7 +1,7 @@
 <template>
     <div class="grid">
         <div class="grid__container">
-            <div class="content-wrapper">
+            <div class="content-wrapper --two-sections">
                 <h1 class="super-heading">XO</h1>
                 <ul class="menu">
                     <li class="menu__item">
@@ -20,12 +20,6 @@
                         <nuxt-link 
                             class="sub-heading"
                             to="/leaderboard">leaderboard
-                        </nuxt-link>
-                    </li>
-                    <li class="menu__item">
-                        <nuxt-link 
-                            class="sub-heading"
-                            to="/settings">settings
                         </nuxt-link>
                     </li>
                     <li class="menu__item">
@@ -52,19 +46,20 @@ export default Vue.extend({})
 </script>
 
 <style lang="scss" scoped>
-    .content-wrapper{
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 4em;
-        align-items: center;
+    .menu__item{
+        position: relative;
+        width: fit-content;
+        transition: .25s;
+
+        &:hover{
+            transform: translateX(10px);
+        }
     }
 
     // mobile
     @media (max-width: 768px) {
-        .content-wrapper{
-            grid-template-columns: 1fr;
-            gap: 1em;
-            text-align: center;
+        .menu__item{
+            width: 100%;
         }
     }
 </style>
