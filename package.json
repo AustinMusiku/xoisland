@@ -5,13 +5,14 @@
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
-    "start": "nuxt start",
+    "start": "nuxt preview",
     "generate": "nuxt generate"
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
+    "@nuxtjs/style-resources": "^1.2.1",
     "core-js": "^3.15.1",
-    "nuxt": "^2.15.7"
+    "nuxt-edge": "^2.16.0-27358576.777a4b7f"
   },
   "devDependencies": {
     "@nuxt/types": "^2.15.7",
