@@ -4,22 +4,47 @@
         <div class="bar horizontal horizontal-2"></div>
         <div class="bar vertical vertical-1"></div>
         <div class="bar vertical vertical-2"></div>
+
         <div class="playGrid">
-            <input type="text" class="input-field" id="b1" onclick="fillField('b1');" readonly>
-            <input type="text" class="input-field" id="b2" onclick="fillField('b2');" readonly>
-            <input type="text" class="input-field" id="b3" onclick="fillField('b3');" readonly>
-            <input type="text" class="input-field" id="b4" onclick="fillField('b4');" readonly>
-            <input type="text" class="input-field" id="b5" onclick="fillField('b5');" readonly>
-            <input type="text" class="input-field" id="b6" onclick="fillField('b6');" readonly>
-            <input type="text" class="input-field" id="b7" onclick="fillField('b7');" readonly>
-            <input type="text" class="input-field" id="b8" onclick="fillField('b8');" readonly>
-            <input type="text" class="input-field" id="b9" onclick="fillField('b9');" readonly>
+            <div class="input-field" id="b1" @click="fillField('b1')"> </div>
+            <div class="input-field" id="b2" @click="fillField('b2')"> </div>
+            <div class="input-field" id="b3" @click="fillField('b3')"> </div>
+            <div class="input-field" id="b4" @click="fillField('b4')"> </div>
+            <div class="input-field" id="b5" @click="fillField('b5')"> </div>
+            <div class="input-field" id="b6" @click="fillField('b6')"> </div>
+            <div class="input-field" id="b7" @click="fillField('b7')"> </div>
+            <div class="input-field" id="b8" @click="fillField('b8')"> </div>
+            <div class="input-field" id="b9" @click="fillField('b9')"> </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
+    import { reactive, ref, computed, watch, toRefs } from '@nuxtjs/composition-api'
 
+    let flag = ref<number>(1);
+    let comment = ref<string>('Player X Turn');
+
+    const inputFields = document.querySelectorAll('.input-field');
+
+    // Function called whenever user tab on any box and fills with X or 0
+    function fillField(id: string){
+        // disable selected field
+        document.querySelector(`#${id}`).disabled = true;
+        console.log(flag.value);
+        if (flag.value === 1) {
+            document.querySelector(`#${id}`).innerHTML = "X";
+            flag.value++;
+            comment.value = "Player 0 Turn";
+            // checkPlayerWin('X');
+        }
+        else {
+            document.querySelector(`#${id}`).innerHTML = "O";
+            flag.value--;
+            comment.value = "Player X Turn";
+            // checkPlayerWin('O');
+        }
+    }
 </script>
 
 <style lang="scss" scoped>
@@ -36,14 +61,14 @@
             &.vertical{
                 top: 0;
                 height: 100%;
-                width: .25em;
+                width: .2em;
                 transform: translateX(-50%);
             }
 
             &.horizontal{
                 left: 0;
                 width: 100%;
-                height: .25em;
+                height: .2em;
                 transform: translateY(-50%);
             }
 
@@ -57,7 +82,7 @@
             position: relative;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            // grid-template-rows: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
             width: 100%;
             height: 100%;
             
@@ -66,8 +91,9 @@
                 height: 100%;
                 border: none;
                 outline: none;
-                font-size: 30px;
+                font-size: 70px;
                 text-align: center;
+                color: black;
                 background-color: transparent;
             }
             .input-field.winner{
