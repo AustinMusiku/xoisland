@@ -1,0 +1,36 @@
+// -- GRID SYSTEM --
+.grid{
+    display: grid;
+    grid-template-columns: 4em repeat(2, minmax(auto, 130em)) 4em;
+    
+    .grid__container{
+        grid-column: 2/4;
+    }
+}
+
+@media(max-width: 61.9375rem){  // 991px 
+    // -- NAVIGATION --
+    nav{
+        .navigation{
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            
+            .logo{
+                
+            }
+            
+            .navigation__links{
+                display: none;
+            }
+        }
+    }
+}
+
+@media(max-width: 48rem){ // 768px
+    .grid{ grid-template-columns: 1.5em repeat(2, minmax(auto, 130em)) 1.5em }
+}
+@media(max-width: 20rem){ // 320px
+    .grid{ grid-template-columns: 1em repeat(2, minmax(auto, 130em)) 1em }
+}
