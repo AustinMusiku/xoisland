@@ -23,42 +23,52 @@
 </script>
 
 <style lang="scss" scoped>
-    .playsPace{
+    .playSpace{
         position: relative;
+        height: 300px;
+        width: 300px;
 
         .bar{
             position: absolute;
             background-color: black;
+            z-index: 5;
 
-            .vertical{
-                height: 100%
-                width: .25em
-            }
-
-            .horizontal{
-                width: 100%
-                height: .25em
-            }
-
-            .verical-1{
+            &.vertical{
                 top: 0;
-                left: 100px
+                height: 100%;
+                width: .25em;
+                transform: translateX(-50%);
             }
+
+            &.horizontal{
+                left: 0;
+                width: 100%;
+                height: .25em;
+                transform: translateY(-50%);
+            }
+
+            &.vertical-1{ left: 33.3333% }
+            &.vertical-2{ left: 66.6666% }
+
+            &.horizontal-1{ top: 33.3333% }
+            &.horizontal-2{ top: 66.6666% }
         }
         .playGrid{
+            position: relative;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            // gap: .25em;
-            width: fit-content;
-            max-width: 400px;
-
+            // grid-template-rows: repeat(3, 1fr);
+            width: 100%;
+            height: 100%;
+            
             .input-field {
-                width: 6.25rem;
-                height: 6.25rem;
+                width: 100%;
+                height: 100%;
                 border: none;
                 outline: none;
                 font-size: 30px;
                 text-align: center;
+                background-color: transparent;
             }
             .input-field.winner{
                 
