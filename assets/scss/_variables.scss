@@ -1,6 +1,6 @@
 // -- VARIABLES --
 :root{
-    --fs-xxxl: 12vw;
+    --fs-xxxl: 42vw;
     --fs-xxl: 4.2rem;
     --fs-xl: 4.0rem;
     --fs-l: 2rem;
@@ -10,7 +10,7 @@
 
 @media(max-width: 48rem){ // 768px
     :root{
-        --fs-xxxl: 15vw;
+        --fs-xxxl: 48vw;
         --fs-xxl: 4.2rem;
         --fs-xl: 2.8rem;
         --fs-l: 2rem;

@@ -2,14 +2,14 @@
     color: $clr-dark;
     font-family: $ff;
 }
-.section__heading{
+.section-heading{
     position: relative;
-    margin-bottom: 4rem;
-    font-size: var(--fs-xl);
+    margin-bottom: 1rem;
+    font-size: var(--fs-xxxl);
     font-weight: $fw-bold;
     line-height: 1;
     height: fit-content;
-    width: fit-content;
+    // width: fit-content;
 }
 
 .super-heading{

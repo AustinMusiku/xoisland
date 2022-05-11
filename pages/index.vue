@@ -1,27 +1,46 @@
 <template>
     <div class="grid">
-        <div class="wrapper grid__container">
-            <h1 class="section-heading">tic tac toe</h1>
-            <ul class="menu">
-                <li class="menu__item">
-                    <nuxt-link to="/singleplayer">Singleplayer</nuxt-link>
-                </li>
-                <li class="menu__item">
-                    <nuxt-link to="/multiplayer">Multiplayer</nuxt-link>
-                </li>
-                <li class="menu__item">
-                    <nuxt-link to="/leaderboard">Leaderboard</nuxt-link>
-                </li>
-                <li class="menu__item">
-                    <nuxt-link to="/settings">Settings</nuxt-link>
-                </li>
-                <li class="menu__item">
-                    <nuxt-link to="/help">Help</nuxt-link>
-                </li>
-                <li class="menu__item">
-                    <a href="">Github</a>
-                </li>
-            </ul>
+        <div class="grid__container">
+            <div class="content-wrapper">
+                <h1 class="super-heading">XO</h1>
+                <ul class="menu">
+                    <li class="menu__item">
+                        <nuxt-link 
+                            class="sub-heading"
+                            to="/singleplayer">singleplayer
+                        </nuxt-link>
+                    </li>
+                    <li class="menu__item">
+                        <nuxt-link 
+                            class="sub-heading"
+                            to="/multiplayer">multiplayer
+                        </nuxt-link>
+                    </li>
+                    <li class="menu__item">
+                        <nuxt-link 
+                            class="sub-heading"
+                            to="/leaderboard">leaderboard
+                        </nuxt-link>
+                    </li>
+                    <li class="menu__item">
+                        <nuxt-link 
+                            class="sub-heading"
+                            to="/settings">settings
+                        </nuxt-link>
+                    </li>
+                    <li class="menu__item">
+                        <nuxt-link 
+                            class="sub-heading"
+                            to="/help">help
+                        </nuxt-link>
+                    </li>
+                    <li class="menu__item">
+                        <a href=""
+                            class="sub-heading">github
+                        </a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </div>
 </template>
@@ -32,5 +51,20 @@ import Vue from 'vue'
 export default Vue.extend({})
 </script>
 
-<style>
+<style lang="scss" scoped>
+    .content-wrapper{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 4em;
+        align-items: center;
+    }
+
+    // mobile
+    @media (max-width: 768px) {
+        .content-wrapper{
+            grid-template-columns: 1fr;
+            gap: 1em;
+            text-align: center;
+        }
+    }
 </style>
