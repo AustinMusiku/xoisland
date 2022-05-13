@@ -1,5 +1,5 @@
 <template>
-    <div class="input-field" @click="fillField">{{ cell.value }}</div>
+    <div class="input-field" @click="fillField">{{ cell }}</div>
 </template>
 
 <script setup lang="ts">
@@ -10,7 +10,6 @@
 
     // Function called whenever user tab on any box and fills with X or 0
     let fillField = () => {
-        console.log(cell);
         if(cell.value === ''){
             if (flag.value === 1) {
                 cell.value = 'X'
@@ -23,6 +22,7 @@
                 // comment.value = "Player X Turn";
                 // checkPlayerWin O
             }
+            console.log(cell.value);
         }
     }
 

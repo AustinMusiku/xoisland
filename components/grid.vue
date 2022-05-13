@@ -15,22 +15,22 @@
             <div class="input-field" id="b7" @click="fillField('b7')"> </div>
             <div class="input-field" id="b8" @click="fillField('b8')"> </div>
             <div class="input-field" id="b9" @click="fillField('b9')"> </div> -->
-            <Cell id="b1" @click="fillField('b1')"> </Cell>
-            <Cell id="b2" @click="fillField('b2')"> </Cell>
-            <Cell id="b3" @click="fillField('b3')"> </Cell>
-            <Cell id="b4" @click="fillField('b4')"> </Cell>
-            <Cell id="b5" @click="fillField('b5')"> </Cell>
-            <Cell id="b6" @click="fillField('b6')"> </Cell>
-            <Cell id="b7" @click="fillField('b7')"> </Cell>
-            <Cell id="b8" @click="fillField('b8')"> </Cell>
-            <Cell id="b9" @click="fillField('b9')"> </Cell>
+            <Cell id="b1" />
+            <Cell id="b2" />
+            <Cell id="b3" />
+            <Cell id="b4" />
+            <Cell id="b5" />
+            <Cell id="b6" />
+            <Cell id="b7" />
+            <Cell id="b8" />
+            <Cell id="b9" />
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
     import { reactive, ref, computed, watch, toRefs } from '@nuxtjs/composition-api'
-    import Cell from '~/components/Cell.vue'
+    import Cell from '@/components/Cell.vue'
 
 
     let flag = ref<number>(1);
