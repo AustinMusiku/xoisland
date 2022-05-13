@@ -125,7 +125,7 @@
                 font-size: 70px;
                 text-align: center;
                 color: black;
-                background-color: white;
+                background-color: transparent;
             }
             .input-field.winner{
                 
