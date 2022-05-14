@@ -7,15 +7,15 @@
 
         <div class="playGrid">
             <!-- <div class="input-field" id="b1" @click="fillField('b1')"> </div> -->
-            <Cell id="c1" :modelValue="cells.c1" @update:modelValue="value => cells.c1 = value"/>
-            <Cell id="c2" :modelValue="cells.c2" @update:modelValue="value => cells.c2 = value"/>
-            <Cell id="c3" :modelValue="cells.c3" @update:modelValue="value => cells.c3 = value"/>
-            <Cell id="c4" :modelValue="cells.c4" @update:modelValue="value => cells.c4 = value"/>
-            <Cell id="c5" :modelValue="cells.c5" @update:modelValue="value => cells.c5 = value"/>
-            <Cell id="c6" :modelValue="cells.c6" @update:modelValue="value => cells.c6 = value"/>
-            <Cell id="c7" :modelValue="cells.c7" @update:modelValue="value => cells.c7 = value"/>
-            <Cell id="c8" :modelValue="cells.c8" @update:modelValue="value => cells.c8 = value"/>
-            <Cell id="c9" :modelValue="cells.c9" @update:modelValue="value => cells.c9 = value"/>
+            <Cell cell-id="c1" :modelValue="cells.c1" @update:modelValue="updateCell"/>
+            <Cell cell-id="c2" :modelValue="cells.c2" @update:modelValue="updateCell"/>
+            <Cell cell-id="c3" :modelValue="cells.c3" @update:modelValue="updateCell"/>
+            <Cell cell-id="c4" :modelValue="cells.c4" @update:modelValue="updateCell"/>
+            <Cell cell-id="c5" :modelValue="cells.c5" @update:modelValue="updateCell"/>
+            <Cell cell-id="c6" :modelValue="cells.c6" @update:modelValue="updateCell"/>
+            <Cell cell-id="c7" :modelValue="cells.c7" @update:modelValue="updateCell"/>
+            <Cell cell-id="c8" :modelValue="cells.c8" @update:modelValue="updateCell"/>
+            <Cell cell-id="c9" :modelValue="cells.c9" @update:modelValue="updateCell"/>
         </div>
     </div>
 </template>
@@ -27,17 +27,11 @@
 
     let flag = ref<number>(1);
     let comment = ref<string>('');
-    let cells = reactive({
-        c1: '',
-        c2: '',
-        c3: '',
-        c4: '',
-        c5: '',
-        c6: '',
-        c7: '',
-        c8: '',
-        c9: ''
-    })
+    let cells = reactive({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: '', c8: '', c9: '' })
+
+    let updateCell = (id: string, value: string) => {
+        cells[id] = value;
+    }
 
     // Function called whenever user tab on any box and fills with X or 0
     // function fillField(id: string){

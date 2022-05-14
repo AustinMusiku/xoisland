@@ -7,13 +7,14 @@
     import { flag } from '~/store'
 
     interface Props {
+        cellId: string,
         modelValue: string
     }
 
     const props = defineProps<Props>()
 
     const emit = defineEmits<{
-        (e: 'update:modelValue', id: string): void
+        (e: 'update:modelValue', id: string, value: string): void
         (e: 'updateComment', comment: string): void
     }>()
     
@@ -22,21 +23,20 @@
 
     // Function called whenever user tab on any box and fills with X or 0
     let fillField = () => {
-        if(cell.value === ''){
-            if (flag.value === 1) {
-                cell.value = 'X'
-                flag.increment();
-                comment.value = "Player O Turn";
-                emit('update:modelValue', 'X');
-                // checkPlayerWin X
-            }
-            else {
-                cell.value = 'O'
-                flag.decrement();
-                comment.value = "Player X Turn";
-                emit('update:modelValue', 'O');
-                // checkPlayerWin O
-            }
+        // disable selected field
+
+        if(cell.value !== '') return;
+
+        if (flag.value === 1) {
+            cell.value = 'X'
+            flag.increment();
+            comment.value = "Player O Turn";
+            emit('update:modelValue', props.cellId, 'X');
+        }else {
+            cell.value = 'O'
+            flag.decrement();
+            comment.value = "Player X Turn";
+            emit('update:modelValue', props.cellId, 'O');
         }
     }
 
