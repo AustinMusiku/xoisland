@@ -1,21 +1,26 @@
 <template>
-    <div class="playSpace">
-        <div class="bar horizontal horizontal-1"></div>
-        <div class="bar horizontal horizontal-2"></div>
-        <div class="bar vertical vertical-1"></div>
-        <div class="bar vertical vertical-2"></div>
+    <div class="playGround">
+        <h1 class="sub-heading" v-if="!isPlaying">make the first move!</h1>
+        <h1 class="sub-heading" v-else="!isPlaying">{{ comment }}</h1>
+        
+        <div class="playSpace">
+            <div class="bar horizontal horizontal-1"></div>
+            <div class="bar horizontal horizontal-2"></div>
+            <div class="bar vertical vertical-1"></div>
+            <div class="bar vertical vertical-2"></div>
 
-        <div class="playGrid">
-            <!-- <div class="input-field" id="b1" @click="fillField('b1')"> </div> -->
-            <Cell cell-id="c1" :modelValue="cells.c1" @update:modelValue="updateCell"/>
-            <Cell cell-id="c2" :modelValue="cells.c2" @update:modelValue="updateCell"/>
-            <Cell cell-id="c3" :modelValue="cells.c3" @update:modelValue="updateCell"/>
-            <Cell cell-id="c4" :modelValue="cells.c4" @update:modelValue="updateCell"/>
-            <Cell cell-id="c5" :modelValue="cells.c5" @update:modelValue="updateCell"/>
-            <Cell cell-id="c6" :modelValue="cells.c6" @update:modelValue="updateCell"/>
-            <Cell cell-id="c7" :modelValue="cells.c7" @update:modelValue="updateCell"/>
-            <Cell cell-id="c8" :modelValue="cells.c8" @update:modelValue="updateCell"/>
-            <Cell cell-id="c9" :modelValue="cells.c9" @update:modelValue="updateCell"/>
+            <div class="playGrid" @click="startGame">
+                <!-- <div class="input-field" id="b1" @click="fillField('b1')"> </div> -->
+                <Cell cell-id="c1" :modelValue="cells.c1" @update:modelValue="updateCell"/>
+                <Cell cell-id="c2" :modelValue="cells.c2" @update:modelValue="updateCell"/>
+                <Cell cell-id="c3" :modelValue="cells.c3" @update:modelValue="updateCell"/>
+                <Cell cell-id="c4" :modelValue="cells.c4" @update:modelValue="updateCell"/>
+                <Cell cell-id="c5" :modelValue="cells.c5" @update:modelValue="updateCell"/>
+                <Cell cell-id="c6" :modelValue="cells.c6" @update:modelValue="updateCell"/>
+                <Cell cell-id="c7" :modelValue="cells.c7" @update:modelValue="updateCell"/>
+                <Cell cell-id="c8" :modelValue="cells.c8" @update:modelValue="updateCell"/>
+                <Cell cell-id="c9" :modelValue="cells.c9" @update:modelValue="updateCell"/>
+            </div>
         </div>
     </div>
 </template>
@@ -33,8 +38,18 @@
 
     let flag = ref<number>(1);
     let comment = ref<string>('');
+    let isPlaying = ref<boolean>(false)
 
-    let updateCell = (id: string, value: string) => {
+    function startGame(){
+        !isPlaying.value? isPlaying.value =! isPlaying.value: '';
+    }
+
+    function endGame(commentValue: string){
+        isPlaying.value =! isPlaying.value;
+        comment.value = commentValue;
+    }
+
+    function updateCell(id: string, value: string) {
         cells[id] = value;
         checkPlayerWin(value)
     }
