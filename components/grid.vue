@@ -6,24 +6,16 @@
         <div class="bar vertical vertical-2"></div>
 
         <div class="playGrid">
-            <!-- <div class="input-field" id="b1" @click="fillField('b1')"> </div>
-            <div class="input-field" id="b2" @click="fillField('b2')"> </div>
-            <div class="input-field" id="b3" @click="fillField('b3')"> </div>
-            <div class="input-field" id="b4" @click="fillField('b4')"> </div>
-            <div class="input-field" id="b5" @click="fillField('b5')"> </div>
-            <div class="input-field" id="b6" @click="fillField('b6')"> </div>
-            <div class="input-field" id="b7" @click="fillField('b7')"> </div>
-            <div class="input-field" id="b8" @click="fillField('b8')"> </div>
-            <div class="input-field" id="b9" @click="fillField('b9')"> </div> -->
-            <Cell id="b1" />
-            <Cell id="b2" />
-            <Cell id="b3" />
-            <Cell id="b4" />
-            <Cell id="b5" />
-            <Cell id="b6" />
-            <Cell id="b7" />
-            <Cell id="b8" />
-            <Cell id="b9" />
+            <!-- <div class="input-field" id="b1" @click="fillField('b1')"> </div> -->
+            <Cell id="c1" :modelValue="cells.c1" @update:modelValue="value => cells.c1 = value"/>
+            <Cell id="c2" :modelValue="cells.c2" @update:modelValue="value => cells.c2 = value"/>
+            <Cell id="c3" :modelValue="cells.c3" @update:modelValue="value => cells.c3 = value"/>
+            <Cell id="c4" :modelValue="cells.c4" @update:modelValue="value => cells.c4 = value"/>
+            <Cell id="c5" :modelValue="cells.c5" @update:modelValue="value => cells.c5 = value"/>
+            <Cell id="c6" :modelValue="cells.c6" @update:modelValue="value => cells.c6 = value"/>
+            <Cell id="c7" :modelValue="cells.c7" @update:modelValue="value => cells.c7 = value"/>
+            <Cell id="c8" :modelValue="cells.c8" @update:modelValue="value => cells.c8 = value"/>
+            <Cell id="c9" :modelValue="cells.c9" @update:modelValue="value => cells.c9 = value"/>
         </div>
     </div>
 </template>
@@ -34,9 +26,18 @@
 
 
     let flag = ref<number>(1);
-    let comment = ref<string>('Player X Turn');
-
-    const inputFields = document.querySelectorAll('.input-field');
+    let comment = ref<string>('');
+    let cells = reactive({
+        c1: '',
+        c2: '',
+        c3: '',
+        c4: '',
+        c5: '',
+        c6: '',
+        c7: '',
+        c8: '',
+        c9: ''
+    })
 
     // Function called whenever user tab on any box and fills with X or 0
     // function fillField(id: string){
@@ -116,20 +117,6 @@
             grid-template-rows: repeat(3, 1fr);
             width: 100%;
             height: 100%;
-            
-            .input-field {
-                width: 100%;
-                height: 100%;
-                border: none;
-                outline: none;
-                font-size: 70px;
-                text-align: center;
-                color: black;
-                background-color: transparent;
-            }
-            .input-field.winner{
-                
-            }
         }
     }
 </style>

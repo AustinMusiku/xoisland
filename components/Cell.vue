@@ -1,12 +1,24 @@
 <template>
-    <div class="input-field" @click="fillField">{{ cell }}</div>
+    <input class="input-field" @click="fillField" v-model="modelValue">
 </template>
 
 <script setup lang="ts">
     import { reactive, ref, computed, watch, toRefs } from '@nuxtjs/composition-api'
     import { flag } from '~/store'
 
+    interface Props {
+        modelValue: string
+    }
+
+    const props = defineProps<Props>()
+
+    const emit = defineEmits<{
+        (e: 'update:modelValue', id: string): void
+        (e: 'updateComment', comment: string): void
+    }>()
+    
     let cell = ref<string>('');
+    let comment = ref<string>('')
 
     // Function called whenever user tab on any box and fills with X or 0
     let fillField = () => {
@@ -14,29 +26,33 @@
             if (flag.value === 1) {
                 cell.value = 'X'
                 flag.increment();
+                comment.value = "Player O Turn";
+                emit('update:modelValue', 'X');
                 // checkPlayerWin X
             }
             else {
                 cell.value = 'O'
                 flag.decrement();
-                // comment.value = "Player X Turn";
+                comment.value = "Player X Turn";
+                emit('update:modelValue', 'O');
                 // checkPlayerWin O
             }
-            console.log(cell.value);
         }
     }
 
 </script>
 
 <style lang="scss" scoped>
-    // .input-field {
-        // width: 100%;
-        // height: 100%;
-        // border: none;
-        // outline: none;
-        // font-size: 70px;
-        // text-align: center;
-        // color: black;
-        // background-color: transparent;
-    // }
+    .input-field {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
+        border: none;
+        outline: none;
+        font-size: 70px;
+        color: black;
+        background-color: transparent;
+        text-align: center;
+    }
 </style>
