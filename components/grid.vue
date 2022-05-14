@@ -24,10 +24,11 @@
     import { reactive, ref, computed, watch, toRefs } from '@nuxtjs/composition-api'
     import Cell from '@/components/Cell.vue'
 
+    interface Cells { c1: string, c2: string, c3: string, c4: string, c5: string, c6: string, c7: string, c8: string, c9: string}
+    let cells: Cells = reactive({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: '', c8: '', c9: '' })
 
     let flag = ref<number>(1);
     let comment = ref<string>('');
-    let cells = reactive({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: '', c8: '', c9: '' })
 
     let updateCell = (id: string, value: string) => {
         cells[id] = value;
@@ -55,12 +56,20 @@
                 window.alert(`Player ${x} won`)
             }
         }else{
-            console.log('draw');
-            // checkForDraw()
-
+            checkForDraw()
         }
     }
     
+    function checkForDraw() {
+        let cellsArray = [];
+        for(let key in cells){ cellsArray.push(cells[key]) }
+
+        if (cellsArray.every(x => x !== '')) {
+            console.log('draw')
+            // document.getElementById('print').innerHTML = "Match Tie";
+            // window.alert('Match Tie');
+        }
+    }
 </script>
 
 <style lang="scss" scoped>
