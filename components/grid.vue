@@ -28,6 +28,7 @@
 <script setup lang="ts">
     import { reactive, ref, computed, watch, toRefs } from '@nuxtjs/composition-api'
     import Cell from '@/components/Cell.vue'
+    import { flag } from '~/store'
 
     const emit = defineEmits<{
         (e: 'endGame', comment: string): void
@@ -36,26 +37,24 @@
     interface Cells { c1: string, c2: string, c3: string, c4: string, c5: string, c6: string, c7: string, c8: string, c9: string}
     let cells: Cells = reactive({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: '', c8: '', c9: '' })
 
-    let flag = ref<number>(1);
     let comment = ref<string>('');
-    let isPlaying = ref<boolean>(false)
+    let isPlaying = ref<boolean>(false);
 
-    function startGame(){
-        !isPlaying.value? isPlaying.value =! isPlaying.value: '';
-    }
+    const startGame = () => !isPlaying.value? isPlaying.value =! isPlaying.value: '';
 
-    function endGame(commentValue: string){
+    const endGame = (commentValue: string) => {
         isPlaying.value =! isPlaying.value;
         comment.value = commentValue;
     }
 
-    function updateCell(id: string, value: string) {
+    const updateCell = (id: string, value: string) => {
         cells[id] = value;
-        checkPlayerWin(value)
+        flag.value === 1 ? comment.value = "Player X Turn": comment.value = "Player O Turn";;
+        checkPlayerWin(value);
     }
 
 
-    function checkPlayerWin(x: string) {
+    const checkPlayerWin = (x: string) => {
         if (
             ( cells.c1 == x && cells.c2 == x && cells.c3 == x) ||
             ( cells.c4 == x && cells.c5 == x && cells.c6 == x) ||
@@ -78,7 +77,7 @@
         }
     }
     
-    function checkForDraw() {
+    const checkForDraw = () => {
         let cellsArray = [];
         for(let key in cells){ cellsArray.push(cells[key]) }
 
@@ -87,6 +86,7 @@
             emit('endGame', comment.value)
         }
     }
+    
 </script>
 
 <style lang="scss" scoped>

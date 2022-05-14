@@ -31,7 +31,6 @@
         if (flag.value === 1) {
             cell.value = 'X'
             flag.increment();
-            comment.value = "Player O Turn";
             emit('update:modelValue', props.cellId, 'X');
         }else {
             cell.value = 'O'
