@@ -24,6 +24,10 @@
     import { reactive, ref, computed, watch, toRefs } from '@nuxtjs/composition-api'
     import Cell from '@/components/Cell.vue'
 
+    const emit = defineEmits<{
+        (e: 'endGame', comment: string): void
+    }>()
+
     interface Cells { c1: string, c2: string, c3: string, c4: string, c5: string, c6: string, c7: string, c8: string, c9: string}
     let cells: Cells = reactive({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: '', c8: '', c9: '' })
 
@@ -47,13 +51,12 @@
             ( cells.c1 == x && cells.c5 == x && cells.c9 == x) ||
             ( cells.c3 == x && cells.c5 == x && cells.c7 == x)
         ) {
-            // comment.value.innerHTML = `Player ${x} won`;
-            console.log('Player ' + x + ' won');
+            comment.value = `Player ${x} won`;
             if(process.client){
                 document
                     .querySelectorAll('.input-field')
                     .forEach(field => field.setAttribute('disabled', 'disabled'))
-                window.alert(`Player ${x} won`)
+                emit('endGame', comment.value)
             }
         }else{
             checkForDraw()
@@ -65,9 +68,8 @@
         for(let key in cells){ cellsArray.push(cells[key]) }
 
         if (cellsArray.every(x => x !== '')) {
-            console.log('draw')
-            // document.getElementById('print').innerHTML = "Match Tie";
-            // window.alert('Match Tie');
+            comment.value = `match draw`;
+            emit('endGame', comment.value)
         }
     }
 </script>

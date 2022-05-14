@@ -23,8 +23,9 @@
 
     // Function called whenever user tab on any box and fills with X or 0
     let fillField = () => {
+        // toggle isPlaying if false
+        
         // disable selected field
-
         if(cell.value !== '') return;
 
         if (flag.value === 1) {
