@@ -55,5 +55,6 @@
         background-color: transparent;
         text-align: center;
         caret-color: transparent;
+        cursor: pointer;
     }
 </style>
