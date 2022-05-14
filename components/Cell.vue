@@ -54,5 +54,6 @@
         color: black;
         background-color: transparent;
         text-align: center;
+        caret-color: transparent;
     }
 </style>
