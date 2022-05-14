@@ -31,45 +31,36 @@
 
     let updateCell = (id: string, value: string) => {
         cells[id] = value;
+        checkPlayerWin(value)
     }
 
-    // Function called whenever user tab on any box and fills with X or 0
-    // function fillField(id: string){
-    //     // disable selected field
-    //     document.querySelector(`#${id}`).disabled = true;
-    //     console.log(flag.value);
-    //     if (flag.value === 1) {
-    //         document.querySelector(`#${id}`).innerHTML = "X";
-    //         flag.value++;
-    //         comment.value = "Player 0 Turn";
-    //         checkPlayerWin('X');
-    //     }
-    //     else {
-    //         document.querySelector(`#${id}`).innerHTML = "O";
-    //         flag.value--;
-    //         comment.value = "Player X Turn";
-    //         checkPlayerWin('0');
-    //     }
-    // }
 
-    // function checkPlayerWin(x: string) {
-    //     if (
-    //         ( inputFields[0].innerHTML == x && inputFields[1].innerHTML == x && inputFields[2].innerHTML == x) ||
-    //         ( inputFields[3].innerHTML == x && inputFields[4].innerHTML == x && inputFields[5].innerHTML == x) ||
-    //         ( inputFields[6].innerHTML == x && inputFields[7].innerHTML == x && inputFields[8].innerHTML == x) ||
-    //         ( inputFields[0].innerHTML == x && inputFields[3].innerHTML == x && inputFields[6].innerHTML == x) ||
-    //         ( inputFields[1].innerHTML == x && inputFields[4].innerHTML == x && inputFields[7].innerHTML == x) ||
-    //         ( inputFields[2].innerHTML == x && inputFields[5].innerHTML == x && inputFields[8].innerHTML == x) ||
-    //         ( inputFields[0].innerHTML == x && inputFields[4].innerHTML == x && inputFields[8].innerHTML == x) ||
-    //         ( inputFields[2].innerHTML == x && inputFields[4].innerHTML == x && inputFields[6].innerHTML == x)
-    //     ) {
-    //         comment.value.innerHTML = `Player ${x} won`;
-    //         // disableFields(inputFields);
-    //         window.alert(`Player ${x} won`);
-    //     }else{
-    //         // checkForDraw()
-    //     }
-    // }
+    function checkPlayerWin(x: string) {
+        if (
+            ( cells.c1 == x && cells.c2 == x && cells.c3 == x) ||
+            ( cells.c4 == x && cells.c5 == x && cells.c6 == x) ||
+            ( cells.c7 == x && cells.c8 == x && cells.c9 == x) ||
+            ( cells.c1 == x && cells.c4 == x && cells.c7 == x) ||
+            ( cells.c2 == x && cells.c5 == x && cells.c8 == x) ||
+            ( cells.c3 == x && cells.c6 == x && cells.c9 == x) ||
+            ( cells.c1 == x && cells.c5 == x && cells.c9 == x) ||
+            ( cells.c3 == x && cells.c5 == x && cells.c7 == x)
+        ) {
+            // comment.value.innerHTML = `Player ${x} won`;
+            console.log('Player ' + x + ' won');
+            if(process.client){
+                document
+                    .querySelectorAll('.input-field')
+                    .forEach(field => field.setAttribute('disabled', 'disabled'))
+                window.alert(`Player ${x} won`)
+            }
+        }else{
+            console.log('draw');
+            // checkForDraw()
+
+        }
+    }
+    
 </script>
 
 <style lang="scss" scoped>
