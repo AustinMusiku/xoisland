@@ -10,7 +10,10 @@
             <div class="bar vertical vertical-2"></div>
 
             <div class="playGrid" @click="startGame">
-                <Cell v-for="(cell, key) in cells" :key="key" :cell-id="key" :modelValue="cells[key]" @update:modelValue="updateCell"/>
+                <Cell 
+                    v-for="(cell, key) in cells" :key="key" 
+                    :cell-id="key" :modelValue="cells[key]" 
+                    @update:modelValue="updateCell"/>
             </div>
         </div>
     </div>
