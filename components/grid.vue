@@ -1,7 +1,7 @@
 <template>
     <div class="playGround">
         <h1 class="sub-heading" v-if="!isPlaying">make the first move!</h1>
-        <h1 class="sub-heading" v-else="!isPlaying">{{ comment }}</h1>
+        <h1 class="sub-heading" v-else="isPlaying">{{ comment }}</h1>
         
         <div class="playSpace">
             <div class="bar horizontal horizontal-1"></div>
@@ -26,7 +26,7 @@
 
 
     interface Cells { c1: string, c2: string, c3: string, c4: string, c5: string, c6: string, c7: string, c8: string, c9: string}
-    let cells: Cells = reactive({ c1: 'X', c2: 'O', c3: '', c4: '', c5: '', c6: '', c7: '', c8: '', c9: '' })
+    let cells: Cells = reactive({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: '', c8: '', c9: '' })
 
     let comment = ref<string>('');
     let isPlaying = ref<boolean>(false);
@@ -34,7 +34,7 @@
     const startGame = () => {
         if(!isPlaying.value) {
             console.log('started game')
-            isPlaying.value =! isPlaying.value;
+            isPlaying.value = true;
         }
     }
 
@@ -45,11 +45,12 @@
                 .forEach(field => field.setAttribute('disabled', 'disabled'));
         }
 
-        // setTimeout(() => resetGame(), 500)
+        resetGame()
     }
 
     const resetGame = () => {
         isPlaying.value = false;
+        comment.value = 'click to start again!';
         for(let key in cells) cells[key] = '';
         flag.reset();
         // if(process.client) window.location.reload();
