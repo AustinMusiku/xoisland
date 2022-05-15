@@ -30,9 +30,6 @@
     import Cell from '@/components/Cell.vue'
     import { flag } from '~/store'
 
-    const emit = defineEmits<{
-        (e: 'endGame', comment: string): void
-    }>()
 
     interface Cells { c1: string, c2: string, c3: string, c4: string, c5: string, c6: string, c7: string, c8: string, c9: string}
     let cells: Cells = reactive({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: '', c8: '', c9: '' })
@@ -42,9 +39,15 @@
 
     const startGame = () => !isPlaying.value? isPlaying.value =! isPlaying.value: '';
 
-    const endGame = (commentValue: string) => {
+    const endGame = () => {
+        comment.value = 'Game Over';
+        setTimeout(() => resetGame(), 500)
+    }
+
+    const resetGame = () => {
         isPlaying.value =! isPlaying.value;
-        comment.value = commentValue;
+        for(let key in cells) cells[key] = '';
+        flag.value = 1;
     }
 
     const updateCell = (id: string, value: string) => {
@@ -69,8 +72,10 @@
             if(process.client){
                 document
                     .querySelectorAll('.input-field')
-                    .forEach(field => field.setAttribute('disabled', 'disabled'))
-                emit('endGame', comment.value)
+                    .forEach(field => field.setAttribute('disabled', 'disabled'));
+                
+                setTimeout(() => endGame(), 500)
+
             }
         }else{
             checkForDraw()
@@ -83,7 +88,7 @@
 
         if (cellsArray.every(x => x !== '')) {
             comment.value = `match draw`;
-            emit('endGame', comment.value)
+            endGame()
         }
     }
     
