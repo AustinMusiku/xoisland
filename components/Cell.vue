@@ -1,5 +1,5 @@
 <template>
-    <input class="input-field" @click="fillField" v-model="modelValue">
+    <input class="input-field" @click="fillField" v-model="cellValue">
 </template>
 
 <script setup lang="ts">
@@ -8,13 +8,13 @@
 
     interface Props {
         cellId: string,
-        modelValue: string
+        cellValue: string
     }
 
     const props = defineProps<Props>()
 
     const emit = defineEmits<{
-        (e: 'update:modelValue', id: string, value: string): void
+        (e: 'update:cellValue', id: string, value: string): void
         (e: 'updateComment', comment: string): void
     }>()
     
@@ -26,17 +26,14 @@
         // toggle isPlaying if false
         
         // disable selected field
-        if(cell.value !== '') return;
+        if(props.cellValue !== '') return;
 
         if (flag.value === 1) {
-            cell.value = 'X'
             flag.increment();
-            emit('update:modelValue', props.cellId, 'X');
+            emit('update:cellValue', props.cellId, 'X');
         }else {
-            cell.value = 'O'
             flag.decrement();
-            comment.value = "Player X Turn";
-            emit('update:modelValue', props.cellId, 'O');
+            emit('update:cellValue', props.cellId, 'O');
         }
     }
 

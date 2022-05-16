@@ -1,7 +1,8 @@
 <template>
     <div class="playGround">
-        <h1 class="sub-heading" v-if="!isPlaying">make the first move!</h1>
-        <h1 class="sub-heading" v-else="isPlaying">{{ comment }}</h1>
+        <h1 class="sub-heading" v-if="isPlaying">{{ comment }}</h1>
+        <h1 class="sub-heading" v-else="!isPlaying">Touch to play!</h1>
+        <button class="mini-heading" @click="resetGame" v-if="isOver">Play Again</button>
         
         <div class="playSpace">
             <div class="bar horizontal horizontal-1"></div>
@@ -12,8 +13,8 @@
             <div class="playGrid" @click="startGame">
                 <Cell 
                     v-for="(cell, key) in cells" :key="key" 
-                    :cell-id="key" :modelValue="cells[key]" 
-                    @update:modelValue="updateCell"/>
+                    :cell-id="key" :cellValue="cells[key]" 
+                    @update:cellValue="updateCell"/>
             </div>
         </div>
     </div>
@@ -30,28 +31,45 @@
 
     let comment = ref<string>('');
     let isPlaying = ref<boolean>(false);
+    let isOver = ref<boolean>(false);
+
+
+    // perform start animation
+    // - - x - - 
+    // 1 2 3 4 5
 
     const startGame = () => {
-        if(!isPlaying.value) {
+        if(!isPlaying.value) { // if game is not playing
             console.log('started game')
             isPlaying.value = true;
         }
     }
 
     const endGame = () => {
+        isPlaying.value = false;
+        isOver.value = true;
         if(process.client){
             document
                 .querySelectorAll('.input-field')
                 .forEach(field => field.setAttribute('disabled', 'disabled'));
+            // perform end animation
+            // document.querySelector('.playSpace').style.display = 'none';
         }
 
-        resetGame()
+        // resetGame()
     }
 
     const resetGame = () => {
-        isPlaying.value = false;
-        comment.value = 'click to start again!';
+        isPlaying.value = true;
+        isOver.value = false;
+        comment.value = 'Play!';
         for(let key in cells) cells[key] = '';
+        // perform start animation
+        if(process.client){
+            document
+                .querySelectorAll('.input-field')
+                .forEach(field => field.removeAttribute('disabled'));
+        }
         flag.reset();
         // if(process.client) window.location.reload();
     }
