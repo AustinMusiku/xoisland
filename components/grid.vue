@@ -66,7 +66,7 @@
     const resetGame = () => {
         isPlaying.value = true;
         isOver.value = false;
-        comment.value = 'Play!';
+        comment.value = 'Touch to play!';
         for(let key in cells) cells[key] = '';
         // perform start animation
         if(process.client){
