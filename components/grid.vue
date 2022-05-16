@@ -57,7 +57,7 @@
                 .querySelectorAll('.input-field')
                 .forEach(field => field.setAttribute('disabled', 'disabled'));
             // perform end animation
-            // document.querySelector('.playSpace').style.display = 'none';
+            document.querySelector('.playSpace').style.display = 'none';
         }
 
         // resetGame()
@@ -73,6 +73,8 @@
             document
                 .querySelectorAll('.input-field')
                 .forEach(field => field.removeAttribute('disabled'));
+
+            document.querySelector('.playSpace').style.display = 'inline-block';
         }
         flag.reset();
         // if(process.client) window.location.reload();
