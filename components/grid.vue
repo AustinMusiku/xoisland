@@ -1,7 +1,9 @@
 <template>
     <div class="playGround">
+        
         <h1 class="sub-heading" v-if="isPlaying">{{ comment }}</h1>
         <h1 class="sub-heading" v-else="!isPlaying">Touch to play!</h1>
+
         <button class="mini-heading" @click="resetGame" v-if="isOver">Play Again</button>
         
         <div class="playSpace">
@@ -17,6 +19,8 @@
                     @update:cellValue="updateCell"/>
             </div>
         </div>
+
+        
     </div>
 </template>
 
@@ -112,44 +116,62 @@
 </script>
 
 <style lang="scss" scoped>
-    .playSpace{
-        position: relative;
-        margin: auto;
-        height: 300px;
-        width: 300px;
+    .playGround{
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        justify-items: center;
 
-        .bar{
-            position: absolute;
-            background-color: black;
-            z-index: 5;
-
-            &.vertical{
-                top: 0;
-                height: 100%;
-                width: .2em;
-                transform: translateX(-50%);
-            }
-
-            &.horizontal{
-                left: 0;
-                width: 100%;
-                height: .2em;
-                transform: translateY(-50%);
-            }
-
-            &.vertical-1{ left: 33.3333% }
-            &.vertical-2{ left: 66.6666% }
-
-            &.horizontal-1{ top: 33.3333% }
-            &.horizontal-2{ top: 66.6666% }
+        
+        button{
+            width: fit-content;
+            padding: .25em 1em;
+            border: none;
+            outline: none;
+            background-color: transparent;
+            cursor: pointer;
+            text-decoration: underline;
         }
-        .playGrid{
+
+        .playSpace{
             position: relative;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            width: 100%;
-            height: 100%;
+            margin: auto;
+            height: 300px;
+            width: 300px;
+    
+            .bar{
+                position: absolute;
+                background-color: black;
+                z-index: 5;
+    
+                &.vertical{
+                    top: 0;
+                    height: 100%;
+                    width: .2em;
+                    transform: translateX(-50%);
+                }
+    
+                &.horizontal{
+                    left: 0;
+                    width: 100%;
+                    height: .2em;
+                    transform: translateY(-50%);
+                }
+    
+                &.vertical-1{ left: 33.3333% }
+                &.vertical-2{ left: 66.6666% }
+    
+                &.horizontal-1{ top: 33.3333% }
+                &.horizontal-2{ top: 66.6666% }
+            }
+            .playGrid{
+                position: relative;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(3, 1fr);
+                width: 100%;
+                height: 100%;
+            }
         }
     }
 </style>
