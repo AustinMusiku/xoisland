@@ -1,7 +1,7 @@
 import { GetterTree, ActionTree, MutationTree } from 'vuex'
 
 export const state = () => ({
-    flag: 1,
+    flag: 4,
 });
 
 export type RootState = ReturnType<typeof state>

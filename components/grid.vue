@@ -24,10 +24,13 @@
 </template>
 
 <script setup lang="ts">
-    import { reactive, ref, computed, watch, toRefs } from '@nuxtjs/composition-api'
+    import { reactive, ref } from '@nuxtjs/composition-api'
     import Cell from '@/components/Cell.vue'
     import { flag } from '~/store'
 
+    // elements
+    let playSpace = document.querySelector('.playSpace') as HTMLElement;
+    let inputFieldElements = document.querySelectorAll<HTMLElement>('.input-field')
 
     interface Cells { 
         [c1: string]: string
@@ -54,11 +57,9 @@
         isPlaying.value = false;
         isOver.value = true;
         if(process.client){
-            document
-                .querySelectorAll('.input-field')
-                .forEach(field => field.setAttribute('disabled', 'disabled'));
+            inputFieldElements.forEach(field => field.setAttribute('disabled', 'disabled'));
             // perform end animation
-            // document.querySelector('.playSpace').style.display = 'none';
+            playSpace.style.display = 'none';
         }
 
         // resetGame()
@@ -71,11 +72,9 @@
         for(let key in cells) cells[key] = '';
         // perform start animation
         if(process.client){
-            document
-                .querySelectorAll('.input-field')
-                .forEach(field => field.removeAttribute('disabled'));
+            inputFieldElements.forEach(field => field.removeAttribute('disabled'));
 
-            // document.querySelector('.playSpace').style.display = 'inline-block';
+            playSpace.style.display = 'inline-block';
         }
         flag.reset();
     }
