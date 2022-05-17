@@ -29,22 +29,17 @@
     import { flag } from '~/store'
 
     // elements
-    let playSpace = document.querySelector('.playSpace') as HTMLElement;
-    let inputFieldElements = document.querySelectorAll<HTMLElement>('.input-field')
-
-    interface Cells { 
-        [c1: string]: string
+    if(process.client){
+        let playSpace = document.querySelector('.playSpace') as HTMLElement;
+        let inputFieldElements = document.querySelectorAll<HTMLElement>('.input-field')
     }
-    let cells: Cells = reactive({ 
-        c1: '', c2: '', c3: '', 
-        c4: '', c5: '', c6: '', 
-        c7: '', c8: '', c9: '' 
-    })
+
+    interface Cells { [c1: string]: string}
+    let cells: Cells = reactive({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: '', c8: '', c9: '' })
 
     let comment = ref<string>('');
     let isPlaying = ref<boolean>(false);
     let isOver = ref<boolean>(false);
-
 
     const startGame = () => {
         if(!isPlaying.value) { 
@@ -56,13 +51,11 @@
     const endGame = () => {
         isPlaying.value = false;
         isOver.value = true;
+        // perform end animation
         if(process.client){
             inputFieldElements.forEach(field => field.setAttribute('disabled', 'disabled'));
-            // perform end animation
             playSpace.style.display = 'none';
         }
-
-        // resetGame()
     }
 
     const resetGame = () => {
@@ -73,7 +66,6 @@
         // perform start animation
         if(process.client){
             inputFieldElements.forEach(field => field.removeAttribute('disabled'));
-
             playSpace.style.display = 'inline-block';
         }
         flag.reset();
