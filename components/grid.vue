@@ -30,9 +30,7 @@
 
 
     interface Cells { 
-        c1: string, c2: string, c3: string, 
-        c4: string, c5: string, c6: string, 
-        c7: string, c8: string, c9: string
+        [c1: string]: string
     }
     let cells: Cells = reactive({ 
         c1: '', c2: '', c3: '', 
@@ -60,7 +58,7 @@
                 .querySelectorAll('.input-field')
                 .forEach(field => field.setAttribute('disabled', 'disabled'));
             // perform end animation
-            document.querySelector('.playSpace').style.display = 'none';
+            // document.querySelector('.playSpace').style.display = 'none';
         }
 
         // resetGame()
@@ -77,13 +75,13 @@
                 .querySelectorAll('.input-field')
                 .forEach(field => field.removeAttribute('disabled'));
 
-            document.querySelector('.playSpace').style.display = 'inline-block';
+            // document.querySelector('.playSpace').style.display = 'inline-block';
         }
         flag.reset();
     }
 
     const updateCell = (id: string, value: string) => {
-        cells[id] = value;
+        (cells)[id] = value;
         flag.value === 1 ? comment.value = "Player X Turn": comment.value = "Player O Turn";
         checkPlayerWin(value);
     }
