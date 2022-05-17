@@ -18,6 +18,7 @@
     "@nuxt/types": "^2.15.7",
     "@nuxt/typescript-build": "^2.1.0",
     "@nuxtjs/composition-api": "^0.32.0",
+    "@vue/runtime-dom": "^3.2.33",
     "sass": "^1.51.0",
     "sass-loader": "^10.2.1"
   }

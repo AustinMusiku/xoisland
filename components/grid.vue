@@ -20,7 +20,6 @@
             </div>
         </div>
 
-        
     </div>
 </template>
 
@@ -30,20 +29,24 @@
     import { flag } from '~/store'
 
 
-    interface Cells { c1: string, c2: string, c3: string, c4: string, c5: string, c6: string, c7: string, c8: string, c9: string}
-    let cells: Cells = reactive({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: '', c8: '', c9: '' })
+    interface Cells { 
+        c1: string, c2: string, c3: string, 
+        c4: string, c5: string, c6: string, 
+        c7: string, c8: string, c9: string
+    }
+    let cells: Cells = reactive({ 
+        c1: '', c2: '', c3: '', 
+        c4: '', c5: '', c6: '', 
+        c7: '', c8: '', c9: '' 
+    })
 
     let comment = ref<string>('');
     let isPlaying = ref<boolean>(false);
     let isOver = ref<boolean>(false);
 
 
-    // perform start animation
-    // - - x - - 
-    // 1 2 3 4 5
-
     const startGame = () => {
-        if(!isPlaying.value) { // if game is not playing
+        if(!isPlaying.value) { 
             console.log('started game')
             isPlaying.value = true;
         }
@@ -77,7 +80,6 @@
             document.querySelector('.playSpace').style.display = 'inline-block';
         }
         flag.reset();
-        // if(process.client) window.location.reload();
     }
 
     const updateCell = (id: string, value: string) => {
@@ -85,7 +87,6 @@
         flag.value === 1 ? comment.value = "Player X Turn": comment.value = "Player O Turn";
         checkPlayerWin(value);
     }
-
 
     const checkPlayerWin = (x: string) => {
         if (
@@ -106,10 +107,7 @@
     }
     
     const checkForDraw = () => {
-        let cellsArray = [];
-        for(let key in cells){ cellsArray.push(cells[key]) }
-
-        if (cellsArray.every(x => x !== '')) {
+        if (Object.entries(cells).every(x => x[1] !== '')) {
             comment.value = `match draw`;
             endGame()
         }

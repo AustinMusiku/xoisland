@@ -4,6 +4,7 @@
 
 <script setup lang="ts">
     import { reactive, ref, computed, watch, toRefs } from '@nuxtjs/composition-api'
+    // import defineProps from "vue";
     import { flag } from '~/store'
 
     interface Props {
