@@ -1,5 +1,5 @@
 <template>
-    <input class="input-field" @click="fillField" v-model="cellValue">
+    <input class="input-field" @click="handleClick" v-model="cellValue">
 </template>
 
 <script setup lang="ts">
@@ -11,7 +11,6 @@
         cellId: string,
         cellValue: string
     }
-
     const props = defineProps<Props>()
 
     const emit = defineEmits<{
@@ -19,18 +18,15 @@
         (e: 'updateComment', comment: string): void
     }>()
 
-    // Function called whenever user tab on any box and fills with X or 0
-    let fillField = () => {
-        // toggle isPlaying if false
-        
+    const handleClick = () => {
         // disable selected field
         if(props.cellValue !== '') return;
 
-        if (store.flag === 1) {
-            // store.incrementFlag();
+        if (store.getFlag === 1) {
+            store.incrementFlag();
             emit('update:cellValue', props.cellId, 'X');
         }else {
-            // store.decrementFlag();
+            store.decrementFlag();
             emit('update:cellValue', props.cellId, 'O');
         }
     }

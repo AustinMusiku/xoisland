@@ -8,7 +8,7 @@ export const useFlagStore = defineStore('flagStore', {
     },
     
     getters: {
-        flag: state => state.flag
+        getFlag: state => state.flag
     },
 
     actions: { 
@@ -16,15 +16,3 @@ export const useFlagStore = defineStore('flagStore', {
         decrementFlag(){ this.flag-- },
     }
 })
-
-  
-
-
-// import { reactive } from '@nuxtjs/composition-api'
-
-// export const flag = reactive({
-//   value: 1,
-//   increment() { this.value++ },
-//   decrement() { this.value-- },
-//   reset() { this.value = 1 }
-// })

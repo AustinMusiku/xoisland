@@ -71,7 +71,7 @@
 
     const updateCell = (id: string, value: string) => {
         (cells)[id] = value;
-        store.flag === 1 ? comment.value = "Player X Turn": comment.value = "Player O Turn";
+        store.getFlag === 1 ? comment.value = "Player X Turn": comment.value = "Player O Turn";
         checkPlayerWin(value);
     }
 
