@@ -1,8 +1,6 @@
 // -- VARIABLES --
 :root{
-    --fs-xxxl: 42vw;
-    --fs-xxl: 4.2rem;
-    --fs-xl: 4.0rem;
+    --fs-xl: 42vw;
     --fs-l: 2rem;
     --fs-x: 1.1rem;
     --fs-s: .85rem;
@@ -10,53 +8,15 @@
 
 @media(max-width: 48rem){ // 768px
     :root{
-        --fs-xxxl: 48vw;
-        --fs-xxl: 4.2rem;
-        --fs-xl: 2.8rem;
+        --fs-xl: 48vw;
         --fs-l: 2rem;
         --fs-x: 1.1rem;
         --fs-s: .75rem;
     }
 }
 
-$fw-bold: 600;
-$fw-normal: 400;
-
-$fx-normal: normal;
-$fx-italic: italic;
 
 $ff: 'Bidan', sans-serif;
 
-$clr-primary: #5aabdd;
-$clr-secondary: rgba(48,100,238,1);
 $clr-dark: #0d0d0d;
-$clr-grey: lighten($clr-dark, 75%);
 $clr-light: #fff;
-
-$space-amounts: (1,2,3,4,5);
-
-@each $space in $space-amounts{
-    .--margin-top-#{$space} {
-        margin-top: #{$space}rem;
-    }
-    .--margin-right-#{$space} {
-        margin-right: #{$space}rem;
-    }
-    .--margin-bottom-#{$space} {
-        margin-bottom: #{$space}rem;
-    }
-    .--margin-left-#{$space} {
-        margin-left: #{$space}rem;
-    }
-
-    .--margin-left-right-#{$space} {
-        margin: 0 #{$space}rem;
-    }
-    .--margin-top-bottom-#{$space} {
-        margin: #{$space}rem 0;
-    }
-
-    .--margin-#{$space} {
-        margin: #{$space}rem;
-    }
-}

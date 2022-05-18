@@ -6,31 +6,31 @@
                 <ul class="menu">
                     <li class="menu__item">
                         <nuxt-link 
-                            class="sub-heading"
+                            class="heading"
                             to="/singleplayer">singleplayer
                         </nuxt-link>
                     </li>
                     <li class="menu__item">
                         <nuxt-link 
-                            class="sub-heading"
+                            class="heading"
                             to="/multiplayer">multiplayer
                         </nuxt-link>
                     </li>
                     <li class="menu__item">
                         <nuxt-link 
-                            class="sub-heading"
+                            class="heading"
                             to="/leaderboard">leaderboard
                         </nuxt-link>
                     </li>
                     <li class="menu__item">
                         <nuxt-link 
-                            class="sub-heading"
+                            class="heading"
                             to="/help">help
                         </nuxt-link>
                     </li>
                     <li class="menu__item">
                         <a href=""
-                            class="sub-heading">github
+                            class="heading">github
                         </a>
                     </li>
                 </ul>

@@ -1,10 +1,10 @@
 <template>
     <div class="playGround">
         
-        <h1 class="sub-heading" v-if="isPlaying">{{ comment }}</h1>
-        <h1 class="sub-heading" v-else="!isPlaying">Touch to play!</h1>
+        <h1 class="heading" v-if="isPlaying">{{ comment }}</h1>
+        <h1 class="heading" v-else="!isPlaying">Touch to play!</h1>
 
-        <button class="mini-heading" @click="resetGame" v-if="isOver">Play Again</button>
+        <button class="sub-heading" @click="resetGame" v-if="isOver">Play Again</button>
         
         <div class="playSpace">
             <div class="bar horizontal horizontal-1"></div>
