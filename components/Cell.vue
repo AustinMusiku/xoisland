@@ -3,9 +3,9 @@
 </template>
 
 <script setup lang="ts">
-    import { reactive, ref, computed, watch, toRefs } from '@nuxtjs/composition-api'
-    // import defineProps from "vue";
-    import { flag } from '~/store'
+    import { useFlagStore } from '@/stores/flag'
+
+    const store = useFlagStore();
 
     interface Props {
         cellId: string,
@@ -18,9 +18,6 @@
         (e: 'update:cellValue', id: string, value: string): void
         (e: 'updateComment', comment: string): void
     }>()
-    
-    let cell = ref<string>('');
-    let comment = ref<string>('')
 
     // Function called whenever user tab on any box and fills with X or 0
     let fillField = () => {
@@ -29,11 +26,11 @@
         // disable selected field
         if(props.cellValue !== '') return;
 
-        if (flag.value === 1) {
-            flag.increment();
+        if (store.flag === 1) {
+            // store.incrementFlag();
             emit('update:cellValue', props.cellId, 'X');
         }else {
-            flag.decrement();
+            // store.decrementFlag();
             emit('update:cellValue', props.cellId, 'O');
         }
     }

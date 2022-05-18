@@ -25,14 +25,9 @@
 
 <script setup lang="ts">
     import { reactive, ref } from '@nuxtjs/composition-api'
-    import Cell from '@/components/Cell.vue'
-    import { flag } from '~/store'
+    import { useFlagStore } from '../stores/flag';
 
-    // elements
-    if(process.client){
-        let playSpace = document.querySelector('.playSpace') as HTMLElement;
-        let inputFieldElements = document.querySelectorAll<HTMLElement>('.input-field')
-    }
+    const store = useFlagStore();
 
     interface Cells { [c1: string]: string}
     let cells: Cells = reactive({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: '', c8: '', c9: '' })
@@ -42,8 +37,7 @@
     let isOver = ref<boolean>(false);
 
     const startGame = () => {
-        if(!isPlaying.value) { 
-            console.log('started game')
+        if(!isPlaying.value) {
             isPlaying.value = true;
         }
     }
@@ -53,6 +47,8 @@
         isOver.value = true;
         // perform end animation
         if(process.client){
+            let playSpace = document.querySelector('.playSpace') as HTMLElement;
+            let inputFieldElements = document.querySelectorAll<HTMLElement>('.input-field')
             inputFieldElements.forEach(field => field.setAttribute('disabled', 'disabled'));
             playSpace.style.display = 'none';
         }
@@ -65,15 +61,17 @@
         for(let key in cells) cells[key] = '';
         // perform start animation
         if(process.client){
+            let playSpace = document.querySelector('.playSpace') as HTMLElement;
+            let inputFieldElements = document.querySelectorAll<HTMLElement>('.input-field')
             inputFieldElements.forEach(field => field.removeAttribute('disabled'));
             playSpace.style.display = 'inline-block';
         }
-        flag.reset();
+        store.$reset();
     }
 
     const updateCell = (id: string, value: string) => {
         (cells)[id] = value;
-        flag.value === 1 ? comment.value = "Player X Turn": comment.value = "Player O Turn";
+        store.flag === 1 ? comment.value = "Player X Turn": comment.value = "Player O Turn";
         checkPlayerWin(value);
     }
 
