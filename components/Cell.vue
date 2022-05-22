@@ -3,33 +3,33 @@
 </template>
 
 <script setup lang="ts">
-    import { useFlagStore } from '@/stores/flag'
+    // import { useFlagStore } from '@/stores/flag'
 
-    const store = useFlagStore();
+    // const store = useFlagStore();
 
-    interface Props {
-        cellId: string,
-        cellValue: string
-    }
-    const props = defineProps<Props>()
+    // interface Props {
+    //     cellId: string,
+    //     cellValue: string
+    // }
+    // const props = defineProps<Props>()
 
-    const emit = defineEmits<{
-        (e: 'update:cellValue', id: string, value: string): void
-        (e: 'updateComment', comment: string): void
-    }>()
+    // const emit = defineEmits<{
+    //     (e: 'update:cellValue', id: string, value: string): void
+    //     (e: 'updateComment', comment: string): void
+    // }>()
 
-    const handleClick = () => {
-        // disable selected field
-        if(props.cellValue !== '') return;
+    // const handleClick = () => {
+    //     // disable selected field
+    //     if(props.cellValue !== '') return;
 
-        if (store.getFlag === 1) {
-            store.incrementFlag();
-            emit('update:cellValue', props.cellId, 'X');
-        }else {
-            store.decrementFlag();
-            emit('update:cellValue', props.cellId, 'O');
-        }
-    }
+    //     if (store.getFlag === 1) {
+    //         store.incrementFlag();
+    //         emit('update:cellValue', props.cellId, 'X');
+    //     }else {
+    //         store.decrementFlag();
+    //         emit('update:cellValue', props.cellId, 'O');
+    //     }
+    // }
 
 </script>
 

@@ -1,10 +1,9 @@
 <template>
     <div class="playGround">
-        
-        <h1 class="heading" v-if="isPlaying">{{ comment }}</h1>
-        <h1 class="heading" v-else="!isPlaying">Touch to play!</h1>
+        <h1 class="heading" v-if="state.isPlaying">{{ state.comment }}</h1>
+        <h1 class="heading" v-else="!state.isPlaying">Touch to play!</h1>
 
-        <button class="sub-heading" @click="resetGame" v-if="isOver">Play Again</button>
+        <button class="sub-heading" @click="resetGame" v-if="state.isOver">Play Again</button>
         
         <div class="playSpace">
             <div class="bar horizontal horizontal-1"></div>
@@ -13,10 +12,15 @@
             <div class="bar vertical vertical-2"></div>
 
             <div class="playGrid" @click="startGame">
-                <Cell 
-                    v-for="(cell, key) in cells" :key="key" 
-                    :cell-id="key" :cellValue="cells[key]" 
-                    @update:cellValue="updateCell"/>
+                <div id="c1" class="input-field" @click="handleClick('c1')">{{cells.c1}}</div>
+                <div id="c2" class="input-field" @click="handleClick('c2')">{{cells.c2}}</div>
+                <div id="c3" class="input-field" @click="handleClick('c3')">{{cells.c3}}</div>
+                <div id="c4" class="input-field" @click="handleClick('c4')">{{cells.c4}}</div>
+                <div id="c5" class="input-field" @click="handleClick('c5')">{{cells.c5}}</div>
+                <div id="c6" class="input-field" @click="handleClick('c6')">{{cells.c6}}</div>
+                <div id="c7" class="input-field" @click="handleClick('c7')">{{cells.c7}}</div>
+                <div id="c8" class="input-field" @click="handleClick('c8')">{{cells.c8}}</div>
+                <div id="c9" class="input-field" @click="handleClick('c9')">{{cells.c9}}</div>
             </div>
         </div>
 
@@ -24,27 +28,34 @@
 </template>
 
 <script setup lang="ts">
-    import { reactive, ref } from '@nuxtjs/composition-api'
-    import { useFlagStore } from '../stores/flag';
+    import { reactive, ref, computed } from '@nuxtjs/composition-api'
+    import { useGameplayStore } from '../stores/gameplay';
 
-    const store = useFlagStore();
+    const store = useGameplayStore();
 
-    interface Cells { [c1: string]: string}
-    let cells: Cells = reactive({ c1: '', c2: '', c3: '', c4: '', c5: '', c6: '', c7: '', c8: '', c9: '' })
+    let cells = computed(() => store.getCells)
 
-    let comment = ref<string>('');
-    let isPlaying = ref<boolean>(false);
-    let isOver = ref<boolean>(false);
+    interface State {
+        comment: string,
+        isPlaying: boolean,
+        isOver: boolean
+    }
+
+    let state: State = reactive({
+        comment: '',
+        isPlaying: false,
+        isOver: false
+    })
 
     const startGame = () => {
-        if(!isPlaying.value) {
-            isPlaying.value = true;
+        if(!state.isPlaying) {
+            state.isPlaying = true;
         }
     }
 
     const endGame = () => {
-        isPlaying.value = false;
-        isOver.value = true;
+        state.isPlaying = false;
+        state.isOver = true;
         // perform end animation
         if(process.client){
             let playSpace = document.querySelector('.playSpace') as HTMLElement;
@@ -55,10 +66,10 @@
     }
 
     const resetGame = () => {
-        isPlaying.value = true;
-        isOver.value = false;
-        comment.value = 'Touch to play!';
-        for(let key in cells) cells[key] = '';
+        state.isPlaying = true;
+        state.isOver = false;
+        state.comment = 'Touch to play!';
+        for(let key in cells) store.cells[key] = '';
         // perform start animation
         if(process.client){
             let playSpace = document.querySelector('.playSpace') as HTMLElement;
@@ -69,24 +80,35 @@
         store.$reset();
     }
 
-    const updateCell = (id: string, value: string) => {
-        (cells)[id] = value;
-        store.getFlag === 1 ? comment.value = "Player X Turn": comment.value = "Player O Turn";
-        checkPlayerWin(value);
+    // emit('update:cellValue', props.cellId, 'X');
+    const handleClick = (cellId: string) => {
+        if(store.cells[cellId] !== '') return;
+
+        store.getFlag === 1 ? state.comment = "Player X Turn": state.comment = "Player O Turn";
+
+        if (store.getFlag === 1) {
+            store.incrementFlag();
+            store.cells[cellId] = 'X';
+            checkPlayerWin('X');
+        }else {
+            store.decrementFlag();
+            store.cells[cellId] = 'O';
+            checkPlayerWin('O');
+        }
     }
 
     const checkPlayerWin = (x: string) => {
         if (
-            ( cells.c1 == x && cells.c2 == x && cells.c3 == x) ||
-            ( cells.c4 == x && cells.c5 == x && cells.c6 == x) ||
-            ( cells.c7 == x && cells.c8 == x && cells.c9 == x) ||
-            ( cells.c1 == x && cells.c4 == x && cells.c7 == x) ||
-            ( cells.c2 == x && cells.c5 == x && cells.c8 == x) ||
-            ( cells.c3 == x && cells.c6 == x && cells.c9 == x) ||
-            ( cells.c1 == x && cells.c5 == x && cells.c9 == x) ||
-            ( cells.c3 == x && cells.c5 == x && cells.c7 == x)
+            ( store.cells.c1 == x && store.cells.c2 == x && store.cells.c3 == x) ||
+            ( store.cells.c4 == x && store.cells.c5 == x && store.cells.c6 == x) ||
+            ( store.cells.c7 == x && store.cells.c8 == x && store.cells.c9 == x) ||
+            ( store.cells.c1 == x && store.cells.c4 == x && store.cells.c7 == x) ||
+            ( store.cells.c2 == x && store.cells.c5 == x && store.cells.c8 == x) ||
+            ( store.cells.c3 == x && store.cells.c6 == x && store.cells.c9 == x) ||
+            ( store.cells.c1 == x && store.cells.c5 == x && store.cells.c9 == x) ||
+            ( store.cells.c3 == x && store.cells.c5 == x && store.cells.c7 == x)
         ) {
-            comment.value = `Player ${x} won`;
+            state.comment = `Player ${x} won`;
             endGame();
         }else{
             checkForDraw()
@@ -94,8 +116,8 @@
     }
     
     const checkForDraw = () => {
-        if (Object.entries(cells).every(x => x[1] !== '')) {
-            comment.value = `match draw`;
+        if (Object.entries(store.getCells).every(x => x[1] !== '')) {
+            state.comment = `match draw`;
             endGame()
         }
     }
@@ -158,6 +180,21 @@
                 grid-template-rows: repeat(3, 1fr);
                 width: 100%;
                 height: 100%;
+
+                .input-field {
+                    display: grid;
+                    place-items: center;
+                    width: 100%;
+                    height: 100%;
+                    border: none;
+                    outline: none;
+                    font-size: 70px;
+                    color: black;
+                    background-color: transparent;
+                    text-align: center;
+                    caret-color: transparent;
+                    cursor: pointer;
+                }
             }
         }
     }

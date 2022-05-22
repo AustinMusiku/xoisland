@@ -2,7 +2,7 @@
     <div class="grid">
         <div class="grid__container">
             <div class="content-wrapper">
-                <button @click='handleClick'>Send Data</button>
+                <button @click="handleClick">Send Data</button>
             </div>
         </div>
     </div>
@@ -11,7 +11,7 @@
 <script setup lang="ts">
 
 
-if(process.client){
+// if(process.client){
     let ws = new WebSocket('ws://localhost:3000');
     ws.onopen = () => { console.log('connected') }
     
@@ -23,13 +23,14 @@ if(process.client){
                 name: 'test'
             }
         }
+        console.log('message')
         ws.send(JSON.stringify(payload));
     }
 
     ws.onmessage = message => {
         console.log(message)
     }
-}
+// }
 
 </script>
 

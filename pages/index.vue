@@ -29,7 +29,9 @@
                         </nuxt-link>
                     </li>
                     <li class="menu__item">
-                        <a href=""
+                        <a 
+                            href="https://github.com/AustinMusiku/tictactoe"
+                            target="_blank"
                             class="heading">github
                         </a>
                     </li>

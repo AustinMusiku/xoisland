@@ -3,6 +3,8 @@ import express, { Express, request, Request, Response } from 'express';
 import websocket, { IUtf8Message } from 'websocket'; 
 import dotenv from 'dotenv';
 
+import { generateUUID } from './utils';
+
 dotenv.config();
 
 const app = express();
@@ -21,17 +23,33 @@ interface Clients{
 }
 const guidToClients: Clients = {};
 
+// games map
+interface Games{
+    [key: string]: {
+        players: string[],
+        gameOver: boolean,
+        cells: {c1: '',c2: '',c3: '',c4: '',c5: '',c6: '',c7: '',c8: '',c9: ''}
+    }
+}
+const guidToGames: Games = {};
+
+
 wsServer.on('request', request => {
     console.log('request');
 
     const connection: websocket.connection = request.accept(null, request.origin);
     connection.on('message', message => {
-        const result: IUtf8Message = JSON.parse(message.type);
+        let result: any = JSON.parse(message.utf8Data);
         console.log(result);
+        connection.send(JSON.stringify({ msg: "arrived" }))
+
+        if(result.type === 'join'){
+
+        }
     })
 
     //generate a new clientId
-    const clientId = guid();
+    const clientId = generateUUID();
     guidToClients[clientId] = { 'connection': connection }
 
     const payLoad = {
@@ -43,9 +61,6 @@ wsServer.on('request', request => {
 
     connection.on("close", () => console.log("closed!"))
 })
-
-const S4 = () => (((1+Math.random())*0x10000)|0).toString(16).substring(1)
-const guid = () => (S4() + S4() + "-" + S4() + "-4" + S4().substr(0,3) + "-" + S4() + "-" + S4() + S4() + S4()).toLowerCase();
 
 const PORT = process.env.PORT || 4500;
 server.listen(PORT, () => {
