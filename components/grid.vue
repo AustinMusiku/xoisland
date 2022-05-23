@@ -69,7 +69,7 @@
         state.isPlaying = true;
         state.isOver = false;
         state.comment = 'Touch to play!';
-        for(let key in cells) store.cells[key] = '';
+        for(let key in cells) store.getCells[key] = '';
         // perform start animation
         if(process.client){
             let playSpace = document.querySelector('.playSpace') as HTMLElement;
@@ -82,17 +82,17 @@
 
     // emit('update:cellValue', props.cellId, 'X');
     const handleClick = (cellId: string) => {
-        if(store.cells[cellId] !== '') return;
+        if(store.getCells[cellId] !== '') return;
 
         store.getFlag === 1 ? state.comment = "Player X Turn": state.comment = "Player O Turn";
 
         if (store.getFlag === 1) {
             store.incrementFlag();
-            store.cells[cellId] = 'X';
+            store.getCells[cellId] = 'X';
             checkPlayerWin('X');
         }else {
             store.decrementFlag();
-            store.cells[cellId] = 'O';
+            store.getCells[cellId] = 'O';
             checkPlayerWin('O');
         }
     }

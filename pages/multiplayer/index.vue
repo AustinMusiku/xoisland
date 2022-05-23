@@ -2,7 +2,8 @@
     <div class="grid">
         <div class="grid__container">
             <div class="content-wrapper">
-                <button @click="handleClick">Send Data</button>
+                <button @click="handleClick">join</button>
+                <Grid />
             </div>
         </div>
     </div>
@@ -10,25 +11,41 @@
 
 <script setup lang="ts">
 
-
 // if(process.client){
+    let clientId: string;
+    let gameId: string;
     let ws = new WebSocket('ws://localhost:3000');
-    ws.onopen = () => { console.log('connected') }
-    
-    const handleClick = () => {
-        let payload = {
-            type: 'join',
-            clientId: Math.random().toString(),
-            payload: {
-                name: 'test'
-            }
-        }
-        console.log('message')
-        ws.send(JSON.stringify(payload));
-    }
 
     ws.onmessage = message => {
-        console.log(message)
+        const data = JSON.parse(message.data);
+
+        if(data.method === 'connect'){
+            clientId = data.clientId;
+            console.log(`client connected: ${clientId}`);
+        }
+
+        if(data.method === 'join'){
+            let msg = data.message;
+            console.log(msg);
+        }
+        if(data.method === 'join-wait'){
+            let msg = data.message;
+            console.log(msg);
+        }
+        if(data.method === 'join-timeout'){
+            let msg = data.message;
+            console.log(msg);
+        }
+
+        if(data.method === 'update'){
+        }
+    }
+
+    const handleClick = () => {
+        ws.send(JSON.stringify({
+            type: 'join',
+            clientId: clientId
+        }))
     }
 // }
 
