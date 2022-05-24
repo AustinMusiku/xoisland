@@ -1,6 +1,6 @@
 const S4 = () => (((1+Math.random())*0x10000)|0).toString(16).substring(1)
 
-const checkForDraw = (state) => {
+const checkForDraw = (state: {[key: string]: string}) => {
     if (Object.entries(state).every(x => x[1] !== '')) {
         // emit end game, match draw
         // state.comment = `match draw`;
