@@ -2,7 +2,7 @@
     <div class="grid">
         <div class="grid__container">
             <div class="content-wrapper">
-                <button @click="handleClick">join</button>
+                <button @click="joinBtnClick">join</button>
                 <Grid />
             </div>
         </div>
@@ -10,11 +10,15 @@
 </template>
 
 <script setup lang="ts">
+let handleClick: any;
 
-// if(process.client){
+const joinBtnClick = () => {
+    handleClick()
+}
+if(process.client){
     let clientId: string;
     let gameId: string;
-    let ws = new WebSocket('ws://localhost:3000');
+    let ws = new WebSocket('ws://localhost:4500');
 
     ws.onmessage = message => {
         const data = JSON.parse(message.data);
@@ -41,13 +45,13 @@
         }
     }
 
-    const handleClick = () => {
+    handleClick = () :void => {
         ws.send(JSON.stringify({
             type: 'join',
             clientId: clientId
         }))
     }
-// }
+}
 
 </script>
 
