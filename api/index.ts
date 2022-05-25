@@ -1,11 +1,13 @@
 import { createServer } from 'http';
 import websocket from 'websocket'; 
 import dotenv from 'dotenv';
-import { ClientsMap, Game, GamesMap } from './types';
 
+import { ClientsMap, Game, GamesMap } from './types';
 import { generateUUID } from './utils';
+import { checkPlayerWin, endGame } from './game';
 
 dotenv.config();
+
 const PORT = process.env.WEBSOCKET_PORT;
 
 const websocketServer = websocket.server; 
@@ -43,9 +45,12 @@ wsServer.on('request', request => {
         let result: any = JSON.parse(message);
         connection.send(JSON.stringify({ msg: "arrived" }))
 
-        switch (result.type) {
+        switch (result.method) {
             case 'join':
-                handleJoin(clientId)
+                handleJoin(result)
+                break;
+            case 'play':
+                handleMove(result)
                 break;
         
             default:
@@ -61,19 +66,21 @@ wsServer.on('request', request => {
 
 // ------------------------------------------------------------
 // server methods
-const handleJoin = (clientId: string) => {
+const handleJoin = (result: any) => {
     let readyGame = getReadyGame();
     if(readyGame){
-        readyGame.players.push(clientId);
-        console.log(readyGame)
+        readyGame.players.push(result.clientId);
 
+        // send broadcast to all players in game
         const payLoad = {
             "method": "join",
-            "message": `${clientId} joined`,
-            "clientId": clientId,
+            "message": `${result.clientId} joined`,
+            "clientId": result.clientId,
             "gameId": readyGame.gameId,
-            "symbol": 'O',
-            "turn": 2,
+            "turns": {
+                "player1": readyGame.players[0],
+                "player2": readyGame.players[1],
+            },
         }
         readyGame.players.forEach(player => {
             guidToClients[player].connection.send(JSON.stringify(payLoad))
@@ -83,7 +90,7 @@ const handleJoin = (clientId: string) => {
         let gameId = generateUUID();
         let game = {
             gameId,
-            players: [clientId],
+            players: [result.clientId],
             gameOver: false,
             cells: {c1: '',c2: '',c3: '',c4: '',c5: '',c6: '',c7: '',c8: '',c9: ''}
         };
@@ -94,14 +101,34 @@ const handleJoin = (clientId: string) => {
         const payLoad = {
             "method": "join",
             "message": `new game ${gameId} created`,
-            "clientId": clientId,
+            "clientId": result.clientId,
             "gameId": gameId,
             "symbol": 'O',
             "turn": 2,
         }
-        guidToClients[clientId].connection.send(JSON.stringify(payLoad))
-        
+        guidToClients[result.clientId].connection.send(JSON.stringify(payLoad))
     }
+}
+
+const handleMove = (result: any) => {
+    // fill game state
+    let game: Game = guidToGames[result.gameId];
+    let symbol: string = game.players.indexOf(result.clientId) === 0 ? 'X' : 'O';
+    game.cells[result.cell] = symbol;
+    // check for game win/draw
+    checkPlayerWin(symbol, game.cells, game, guidToClients);
+    // send played move to all players in game
+    let payLoad = {
+        "method": "play",
+        "gameId": result.gameId,
+        "move": {
+            "cell": result.cell,
+            "symbol": symbol,
+        }
+    }
+    game.players.forEach(player => {
+        guidToClients[player].connection.send(JSON.stringify(payLoad))
+    })
 }
 
 server.listen(PORT, () => {
