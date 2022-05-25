@@ -3,42 +3,68 @@
         <div class="grid__container">
             <div class="content-wrapper">
                 <button @click="joinBtnClick">join</button>
-                <Grid />
+                <p>{{ state.message }}</p>
+                <Grid @fillField="fillField"/>
             </div>
         </div>
     </div>
 </template>
 
 <script setup lang="ts">
-let handleClick: any;
+import { reactive } from '@nuxtjs/composition-api';
 
-const joinBtnClick = () => {
-    handleClick()
-}
+let state = reactive({
+    clientId: '',
+    gameId: '',
+    turn: null,
+    message: '',
+})
+
+// const payLoad = {
+//     "turns": {
+//         "player1": readyGame.players[0],
+//         "player2": readyGame.players[1],
+//     },
+// }
+
+let handleClick: any;
+const joinBtnClick = () => handleClick();
+const fillField = (cellId: string) => handleClick();
+
+
 if(process.client){
-    let clientId: string;
-    let gameId: string;
     let ws = new WebSocket('ws://localhost:4500');
 
     ws.onmessage = message => {
         const data = JSON.parse(message.data);
 
         if(data.method === 'connect'){
-            clientId = data.clientId;
-            console.log(`client connected: ${clientId}`);
+            state.clientId = data.clientId;
+            console.log(`client connected: ${state.clientId}`);
         }
 
         if(data.method === 'join'){
+            if(state.gameId === '') state.gameId = data.gameId;
+            if(state.turn === null) state.turn = data.turn;
+            state.message = data.message;
             let msg = data.message;
-            console.log(msg);
         }
         if(data.method === 'join-wait'){
-            let msg = data.message;
-            console.log(msg);
+            state.gameId = data.gameId;
+            state.message = data.message;
+            state.turn = data.turn;
+            console.log(state.message);
         }
         if(data.method === 'join-timeout'){
-            let msg = data.message;
-            console.log(msg);
+            state.message = data.message;
+            state.gameId = '';
+
+        }
+
+        if(data.method === 'play'){
+        }
+
+        if(data.method === 'end'){
         }
 
         if(data.method === 'update'){
@@ -48,7 +74,7 @@ if(process.client){
     handleClick = () :void => {
         ws.send(JSON.stringify({
             method: 'join',
-            clientId: clientId
+            clientId: state.clientId
         }))
     }
 }

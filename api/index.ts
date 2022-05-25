@@ -22,7 +22,7 @@ const guidToClients: ClientsMap = {};
 const guidToGames: GamesMap = {};
 
 // ------------------------------------------------------------
-// store all games that have waiting players in a queue
+// place all games that have waiting players in a queue
 let readyGames: Game[] = []
 // queue methods
 const addReadyGame = (game: Game) => readyGames.push(game);
@@ -30,6 +30,9 @@ const getReadyGame = () => {
     if(readyGames.length < 1) return null;
     const game = readyGames.shift();
     return game;
+}
+const removeReadyGame = (gameId: string) => {
+    readyGames = readyGames.filter(game => game.gameId !== gameId);
 }
 
 // ------------------------------------------------------------
@@ -74,7 +77,7 @@ const handleJoin = (result: any) => {
         // send broadcast to all players in game
         const payLoad = {
             "method": "join",
-            "message": `${result.clientId} joined`,
+            "message": `${result.clientId} joined ${readyGame.gameId}`,
             "clientId": result.clientId,
             "gameId": readyGame.gameId,
             "turns": {
@@ -99,14 +102,26 @@ const handleJoin = (result: any) => {
 
         // send the clientId and gameId to the client
         const payLoad = {
-            "method": "join",
+            "method": "join-wait",
             "message": `new game ${gameId} created`,
             "clientId": result.clientId,
             "gameId": gameId,
-            "symbol": 'O',
-            "turn": 2,
+            "turn": 1,
         }
         guidToClients[result.clientId].connection.send(JSON.stringify(payLoad))
+        // After 3 seconds, send timeout message to client and remove game from queue
+        setTimeout(() => {
+            const payLoad = {
+                "method": "join-timeout",
+                "message": `game ${gameId} timed out`,
+                "clientId": result.clientId,
+                "gameId": gameId,
+            }
+            if(guidToGames[gameId].players.length < 2){
+                guidToClients[result.clientId].connection.send(JSON.stringify(payLoad))
+                removeReadyGame(gameId)
+            }
+        }, 3000)
     }
 }
 
