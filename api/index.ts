@@ -80,10 +80,6 @@ const handleJoin = (result: any) => {
             "message": `${result.clientId} joined ${readyGame.gameId}`,
             "clientId": result.clientId,
             "gameId": readyGame.gameId,
-            "turns": {
-                "player1": readyGame.players[0],
-                "player2": readyGame.players[1],
-            },
         }
         readyGame.players.forEach(player => {
             guidToClients[player].connection.send(JSON.stringify(payLoad))
@@ -109,7 +105,7 @@ const handleJoin = (result: any) => {
             "turn": 1,
         }
         guidToClients[result.clientId].connection.send(JSON.stringify(payLoad))
-        // After 3 seconds, send timeout message to client and remove game from queue
+        // After 10 seconds, send timeout message to client and remove game from queue
         setTimeout(() => {
             const payLoad = {
                 "method": "join-timeout",
@@ -121,7 +117,7 @@ const handleJoin = (result: any) => {
                 guidToClients[result.clientId].connection.send(JSON.stringify(payLoad))
                 removeReadyGame(gameId)
             }
-        }, 3000)
+        }, 10000)
     }
 }
 
@@ -139,7 +135,8 @@ const handleMove = (result: any) => {
         "move": {
             "cell": result.cell,
             "symbol": symbol,
-        }
+        },
+        message: `move made on ${result.cell}`,
     }
     game.players.forEach(player => {
         guidToClients[player].connection.send(JSON.stringify(payLoad))

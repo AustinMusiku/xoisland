@@ -3,7 +3,6 @@
         <div class="grid__container">
             <div class="content-wrapper">
                 <button @click="joinBtnClick">join</button>
-                <p>{{ state.message }}</p>
                 <Grid @fillField="fillField"/>
             </div>
         </div>
@@ -12,24 +11,20 @@
 
 <script setup lang="ts">
 import { reactive } from '@nuxtjs/composition-api';
+import { useGameplayStore } from '../../stores/gameplay';
+
+let store = useGameplayStore();
 
 let state = reactive({
     clientId: '',
     gameId: '',
-    turn: null,
     message: '',
 })
 
-// const payLoad = {
-//     "turns": {
-//         "player1": readyGame.players[0],
-//         "player2": readyGame.players[1],
-//     },
-// }
-
-let handleClick: any;
-const joinBtnClick = () => handleClick();
-const fillField = (cellId: string) => handleClick();
+let handleJoin: any;
+let handleMove: any;
+const joinBtnClick = () => handleJoin();
+const fillField = (cellId: string) => handleMove(cellId);
 
 
 if(process.client){
@@ -45,23 +40,28 @@ if(process.client){
 
         if(data.method === 'join'){
             if(state.gameId === '') state.gameId = data.gameId;
-            if(state.turn === null) state.turn = data.turn;
+            if(store.getTurn == 0) store.setTurn(2);
             state.message = data.message;
-            let msg = data.message;
         }
         if(data.method === 'join-wait'){
             state.gameId = data.gameId;
             state.message = data.message;
-            state.turn = data.turn;
+            store.setTurn(data.turn);
             console.log(state.message);
         }
         if(data.method === 'join-timeout'){
             state.message = data.message;
             state.gameId = '';
-
         }
 
         if(data.method === 'play'){
+            let cellPlayed = data.move.cell;
+            let cellSymbol = data.move.symbol
+            state.message = data.message;
+
+            cellSymbol === 'X' ? store.incrementFlag() : store.decrementFlag();
+            
+            store.getCells[cellPlayed] = cellSymbol;
         }
 
         if(data.method === 'end'){
@@ -71,11 +71,21 @@ if(process.client){
         }
     }
 
-    handleClick = () :void => {
+    handleJoin = () :void => {
         ws.send(JSON.stringify({
             method: 'join',
             clientId: state.clientId
         }))
+    }
+
+    handleMove = (cellId: string) :void => {
+        let payLoad = {
+            "method": "play",
+            "clientId": state.clientId,
+            "gameId": state.gameId,
+            "cell": cellId
+        }
+        ws.send(JSON.stringify(payLoad))
     }
 }
 

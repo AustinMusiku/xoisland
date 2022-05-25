@@ -33,6 +33,10 @@
 
     const store = useGameplayStore();
 
+    let emit = defineEmits<{
+        (e: 'fillField', cellId: string) :void
+    }>()
+
     let cells = computed(() => store.getCells)
 
     interface State {
@@ -80,47 +84,38 @@
         store.$reset();
     }
 
-    // emit('update:cellValue', props.cellId, 'X');
     const handleClick = (cellId: string) => {
         if(store.getCells[cellId] !== '') return;
-
+        if(store.getTurn !== store.getFlag) return;
         store.getFlag === 1 ? state.comment = "Player X Turn": state.comment = "Player O Turn";
 
-        if (store.getFlag === 1) {
-            store.incrementFlag();
-            store.getCells[cellId] = 'X';
-            checkPlayerWin('X');
-        }else {
-            store.decrementFlag();
-            store.getCells[cellId] = 'O';
-            checkPlayerWin('O');
-        }
+        emit('fillField', cellId);
     }
 
-    const checkPlayerWin = (x: string) => {
-        if (
-            ( store.cells.c1 == x && store.cells.c2 == x && store.cells.c3 == x) ||
-            ( store.cells.c4 == x && store.cells.c5 == x && store.cells.c6 == x) ||
-            ( store.cells.c7 == x && store.cells.c8 == x && store.cells.c9 == x) ||
-            ( store.cells.c1 == x && store.cells.c4 == x && store.cells.c7 == x) ||
-            ( store.cells.c2 == x && store.cells.c5 == x && store.cells.c8 == x) ||
-            ( store.cells.c3 == x && store.cells.c6 == x && store.cells.c9 == x) ||
-            ( store.cells.c1 == x && store.cells.c5 == x && store.cells.c9 == x) ||
-            ( store.cells.c3 == x && store.cells.c5 == x && store.cells.c7 == x)
-        ) {
-            state.comment = `Player ${x} won`;
-            endGame();
-        }else{
-            checkForDraw()
-        }
-    }
+    // const checkPlayerWin = (x: string) => {
+    //     if (
+    //         ( store.cells.c1 == x && store.cells.c2 == x && store.cells.c3 == x) ||
+    //         ( store.cells.c4 == x && store.cells.c5 == x && store.cells.c6 == x) ||
+    //         ( store.cells.c7 == x && store.cells.c8 == x && store.cells.c9 == x) ||
+    //         ( store.cells.c1 == x && store.cells.c4 == x && store.cells.c7 == x) ||
+    //         ( store.cells.c2 == x && store.cells.c5 == x && store.cells.c8 == x) ||
+    //         ( store.cells.c3 == x && store.cells.c6 == x && store.cells.c9 == x) ||
+    //         ( store.cells.c1 == x && store.cells.c5 == x && store.cells.c9 == x) ||
+    //         ( store.cells.c3 == x && store.cells.c5 == x && store.cells.c7 == x)
+    //     ) {
+    //         state.comment = `Player ${x} won`;
+    //         endGame();
+    //     }else{
+    //         checkForDraw()
+    //     }
+    // }
     
-    const checkForDraw = () => {
-        if (Object.entries(store.getCells).every(x => x[1] !== '')) {
-            state.comment = `match draw`;
-            endGame()
-        }
-    }
+    // const checkForDraw = () => {
+    //     if (Object.entries(store.getCells).every(x => x[1] !== '')) {
+    //         state.comment = `match draw`;
+    //         endGame()
+    //     }
+    // }
     
 </script>
 
