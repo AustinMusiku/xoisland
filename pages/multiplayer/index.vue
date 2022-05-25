@@ -3,7 +3,7 @@
         <div class="grid__container">
             <div class="content-wrapper">
                 <button @click="joinBtnClick">join</button>
-                <Grid @fillField="fillField"/>
+                <Grid :comment="state.comment" @fillField="fillField"/>
             </div>
         </div>
     </div>
@@ -19,6 +19,7 @@ let state = reactive({
     clientId: '',
     gameId: '',
     message: '',
+    comment: ''
 })
 
 let handleJoin: any;
@@ -59,6 +60,7 @@ if(process.client){
             let cellSymbol = data.move.symbol
             state.message = data.message;
 
+            store.getFlag === 1 ? state.comment = "Player O Turn": state.comment = "Player X Turn";
             cellSymbol === 'X' ? store.incrementFlag() : store.decrementFlag();
             
             store.getCells[cellPlayed] = cellSymbol;

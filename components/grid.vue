@@ -1,6 +1,6 @@
 <template>
     <div class="playGround">
-        <h1 class="heading" v-if="state.isPlaying">{{ state.comment }}</h1>
+        <h1 class="heading" v-if="state.isPlaying">{{ comment }}</h1>
         <h1 class="heading" v-else="!state.isPlaying">Touch to play!</h1>
 
         <button class="sub-heading" @click="resetGame" v-if="state.isOver">Play Again</button>
@@ -33,6 +33,10 @@
 
     const store = useGameplayStore();
 
+    let props = defineProps<{
+        comment: string,
+    }>()
+
     let emit = defineEmits<{
         (e: 'fillField', cellId: string) :void
     }>()
@@ -40,13 +44,11 @@
     let cells = computed(() => store.getCells)
 
     interface State {
-        comment: string,
         isPlaying: boolean,
         isOver: boolean
     }
 
     let state: State = reactive({
-        comment: '',
         isPlaying: false,
         isOver: false
     })
@@ -72,7 +74,7 @@
     const resetGame = () => {
         state.isPlaying = true;
         state.isOver = false;
-        state.comment = 'Touch to play!';
+        // state.comment = 'Touch to play!';
         for(let key in cells) store.getCells[key] = '';
         // perform start animation
         if(process.client){
@@ -87,7 +89,6 @@
     const handleClick = (cellId: string) => {
         if(store.getCells[cellId] !== '') return;
         if(store.getTurn !== store.getFlag) return;
-        store.getFlag === 1 ? state.comment = "Player X Turn": state.comment = "Player O Turn";
 
         emit('fillField', cellId);
     }
