@@ -1,7 +1,7 @@
 <template>
     <div class="playGround">
         <h1 class="heading" v-if="state.isPlaying">{{ comment }}</h1>
-        <h1 class="heading" v-else="!state.isPlaying">Touch to play!</h1>
+        <!-- <h1 class="heading" v-else="!state.isPlaying"></h1> -->
 
         <button class="sub-heading" @click="resetGame" v-if="state.isOver">Play Again</button>
         
