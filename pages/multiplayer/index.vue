@@ -3,7 +3,16 @@
         <div class="grid__container">
             <div class="content-wrapper">
                 <!-- <div v-if="$nuxt.isOffline">You are offline</div> -->
-                <Grid :comment="state.comment" @fillField="fillField"/>
+                <Loading 
+                    v-if="!state.isPlaying"
+                    :comment="state.comment"
+                />
+
+                <Grid
+                    v-if="state.isPlaying"
+                    :comment="state.comment" 
+                    @fillField="fillField"
+                />
             </div>
         </div>
     </div>
@@ -20,7 +29,8 @@ let state = reactive({
     clientId: '',
     gameId: '',
     message: '',
-    comment: ''
+    comment: '',
+    isPlaying: false
 })
 
 let handleMove: any;
@@ -55,7 +65,7 @@ if(process.client){
                 state.gameId = data.gameId;
                 state.message = data.message;
                 store.setTurn(data.turn);
-                console.log(state.message);
+                state.comment = 'Waiting for another player...';
                 break;
 
             case 'join-timeout':
