@@ -1,5 +1,10 @@
 import websocket from 'websocket';
 
+export interface Winner{
+    symbol: string,
+    cells: string[]
+}
+
 export interface Cells{
     [key: string]: string
 }

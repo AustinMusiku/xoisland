@@ -11,15 +11,13 @@
 </template>
 
 <script setup lang="ts">
-    import { reactive, ref, watch, computed, onMounted } from '@nuxtjs/composition-api'
+    import { reactive, ref, watch, onMounted } from '@nuxtjs/composition-api'
     import gsap from 'gsap';
 
     let props = defineProps<{
         comment: string,
         isLoading: boolean
     }>()
-
-    // let isLoadingRef = ref<boolean>(props.isLoading);
 
     onMounted(() => {
         let bars = gsap.utils.toArray('.bar');

@@ -4,15 +4,15 @@
             <div class="content-wrapper">
                 <!-- <div v-if="$nuxt.isOffline">You are offline</div> -->
                 <Loading 
-                    v-if="!state.isPlaying"
+                    v-if="state.isLoading"
                     :isLoading="state.isLoading"
                     :comment="state.comment"
                 />
 
                 <Grid
-                    v-if="state.isPlaying"
-                    :isPlaying="state.isPlaying"
-                    :comment="state.comment" 
+                    v-if="store.getIsPlaying"
+                    :comment="state.comment"
+                    :winner="state.winner"
                     @fillField="fillField"
                 />
             </div>
@@ -24,17 +24,32 @@
 import { reactive, useContext } from '@nuxtjs/composition-api';
 import { useGameplayStore } from '../../stores/gameplay';
 
-let store = useGameplayStore();
 const { redirect } = useContext();
 
-let state = reactive({
+let store = useGameplayStore();
+
+interface State{
+    clientId: string,
+    gameId: string,
+    message: string,
+    comment: string,
+    isLoading: boolean,
+    winner: { player: string, cells: string[] },
+}
+
+let state: State= reactive({
     clientId: '',
     gameId: '',
     message: '',
     comment: '',
-    isPlaying: false,
-    isLoading: true
+    
+    isLoading: true,
+    winner: {
+        player: '',
+        cells: []
+    },
 })
+
 
 let handleMove: any;
 const fillField = (cellId: string) => handleMove(cellId);
@@ -58,16 +73,16 @@ if(process.client){
                 break;
 
             case 'join':
+                state.isLoading = false;
                 if(state.gameId === '') state.gameId = data.gameId;
                 if(store.getTurn == 0) store.setTurn(2);
                 state.message = data.message;
-                state.isPlaying = true;
+                store.toggleIsPlaying();
                 state.comment = 'Player X turn'
                 break;
 
             case 'join-wait':
                 state.gameId = data.gameId;
-                state.message = data.message;
                 store.setTurn(data.turn);
                 state.comment = 'Waiting for another player...';
                 break;
@@ -82,7 +97,6 @@ if(process.client){
             case 'play':
                 let cellPlayed = data.move.cell;
                 let cellSymbol = data.move.symbol
-                state.message = data.message;
 
                 store.getFlag === 1 ? state.comment = "Player O Turn": state.comment = "Player X Turn";
                 cellSymbol === 'X' ? store.incrementFlag() : store.decrementFlag();
@@ -91,6 +105,12 @@ if(process.client){
                 break;
 
             case 'end':
+                state.comment = data.message;
+                state.winner = {
+                    player: data.symbol,
+                    cells: data.cells
+                };
+                store.toggleIsGameOver();
                 break;
 
             case 'update':

@@ -5,6 +5,8 @@ interface Cells {[key: string]: string}
 export const useGameplayStore = defineStore('gameplayStore', {
     state: () => {
         return {
+            isPlaying: false,
+            isGameOver: false,
             flag: 1,
             turn: 0,
             symbol: 'X',
@@ -13,6 +15,8 @@ export const useGameplayStore = defineStore('gameplayStore', {
     },
     
     getters: {
+        getIsPlaying: state => state.isPlaying,
+        getIsGameOver: state => state.isGameOver,
         getFlag: state => state.flag,
         getTurn: state => state.turn,
         getSymbol: state => state.symbol,
@@ -24,6 +28,8 @@ export const useGameplayStore = defineStore('gameplayStore', {
         decrementFlag(){ this.flag-- },
         setTurn(turn: number){ this.turn = turn },
         setSymbol(symbol: string){ this.symbol = symbol },
-        setCells(cells: Cells){ this.cells = cells }
+        setCells(cells: Cells){ this.cells = cells },
+        toggleIsPlaying(){ this.isPlaying = !this.isPlaying },
+        toggleIsGameOver(){ this.isGameOver = !this.isGameOver },
     }
 })

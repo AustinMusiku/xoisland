@@ -4,11 +4,11 @@
 
         <button class="sub-heading" 
             @click="resetGame"
-            v-if="state.isOver">
-                Play Again
+            v-if="isOver">
+            Play Again
         </button>
         
-        <div v-if="isPlaying" class="playSpace">
+        <div v-if="!isOver" class="playSpace">
             <div class="bar horizontal horizontal-1"></div>
             <div class="bar horizontal horizontal-2"></div>
             <div class="bar vertical vertical-1"></div>
@@ -36,64 +36,39 @@
     import gsap from 'gsap';
 
     const store = useGameplayStore();
+    let resetGame, endGame: any;
+    let cells = computed(() => store.getCells)
+    let isOver = ref<boolean>(false)
 
-    let props = defineProps<{
-        isPlaying: boolean,
+    let props = defineProps<{ 
         comment: string,
+        winner: {
+            player: string,
+            cells: string[]
+        }
     }>()
 
-    let emit = defineEmits<{
+    let emits = defineEmits<{
         (e: 'fillField', cellId: string) :void
     }>()
 
-    let cells = computed(() => store.getCells)
-
-    interface State {
-        isOver: boolean
-    }
-
-    let state: State = reactive({
-        isOver: false
-    })
-
-    const endGame = () => {
-        // state.isPlaying = false;
-        state.isOver = true;
-        // perform end animation
-        if(process.client){
-            let playSpace = document.querySelector('.playSpace') as HTMLElement;
-            let inputFieldElements = document.querySelectorAll<HTMLElement>('.input-field')
-            inputFieldElements.forEach(field => field.setAttribute('disabled', 'disabled'));
-            playSpace.style.display = 'none';
-        }
-    }
-
-    const resetGame = () => {
-        // state.isPlaying = true;
-        state.isOver = false;
-        // state.comment = 'Touch to play!';
-        for(let key in cells) store.getCells[key] = '';
-        // perform start animation
-        if(process.client){
-            let playSpace = document.querySelector('.playSpace') as HTMLElement;
-            let inputFieldElements = document.querySelectorAll<HTMLElement>('.input-field')
-            inputFieldElements.forEach(field => field.removeAttribute('disabled'));
-            playSpace.style.display = 'inline-block';
-        }
-        store.$reset();
-    }
 
     const handleClick = (cellId: string) => {
         if(store.getCells[cellId] !== '') return;
         if(store.getTurn !== store.getFlag) return;
 
-        emit('fillField', cellId);
+        emits('fillField', cellId);
     }
 
     onMounted(() => {
-        // let bars = gsap.utils.toArray('.bar');
+        let inputFieldElements = document.querySelectorAll<HTMLElement>('.input-field')
         let bars = gsap.utils.toArray('.bar');
-        let animateLoadingGrid = gsap.timeline()
+        let animateLoadingGrid = gsap.timeline({
+            onReverseComplete: () => {
+                isOver.value = true;
+            }
+        })
+        let animateWinningCombo = gsap.timeline({ repeat: 2 })
 
         animateLoadingGrid
             .from(bars.slice(0,2), {
@@ -112,8 +87,37 @@
                 ease: 'power4.out',
                 stagger: .2
             })
+        
+        endGame = () => {
+            let winningCells = props.winner.cells.map((c:string) => document.getElementById(`${c}`));
+            inputFieldElements.forEach(field => field.setAttribute('disabled', 'disabled'));
+            // perform winners animation
+            animateWinningCombo
+                .to(winningCells, {
+                    duration: .5,
+                    scale: 1.2,
+                    transformOrigin: 'center center',
+                    ease: 'power4.out',
+                    stagger: .2
+                })
+            for(let key in store.getCells) store.getCells[key] = '';
+            // perform grid outro animation
+            animateLoadingGrid.reverse()
+        }
+
+        resetGame = () => {
+            // state.isPlaying = true;
+            isOver.value = false;
+            // state.comment = 'Player X Turn';
+            animateLoadingGrid.play();
+            inputFieldElements.forEach(field => field.removeAttribute('disabled'));
+            store.$reset();
+        }
+
+        store.$subscribe(() => {
+            if(store.getIsGameOver) endGame();
+        })
     })
-    
 </script>
 
 <style lang="scss" scoped>
