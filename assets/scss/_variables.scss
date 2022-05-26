@@ -1,12 +1,12 @@
 // -- VARIABLES --
 :root{
-    --fs-xl: 42vw;
-    --fs-l: 2rem;
+    --fs-xl: 45vw;
+    --fs-l: 3rem;
     --fs-x: 1.1rem;
     --fs-s: .85rem;
 }
 
-@media(max-width: 48rem){ // 768px
+@media(max-width: 62rem){ // 991px
     :root{
         --fs-xl: 48vw;
         --fs-l: 2rem;

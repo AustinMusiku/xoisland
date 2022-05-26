@@ -54,7 +54,7 @@ export default Vue.extend({})
     }
 
     // mobile
-    @media (max-width: 768px) {
+    @media (max-width: 62rem) {
         .menu__item{
             width: 100%;
         }

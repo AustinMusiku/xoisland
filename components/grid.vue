@@ -2,7 +2,11 @@
     <div class="playGround">
         <h1 class="heading">{{ comment }}</h1>
 
-        <button class="sub-heading" @click="resetGame" v-if="state.isOver">Play Again</button>
+        <button class="sub-heading" 
+            @click="resetGame"
+            v-if="state.isOver">
+                Play Again
+        </button>
         
         <div v-if="isPlaying" class="playSpace">
             <div class="bar horizontal horizontal-1"></div>
@@ -27,8 +31,9 @@
 </template>
 
 <script setup lang="ts">
-    import { reactive, ref, computed } from '@nuxtjs/composition-api'
+    import { reactive, ref, computed, onMounted } from '@nuxtjs/composition-api'
     import { useGameplayStore } from '../stores/gameplay';
+    import gsap from 'gsap';
 
     const store = useGameplayStore();
 
@@ -84,6 +89,30 @@
 
         emit('fillField', cellId);
     }
+
+    onMounted(() => {
+        // let bars = gsap.utils.toArray('.bar');
+        let bars = gsap.utils.toArray('.bar');
+        let animateLoadingGrid = gsap.timeline()
+
+        animateLoadingGrid
+            .from(bars.slice(0,2), {
+                duration: .5,
+                scaleX: 0,
+                transformOrigin: 'left center',
+                opacity: 0,
+                ease: 'power4.out',
+                stagger: .2
+            })
+            .from(bars.slice(2), {
+                duration: .5,
+                scaleY: 0,
+                transformOrigin: 'top center',
+                opacity: 0,
+                ease: 'power4.out',
+                stagger: .2
+            })
+    })
     
 </script>
 
