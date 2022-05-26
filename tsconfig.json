@@ -24,6 +24,7 @@
       ]
     },
     "types": [
+      "unplugin-vue2-script-setup/types",
       "@nuxt/types",
       "@nuxtjs/axios",
       "@types/node",
