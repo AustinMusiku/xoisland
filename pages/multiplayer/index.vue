@@ -10,6 +10,7 @@
 
                 <Grid
                     v-if="state.isPlaying"
+                    :isPlaying="state.isPlaying"
                     :comment="state.comment" 
                     @fillField="fillField"
                 />
@@ -58,7 +59,8 @@ if(process.client){
                 if(state.gameId === '') state.gameId = data.gameId;
                 if(store.getTurn == 0) store.setTurn(2);
                 state.message = data.message;
-                state.comment = 'Touch to play!'
+                state.isPlaying = true;
+                state.comment = 'Player X turn'
                 break;
 
             case 'join-wait':

@@ -1,17 +1,16 @@
 <template>
     <div class="playGround">
-        <h1 class="heading" v-if="state.isPlaying">{{ comment }}</h1>
-        <!-- <h1 class="heading" v-else="!state.isPlaying"></h1> -->
+        <h1 class="heading">{{ comment }}</h1>
 
         <button class="sub-heading" @click="resetGame" v-if="state.isOver">Play Again</button>
         
-        <div class="playSpace">
+        <div v-if="isPlaying" class="playSpace">
             <div class="bar horizontal horizontal-1"></div>
             <div class="bar horizontal horizontal-2"></div>
             <div class="bar vertical vertical-1"></div>
             <div class="bar vertical vertical-2"></div>
 
-            <div class="playGrid" @click="startGame">
+            <div class="playGrid">
                 <div id="c1" class="input-field" @click="handleClick('c1')">{{cells.c1}}</div>
                 <div id="c2" class="input-field" @click="handleClick('c2')">{{cells.c2}}</div>
                 <div id="c3" class="input-field" @click="handleClick('c3')">{{cells.c3}}</div>
@@ -34,6 +33,7 @@
     const store = useGameplayStore();
 
     let props = defineProps<{
+        isPlaying: boolean,
         comment: string,
     }>()
 
@@ -44,23 +44,15 @@
     let cells = computed(() => store.getCells)
 
     interface State {
-        isPlaying: boolean,
         isOver: boolean
     }
 
     let state: State = reactive({
-        isPlaying: false,
         isOver: false
     })
 
-    const startGame = () => {
-        if(!state.isPlaying) {
-            state.isPlaying = true;
-        }
-    }
-
     const endGame = () => {
-        state.isPlaying = false;
+        // state.isPlaying = false;
         state.isOver = true;
         // perform end animation
         if(process.client){
@@ -72,7 +64,7 @@
     }
 
     const resetGame = () => {
-        state.isPlaying = true;
+        // state.isPlaying = true;
         state.isOver = false;
         // state.comment = 'Touch to play!';
         for(let key in cells) store.getCells[key] = '';
@@ -92,31 +84,6 @@
 
         emit('fillField', cellId);
     }
-
-    // const checkPlayerWin = (x: string) => {
-    //     if (
-    //         ( store.cells.c1 == x && store.cells.c2 == x && store.cells.c3 == x) ||
-    //         ( store.cells.c4 == x && store.cells.c5 == x && store.cells.c6 == x) ||
-    //         ( store.cells.c7 == x && store.cells.c8 == x && store.cells.c9 == x) ||
-    //         ( store.cells.c1 == x && store.cells.c4 == x && store.cells.c7 == x) ||
-    //         ( store.cells.c2 == x && store.cells.c5 == x && store.cells.c8 == x) ||
-    //         ( store.cells.c3 == x && store.cells.c6 == x && store.cells.c9 == x) ||
-    //         ( store.cells.c1 == x && store.cells.c5 == x && store.cells.c9 == x) ||
-    //         ( store.cells.c3 == x && store.cells.c5 == x && store.cells.c7 == x)
-    //     ) {
-    //         state.comment = `Player ${x} won`;
-    //         endGame();
-    //     }else{
-    //         checkForDraw()
-    //     }
-    // }
-    
-    // const checkForDraw = () => {
-    //     if (Object.entries(store.getCells).every(x => x[1] !== '')) {
-    //         state.comment = `match draw`;
-    //         endGame()
-    //     }
-    // }
     
 </script>
 
