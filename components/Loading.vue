@@ -11,17 +11,20 @@
 </template>
 
 <script setup lang="ts">
-    import { reactive, ref, computed, onMounted } from '@nuxtjs/composition-api'
+    import { reactive, ref, watch, computed, onMounted } from '@nuxtjs/composition-api'
     import gsap from 'gsap';
 
     let props = defineProps<{
         comment: string,
+        isLoading: boolean
     }>()
 
+    // let isLoadingRef = ref<boolean>(props.isLoading);
+
     onMounted(() => {
-        // let bars = gsap.utils.toArray('.bar');
         let bars = gsap.utils.toArray('.bar');
         let animateLoadingGrid = gsap.timeline({
+            paused: true,
             repeat: -1
         })
 
@@ -42,6 +45,12 @@
                 ease: 'power4.out',
                 stagger: .2
             })
+
+        animateLoadingGrid.play()
+
+        watch(() => props.isLoading, () => {
+            if(!props.isLoading) animateLoadingGrid.pause(1.4)
+        });
     })
     
 </script>

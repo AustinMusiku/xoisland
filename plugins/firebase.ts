@@ -20,7 +20,7 @@ const firebaseConfig = {
 let app = null;
 if(!firebase.getApps.length){
     app = firebase.initializeApp(firebaseConfig);
-    const analytics = getAnalytics(app);
+    // const analytics = getAnalytics(app);
 }
 
 export default firebase;

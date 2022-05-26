@@ -109,7 +109,7 @@ const handleJoin = (result: any) => {
         setTimeout(() => {
             const payLoad = {
                 "method": "join-timeout",
-                "message": `game ${gameId} timed out`,
+                "message": `Failed to get another player`,
                 "clientId": result.clientId,
                 "gameId": gameId,
             }

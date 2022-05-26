@@ -5,6 +5,7 @@
                 <!-- <div v-if="$nuxt.isOffline">You are offline</div> -->
                 <Loading 
                     v-if="!state.isPlaying"
+                    :isLoading="state.isLoading"
                     :comment="state.comment"
                 />
 
@@ -31,7 +32,8 @@ let state = reactive({
     gameId: '',
     message: '',
     comment: '',
-    isPlaying: false
+    isPlaying: false,
+    isLoading: true
 })
 
 let handleMove: any;
@@ -71,10 +73,10 @@ if(process.client){
                 break;
 
             case 'join-timeout':
-                state.message = data.message;
+                state.isLoading = false;
+                state.comment = data.message;
                 state.gameId = '';
-                console.log(state.message);
-                redirect('/');
+                setTimeout(() => redirect('/'), 5000);
                 break;
 
             case 'play':
