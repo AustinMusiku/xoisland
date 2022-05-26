@@ -11,11 +11,38 @@
 </template>
 
 <script setup lang="ts">
-    import { reactive, ref, computed } from '@nuxtjs/composition-api'
+    import { reactive, ref, computed, onMounted } from '@nuxtjs/composition-api'
+    import gsap from 'gsap';
 
     let props = defineProps<{
         comment: string,
     }>()
+
+    onMounted(() => {
+        // let bars = gsap.utils.toArray('.bar');
+        let bars = gsap.utils.toArray('.bar');
+        let animateLoadingGrid = gsap.timeline({
+            repeat: -1
+        })
+
+        animateLoadingGrid
+            .from(bars.slice(0,2), {
+                duration: .5,
+                scaleX: 0,
+                transformOrigin: 'left center',
+                opacity: 0,
+                ease: 'power4.out',
+                stagger: .2
+            })
+            .from(bars.slice(2), {
+                duration: .5,
+                scaleY: 0,
+                transformOrigin: 'top center',
+                opacity: 0,
+                ease: 'power4.out',
+                stagger: .2
+            })
+    })
     
 </script>
 
