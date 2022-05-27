@@ -48,6 +48,7 @@
 
         watch(() => props.isLoading, () => {
             if(!props.isLoading) animateLoadingGrid.pause(1.4)
+            if(props.isLoading) animateLoadingGrid.play()
         });
     })
     

@@ -9,6 +9,18 @@
                     :comment="state.comment"
                 />
 
+                <div 
+                class="fallback-menu"
+                v-if="!state.isTwoPlayers && !state.isLoading">
+                    <nuxt-link
+                    :to="from"
+                    >Back</nuxt-link>
+
+                    <button
+                    @click="joinAgain"
+                    >Try again</button>
+                </div>
+
                 <Grid
                     v-if="store.getIsPlaying"
                     :comment="state.comment"
@@ -24,7 +36,7 @@
 import { onMounted, reactive, useContext } from '@nuxtjs/composition-api';
 import { useGameplayStore } from '../../stores/gameplay';
 
-const { redirect } = useContext();
+const { redirect, from } = useContext();
 
 let store = useGameplayStore();
 
@@ -53,7 +65,11 @@ let state: State= reactive({
 })
 
 
-let handleMove: any;
+let handleMove: any; 
+let handleTryAgain: any; 
+let joinAgain = () => {
+    handleTryAgain()
+}
 const fillField = (cellId: string) => handleMove(cellId);
 
 onMounted(() => {
@@ -65,7 +81,6 @@ onMounted(() => {
         switch(data.method){
             case 'connect':
                 state.clientId = data.clientId;
-                console.log(`client connected: ${state.clientId}`);
 
                 // create/join game
                 ws.send(JSON.stringify({
@@ -94,7 +109,6 @@ onMounted(() => {
                 state.isLoading = false;
                 state.comment = data.message;
                 state.gameId = '';
-                // setTimeout(() => redirect('/'), 5000);
                 break;
 
             case 'play':
@@ -129,6 +143,18 @@ onMounted(() => {
             "cell": cellId
         }
         ws.send(JSON.stringify(payLoad))
+    }
+
+    handleTryAgain = () => {
+        console.log('hello just trying again')
+        state.isLoading = true;
+        state.isTwoPlayers = false;
+
+        // create/join game again
+        ws.send(JSON.stringify({
+            method: 'join',
+            clientId: state.clientId
+        }))
     }
 })
 
