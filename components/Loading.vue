@@ -1,23 +1,44 @@
 <template>
     <div class="loading">
-        <h1 class="loading__text heading">{{ comment }}</h1>
-        <div class="loading__grid">
+        <h1 class="loading__text heading2">{{ comment }}</h1>
+        <div 
+        class="loading__grid">
             <div class="bar horizontal horizontal-1"></div>
             <div class="bar horizontal horizontal-2"></div>
             <div class="bar vertical vertical-1"></div>
             <div class="bar vertical vertical-2"></div>
         </div>
+        <div 
+        class="loading__fallback-menu hidden">
+            <nuxt-link
+            class="button"
+            to="/"
+            >Back</nuxt-link>
+
+            <button
+            class="button"
+            @click="joinAgain"
+            >Try again</button>
+        </div>
     </div>
 </template>
 
 <script setup lang="ts">
-    import { reactive, ref, watch, onMounted } from '@nuxtjs/composition-api'
+    import { watch, onMounted } from '@nuxtjs/composition-api'
     import gsap from 'gsap';
 
     let props = defineProps<{
         comment: string,
         isLoading: boolean
     }>()
+
+    let emits = defineEmits<{
+        (e: 'joinAgain'): void
+    }>()
+
+    const joinAgain = () => {
+        emits('joinAgain');
+    }
 
     onMounted(() => {
         let bars = gsap.utils.toArray('.bar');
@@ -47,14 +68,25 @@
         animateLoadingGrid.play()
 
         watch(() => props.isLoading, () => {
-            if(!props.isLoading) animateLoadingGrid.pause(1.4)
-            if(props.isLoading) animateLoadingGrid.play()
+            if(!props.isLoading){
+                animateLoadingGrid.pause(1.4)
+                document.querySelector('.loading__grid')?.classList.add('hidden')
+                document.querySelector('.loading__fallback-menu')?.classList.remove('hidden')
+            }
+            else if(props.isLoading){
+                animateLoadingGrid.restart()
+                document.querySelector('.loading__fallback-menu')?.classList.add('hidden')
+                document.querySelector('.loading__grid')?.classList.remove('hidden')
+            }
         });
     })
     
 </script>
 
 <style lang="scss" scoped>
+    .hidden {
+        display: none;
+    }
     .loading{
         display: flex;
         flex-direction: column;
@@ -91,6 +123,13 @@
                 &.horizontal-1{ top: 33.3333% }
                 &.horizontal-2{ top: 66.6666% }
             }
+        }
+
+        .loading__fallback-menu{
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
     }
 </style>

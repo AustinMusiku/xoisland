@@ -11,6 +11,10 @@
     font-size: var(--fs-l);
     line-height: 1.2;
 }
+.heading2{
+    font-size: var(--fs-sl);
+    line-height: 1.2;
+}
 .sub-heading{
     font-size: var(--fs-x);
     line-height: 1.6;
@@ -30,7 +34,7 @@ a{
     
 }
 
-button{
+.button{
     font-size: var(--fs-x);
     width: fit-content;
     padding: .25em 1em;

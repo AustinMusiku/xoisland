@@ -7,19 +7,8 @@
                     v-if="!state.isTwoPlayers"
                     :isLoading="state.isLoading"
                     :comment="state.comment"
+                    @joinAgain="joinAgain"
                 />
-
-                <div 
-                class="fallback-menu"
-                v-if="!state.isTwoPlayers && !state.isLoading">
-                    <nuxt-link
-                    :to="from"
-                    >Back</nuxt-link>
-
-                    <button
-                    @click="joinAgain"
-                    >Try again</button>
-                </div>
 
                 <Grid
                     v-if="store.getIsPlaying"
@@ -35,8 +24,6 @@
 <script setup context lang="ts">
 import { onMounted, reactive, useContext } from '@nuxtjs/composition-api';
 import { useGameplayStore } from '../../stores/gameplay';
-
-const { redirect, from } = useContext();
 
 let store = useGameplayStore();
 
@@ -146,7 +133,6 @@ onMounted(() => {
     }
 
     handleTryAgain = () => {
-        console.log('hello just trying again')
         state.isLoading = true;
         state.isTwoPlayers = false;
 
@@ -165,15 +151,5 @@ onMounted(() => {
         width: 100%;
         text-align: center;
         justify-content: center;
-    }
-    .fallback-menu{
-        position: absolute;
-        bottom: -40%;
-        left: 50%;
-        transform:translateX(-50%);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
     }
 </style>

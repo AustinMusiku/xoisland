@@ -1,8 +1,9 @@
 <template>
     <div class="playGround">
-        <h1 class="heading">{{ comment }}</h1>
+        <h1 class="heading2">{{ comment }}</h1>
 
-        <button class="sub-heading" 
+        <button 
+            class="sub-heading button" 
             @click="resetGame"
             v-if="isOver">
             Play Again
