@@ -117,7 +117,7 @@ const handleJoin = (result: any) => {
                 guidToClients[result.clientId].connection.send(JSON.stringify(payLoad))
                 removeReadyGame(gameId)
             }
-        }, 10000)
+        }, 2000)
     }
 }
 

@@ -4,7 +4,7 @@
             <div class="content-wrapper">
                 <!-- <div v-if="$nuxt.isOffline">You are offline</div> -->
                 <Loading 
-                    v-if="state.isLoading"
+                    v-if="!state.isTwoPlayers"
                     :isLoading="state.isLoading"
                     :comment="state.comment"
                 />
@@ -21,7 +21,7 @@
 </template>
 
 <script setup context lang="ts">
-import { reactive, useContext } from '@nuxtjs/composition-api';
+import { onMounted, reactive, useContext } from '@nuxtjs/composition-api';
 import { useGameplayStore } from '../../stores/gameplay';
 
 const { redirect } = useContext();
@@ -34,6 +34,7 @@ interface State{
     message: string,
     comment: string,
     isLoading: boolean,
+    isTwoPlayers: boolean,
     winner: { player: string, cells: string[] },
 }
 
@@ -44,6 +45,7 @@ let state: State= reactive({
     comment: '',
     
     isLoading: true,
+    isTwoPlayers: false,
     winner: {
         player: '',
         cells: []
@@ -54,7 +56,7 @@ let state: State= reactive({
 let handleMove: any;
 const fillField = (cellId: string) => handleMove(cellId);
 
-if(process.client){
+onMounted(() => {
     let ws = new WebSocket('ws://localhost:4500');
 
     ws.onmessage = message => {
@@ -74,6 +76,7 @@ if(process.client){
 
             case 'join':
                 state.isLoading = false;
+                state.isTwoPlayers = true;
                 if(state.gameId === '') state.gameId = data.gameId;
                 if(store.getTurn == 0) store.setTurn(2);
                 state.message = data.message;
@@ -91,7 +94,7 @@ if(process.client){
                 state.isLoading = false;
                 state.comment = data.message;
                 state.gameId = '';
-                setTimeout(() => redirect('/'), 5000);
+                // setTimeout(() => redirect('/'), 5000);
                 break;
 
             case 'play':
@@ -127,7 +130,7 @@ if(process.client){
         }
         ws.send(JSON.stringify(payLoad))
     }
-}
+})
 
 </script>
 
