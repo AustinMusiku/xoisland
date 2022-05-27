@@ -29,3 +29,14 @@ a{
     }
     
 }
+
+button{
+    font-size: var(--fs-x);
+    width: fit-content;
+    padding: .25em 1em;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    cursor: pointer;
+    text-decoration: underline;
+}

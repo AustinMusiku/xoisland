@@ -127,17 +127,6 @@
         gap: 2rem;
         justify-items: center;
 
-        
-        button{
-            width: fit-content;
-            padding: .25em 1em;
-            border: none;
-            outline: none;
-            background-color: transparent;
-            cursor: pointer;
-            text-decoration: underline;
-        }
-
         .playSpace{
             position: relative;
             margin: auto;

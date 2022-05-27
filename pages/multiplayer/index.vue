@@ -166,4 +166,14 @@ onMounted(() => {
         text-align: center;
         justify-content: center;
     }
+    .fallback-menu{
+        position: absolute;
+        bottom: -40%;
+        left: 50%;
+        transform:translateX(-50%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
 </style>
