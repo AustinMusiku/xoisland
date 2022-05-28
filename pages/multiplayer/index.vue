@@ -3,10 +3,11 @@
         <div class="grid__container">
             <div class="content-wrapper">
                 <!-- <div v-if="$nuxt.isOffline">You are offline</div> -->
+
                 <Loading 
                     v-if="!state.isTwoPlayers"
                     :isLoading="state.isLoading"
-                    :comment="state.comment"
+                    :message="state.message"
                     @joinAgain="joinAgain"
                 />
 
@@ -82,7 +83,6 @@ onMounted(() => {
                 state.isTwoPlayers = true;
                 if(state.gameId === '') state.gameId = data.gameId;
                 if(store.getTurn == 0) store.setTurn(2);
-                state.message = data.message;
                 store.toggleIsPlaying();
                 state.comment = 'Player X turn'
                 break;
@@ -90,12 +90,12 @@ onMounted(() => {
             case 'join-wait':
                 state.gameId = data.gameId;
                 store.setTurn(data.turn);
-                state.comment = 'Waiting for another player...';
+                state.message = 'Waiting for another player...';
                 break;
 
             case 'join-timeout':
                 state.isLoading = false;
-                state.comment = data.message;
+                state.message = data.message;
                 state.gameId = '';
                 break;
 
@@ -116,6 +116,10 @@ onMounted(() => {
                     cells: data.cells
                 };
                 store.toggleIsGameOver();
+                break;
+
+            case 'play-again':
+                state.message = data.message;
                 break;
 
             case 'update':

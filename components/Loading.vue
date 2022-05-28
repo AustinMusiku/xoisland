@@ -1,6 +1,6 @@
 <template>
     <div class="loading">
-        <h1 class="loading__text heading2">{{ comment }}</h1>
+        <h1 class="loading__text heading2">{{ message }}</h1>
         <div 
         class="loading__grid">
             <div class="bar horizontal horizontal-1"></div>
@@ -28,7 +28,7 @@
     import gsap from 'gsap';
 
     let props = defineProps<{
-        comment: string,
+        message: string,
         isLoading: boolean
     }>()
 

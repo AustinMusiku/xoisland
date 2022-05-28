@@ -78,10 +78,10 @@ const handleJoin = (result: any) => {
 
         // send broadcast to all players in game
         const payLoad = {
-            "method": "join",
-            "message": `${result.clientId} joined ${readyGame.gameId}`,
-            "clientId": result.clientId,
-            "gameId": readyGame.gameId,
+            method: "join",
+            message: `${result.clientId} joined ${readyGame.gameId}`,
+            clientId: result.clientId,
+            gameId: readyGame.gameId,
         }
         readyGame.players.forEach(player => {
             guidToClients[player].connection.send(JSON.stringify(payLoad))
@@ -100,20 +100,20 @@ const handleJoin = (result: any) => {
 
         // send the clientId and gameId to the client
         const payLoad = {
-            "method": "join-wait",
-            "message": `new game ${gameId} created`,
-            "clientId": result.clientId,
-            "gameId": gameId,
-            "turn": 1,
+            method: "join-wait",
+            message: `new game ${gameId} created`,
+            clientId: result.clientId,
+            gameId: gameId,
+            turn: 1,
         }
         guidToClients[result.clientId].connection.send(JSON.stringify(payLoad))
         // After 10 seconds, send timeout message to client and remove game from queue
         setTimeout(() => {
             const payLoad = {
-                "method": "join-timeout",
-                "message": `Failed to get another player`,
-                "clientId": result.clientId,
-                "gameId": gameId,
+                method: "join-timeout",
+                message: `Failed to get another player`,
+                clientId: result.clientId,
+                gameId: gameId,
             }
             if(guidToGames[gameId].players.length < 2){
                 guidToClients[result.clientId].connection.send(JSON.stringify(payLoad))
@@ -130,11 +130,11 @@ const handleMove = (result: any) => {
     game.cells[result.cell] = symbol;
     // send played move to all players in game
     let payLoad = {
-        "method": "play",
-        "gameId": result.gameId,
-        "move": {
-            "cell": result.cell,
-            "symbol": symbol,
+        method: "play",
+        gameId: result.gameId,
+        move: {
+            cell: result.cell,
+            symbol: symbol,
         },
         message: `move made on ${result.cell}`,
     }
@@ -146,22 +146,15 @@ const handleMove = (result: any) => {
 }
 
 const handlePlayAgain = (result: any) => {
-    // fill game state
     let game: Game = guidToGames[result.gameId];
-    let symbol: string = game.players.indexOf(result.clientId) === 0 ? 'X' : 'O';
-    game.cells[result.cell] = symbol;
-    // send played move to all players in game
+    // send play again request to opponent
     let payLoad = {
-        "method": "play",
-        "gameId": result.gameId,
+        method: "play-again",
+        gameId: result.gameId,
         message: `Opponent wants to play again`,
     }
-    // game.players.forEach(player => {
-    //     let opponentId: string = guidToGames[result.gameId].players.find(player => player === result.clientId);
-    //     guidToClients[opponentId].connection.send(JSON.stringify(payLoad))
-    // })
-    // check for game win/draw
-    checkPlayerWin(symbol, game.cells, game, guidToClients);
+    let opponentId: any = game.players.find(player => player !== result.clientId);
+    guidToClients[opponentId].connection.send(JSON.stringify(payLoad))
 }
 
 server.listen(PORT, () => {
