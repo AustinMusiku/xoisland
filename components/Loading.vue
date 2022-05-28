@@ -84,9 +84,6 @@
 </script>
 
 <style lang="scss" scoped>
-    .hidden {
-        display: none;
-    }
     .loading{
         display: flex;
         flex-direction: column;
@@ -130,6 +127,11 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+
+        }
+
+        & > .hidden {
+            display: none;
         }
     }
 </style>
