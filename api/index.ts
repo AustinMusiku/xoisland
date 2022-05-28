@@ -55,7 +55,9 @@ wsServer.on('request', request => {
             case 'play':
                 handleMove(result)
                 break;
-        
+            case 'play-again':
+                handlePlayAgain(result)
+                break;
             default:
                 break;
         }
@@ -117,7 +119,7 @@ const handleJoin = (result: any) => {
                 guidToClients[result.clientId].connection.send(JSON.stringify(payLoad))
                 removeReadyGame(gameId)
             }
-        }, 2000)
+        }, 4000)
     }
 }
 
@@ -139,6 +141,25 @@ const handleMove = (result: any) => {
     game.players.forEach(player => {
         guidToClients[player].connection.send(JSON.stringify(payLoad))
     })
+    // check for game win/draw
+    checkPlayerWin(symbol, game.cells, game, guidToClients);
+}
+
+const handlePlayAgain = (result: any) => {
+    // fill game state
+    let game: Game = guidToGames[result.gameId];
+    let symbol: string = game.players.indexOf(result.clientId) === 0 ? 'X' : 'O';
+    game.cells[result.cell] = symbol;
+    // send played move to all players in game
+    let payLoad = {
+        "method": "play",
+        "gameId": result.gameId,
+        message: `Opponent wants to play again`,
+    }
+    // game.players.forEach(player => {
+    //     let opponentId: string = guidToGames[result.gameId].players.find(player => player === result.clientId);
+    //     guidToClients[opponentId].connection.send(JSON.stringify(payLoad))
+    // })
     // check for game win/draw
     checkPlayerWin(symbol, game.cells, game, guidToClients);
 }

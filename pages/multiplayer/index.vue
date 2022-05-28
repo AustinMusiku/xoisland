@@ -60,7 +60,7 @@ let joinAgain = () => {
 const fillField = (cellId: string) => handleMove(cellId);
 
 onMounted(() => {
-    let ws = new WebSocket('ws://localhost:4500');
+    let ws = new WebSocket('ws://192.168.8.187:4500');
 
     ws.onmessage = message => {
         const data = JSON.parse(message.data);

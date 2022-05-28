@@ -1,13 +1,14 @@
 <template>
     <div class="playGround">
-        <h1 class="heading2">{{ comment }}</h1>
+        <div class="playComments">
+            <h1 class="heading2">{{ comment }}</h1>
 
-        <button 
-            class="sub-heading button" 
-            @click="resetGame"
-            v-if="isOver">
-            Play Again
-        </button>
+            <button 
+                class="sub-heading button" 
+                v-if="isOver">
+                Play Again
+            </button>
+        </div>
         
         <div v-if="!isOver" class="playSpace">
             <div class="bar horizontal horizontal-1"></div>
@@ -35,6 +36,7 @@
     import { reactive, ref, computed, onMounted } from '@nuxtjs/composition-api'
     import { useGameplayStore } from '../stores/gameplay';
     import gsap from 'gsap';
+import { delay } from 'q';
 
     const store = useGameplayStore();
     let resetGame, endGame: any;
@@ -63,6 +65,7 @@
 
     onMounted(() => {
         let inputFieldElements = document.querySelectorAll<HTMLElement>('.input-field')
+        let playComments = document.querySelector<HTMLElement>('.playComments')
         let bars = gsap.utils.toArray('.bar');
         let animateLoadingGrid = gsap.timeline({
             onReverseComplete: () => {
@@ -90,16 +93,32 @@
             })
         
         endGame = () => {
-            let winningCells = props.winner.cells.map((c:string) => document.getElementById(`${c}`));
             inputFieldElements.forEach(field => field.setAttribute('disabled', 'disabled'));
-            // perform winners animation
-            animateWinningCombo
-                .to(winningCells, {
+            gsap
+                .to(playComments, {
                     duration: .5,
-                    scale: 1.2,
-                    transformOrigin: 'center center',
+                    opacity: 0,
+                    ease: 'power4.out'
+                })
+            // if there is a winner
+            if(props.winner.cells.length > 0){
+                let winningCells = props.winner.cells.map((c:string) => document.getElementById(`${c}`));
+                // perform winners animation
+                animateWinningCombo
+                    .to(winningCells, {
+                        duration: .5,
+                        scale: 1.2,
+                        transformOrigin: 'center center',
+                        ease: 'power4.out',
+                        stagger: .2
+                    })
+            }
+            gsap
+                .to(playComments, {
+                    duration: .5,
+                    opacity: 1,
                     ease: 'power4.out',
-                    stagger: .2
+                    delay: 1.6
                 })
             for(let key in store.getCells) store.getCells[key] = '';
             // perform grid outro animation
