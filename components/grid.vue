@@ -101,7 +101,7 @@ import { delay } from 'q';
                     ease: 'power4.out'
                 })
             // if there is a winner
-            if(props.winner.cells.length > 0){
+            if(props.winner.cells !== undefined) {
                 let winningCells = props.winner.cells.map((c:string) => document.getElementById(`${c}`));
                 // perform winners animation
                 animateWinningCombo

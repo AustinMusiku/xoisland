@@ -26,6 +26,7 @@ import { onMounted, reactive, useContext } from '@nuxtjs/composition-api';
 import { useGameplayStore } from '../../stores/gameplay';
 
 let store = useGameplayStore();
+store.$reset();
 
 interface State{
     clientId: string,
