@@ -36,10 +36,7 @@
     </div>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
-
-export default Vue.extend({})
+<script setup lang="ts">
 </script>
 
 <style lang="scss" scoped>

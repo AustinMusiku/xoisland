@@ -38,6 +38,23 @@ html{
 
 }
 
+.pop-up{
+    position: absolute;
+    display: grid;
+    padding: 1em;
+    place-items: center;
+    top: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: fit-content;
+
+    @media screen and(min-width: 62rem){
+        .content-wrapper{
+            gap: .5em;
+        }
+    }
+}
+
 @media(max-width: 61.9375rem){  // 991px 
     .content-wrapper{
         gap: 1em;

@@ -1,6 +1,7 @@
 <template>
     <div class="grid">
         <div class="grid__container">
+            <Prompt :prompt="prompt" v-if="prompt" />
             <div class="content-wrapper">
                 <!-- <div v-if="$nuxt.isOffline">You are offline</div> -->
 
@@ -25,25 +26,17 @@
 <script setup context lang="ts">
 import { onMounted, reactive, useContext } from '@nuxtjs/composition-api';
 import { useGameplayStore } from '../../stores/gameplay';
+import Prompt from '~/components/Prompt.vue';
 
 let store = useGameplayStore();
 store.$reset();
 
-interface State{
-    clientId: string,
-    gameId: string,
-    message: string,
-    comment: string,
-    isLoading: boolean,
-    isTwoPlayers: boolean,
-    winner: { player: string, cells: string[] },
-}
-
-let state: State= reactive({
+let state = reactive({
     clientId: '',
     gameId: '',
     message: '',
     comment: '',
+    prompt: '',
     
     isLoading: true,
     isTwoPlayers: false,
@@ -119,7 +112,7 @@ onMounted(() => {
                 break;
 
             case 'play-again':
-                state.message = data.message;
+                state.prompt = data.message;
                 break;
 
             case 'update':
