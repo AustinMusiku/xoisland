@@ -146,7 +146,6 @@ onMounted(() => {
     }
 
     handleJoinAgain = () => {
-        console.log('trying again')
         state.isLoading = true;
         state.isTwoPlayers = false;
 

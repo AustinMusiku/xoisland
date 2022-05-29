@@ -64,7 +64,8 @@ wsServer.on('request', request => {
 const handleJoin = (result: any) => {
     let readyGame = getReadyGame(readyGames);
     if(readyGame){
-        readyGame.players.push(result.clientId);
+        console.log('found ready game')
+        readyGame?.players.push(result.clientId);
 
         // send broadcast to all players in game
         const payLoad = {
@@ -87,7 +88,6 @@ const handleJoin = (result: any) => {
         };
         guidToGames[gameId] = game;
         addReadyGame(game, readyGames);
-
         // send the clientId and gameId to the client
         const payLoad = {
             method: "join-wait",
@@ -99,7 +99,7 @@ const handleJoin = (result: any) => {
         guidToClients[result.clientId].connection.send(JSON.stringify(payLoad))
         // After 10 seconds, send timeout message to client and remove game from queue
         setTimeout(() => {
-            removeReadyGame(gameId, readyGames)
+            readyGames = removeReadyGame(gameId, readyGames)
             const payLoad = {
                 method: "join-timeout",
                 message: `Failed to get another player`,

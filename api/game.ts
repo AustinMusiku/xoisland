@@ -1,13 +1,14 @@
 import { Cells, ClientsMap, Game, Winner } from "./types"
 
-export function addReadyGame (game: Game, readyGames: Game[]) {readyGames.push(game)};
-export function getReadyGame (readyGames: Game[]) {
+export const addReadyGame = (game: Game, readyGames: Game[]) => {readyGames.push(game)};
+export const getReadyGame = (readyGames: Game[]) => {
     if(readyGames.length < 1) return null;
     const game = readyGames.shift();
     return game;
 }
-export function removeReadyGame (gameId: string, readyGames: Game[]) {
+export const removeReadyGame = (gameId: string, readyGames: Game[]) => {
     readyGames = readyGames.filter(game => game.gameId !== gameId);
+    return readyGames
 }
 
 export function checkPlayerWin (x: string, state: Cells, game: Game, clients: ClientsMap) {
