@@ -5,6 +5,7 @@
 
             <button 
                 class="sub-heading button" 
+                @click="playAgain"
                 v-if="isOver">
                 Play Again
             </button>
@@ -36,7 +37,6 @@
     import { reactive, ref, computed, onMounted } from '@nuxtjs/composition-api'
     import { useGameplayStore } from '../stores/gameplay';
     import gsap from 'gsap';
-import { delay } from 'q';
 
     const store = useGameplayStore();
     let resetGame, endGame: any;
@@ -52,7 +52,8 @@ import { delay } from 'q';
     }>()
 
     let emits = defineEmits<{
-        (e: 'fillField', cellId: string) :void
+        (e: 'playAgain') :void,
+        (e: 'fillField', cellId: string) :void,
     }>()
 
 
@@ -61,6 +62,10 @@ import { delay } from 'q';
         if(store.getTurn !== store.getFlag) return;
 
         emits('fillField', cellId);
+    }
+
+    const playAgain = () => {
+        emits('playAgain');
     }
 
     onMounted(() => {

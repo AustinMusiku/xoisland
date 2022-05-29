@@ -1,7 +1,8 @@
 <template>
     <div class="grid">
         <div class="grid__container">
-            <Prompt :prompt="prompt" v-if="prompt" />
+            <Prompt :prompt="state.prompt" v-if="state.prompt" />
+            <PopUp :message="state.popUp" v-if="state.popUp"/>
             <div class="content-wrapper">
                 <!-- <div v-if="$nuxt.isOffline">You are offline</div> -->
 
@@ -17,6 +18,7 @@
                     :comment="state.comment"
                     :winner="state.winner"
                     @fillField="fillField"
+                    @playAgain="playAgain"
                 />
             </div>
         </div>
@@ -26,7 +28,7 @@
 <script setup context lang="ts">
 import { onMounted, reactive, useContext } from '@nuxtjs/composition-api';
 import { useGameplayStore } from '../../stores/gameplay';
-import Prompt from '~/components/Prompt.vue';
+import PopUp from '~/components/PopUp.vue';
 
 let store = useGameplayStore();
 store.$reset();
@@ -37,6 +39,7 @@ let state = reactive({
     message: '',
     comment: '',
     prompt: '',
+    popUp: '',
     
     isLoading: true,
     isTwoPlayers: false,
@@ -48,10 +51,10 @@ let state = reactive({
 
 
 let handleMove: any; 
+let handlePlayAgain: any; 
 let handleTryAgain: any; 
-let joinAgain = () => {
-    handleTryAgain()
-}
+let joinAgain = () => handleTryAgain()
+let playAgain = () => handlePlayAgain()
 const fillField = (cellId: string) => handleMove(cellId);
 
 onMounted(() => {
@@ -114,6 +117,9 @@ onMounted(() => {
             case 'play-again':
                 state.prompt = data.message;
                 break;
+            case 'play-again-fail':
+                state.popUp = data.message;
+                break;
 
             case 'update':
                 break;
@@ -127,6 +133,16 @@ onMounted(() => {
             "gameId": state.gameId,
             "cell": cellId
         }
+        ws.send(JSON.stringify(payLoad))
+    }
+
+    handlePlayAgain = () => {
+        let payLoad = {
+            method: 'play-again',
+            clientId: state.clientId,
+            gameId: state.gameId
+        }
+        // ask to play game again
         ws.send(JSON.stringify(payLoad))
     }
 

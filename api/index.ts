@@ -154,7 +154,15 @@ const handlePlayAgain = (result: any) => {
         message: `Opponent wants to play again`,
     }
     let opponentId: any = game.players.find(player => player !== result.clientId);
-    guidToClients[opponentId].connection.send(JSON.stringify(payLoad))
+    
+    guidToClients[opponentId].connection.send(JSON.stringify(payLoad), () => {
+        payLoad = {
+            method: "play-again-fail",
+            gameId: result.gameId,
+            message: `Opponent has left the game`,
+        }
+        guidToClients[result.clientId].connection.send(JSON.stringify(payLoad));
+    });
 }
 
 server.listen(PORT, () => {
