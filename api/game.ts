@@ -1,6 +1,16 @@
 import { Cells, ClientsMap, Game, Winner } from "./types"
 
-export const checkPlayerWin = (x: string, state: Cells, game: Game, clients: ClientsMap) => {
+export function addReadyGame (game: Game, readyGames: Game[]) {readyGames.push(game)};
+export function getReadyGame (readyGames: Game[]) {
+    if(readyGames.length < 1) return null;
+    const game = readyGames.shift();
+    return game;
+}
+export function removeReadyGame (gameId: string, readyGames: Game[]) {
+    readyGames = readyGames.filter(game => game.gameId !== gameId);
+}
+
+export function checkPlayerWin (x: string, state: Cells, game: Game, clients: ClientsMap) {
     let isWinner: boolean = false;
     let winner: Winner = { symbol: x, cells: [] };
 
@@ -29,7 +39,7 @@ export const checkPlayerWin = (x: string, state: Cells, game: Game, clients: Cli
     }
 }
 
-export const endGame = (game: Game, clients: ClientsMap, winner?: Winner) => {
+export function endGame (game: Game, clients: ClientsMap, winner?: Winner) {
     // send end game message to all players in game
     const payLoad = {
         "method": "end",

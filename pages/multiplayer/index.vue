@@ -26,9 +26,8 @@
 </template>
 
 <script setup context lang="ts">
-import { onMounted, reactive, useContext } from '@nuxtjs/composition-api';
+import { onMounted, reactive } from '@nuxtjs/composition-api';
 import { useGameplayStore } from '../../stores/gameplay';
-import PopUp from '~/components/PopUp.vue';
 
 let store = useGameplayStore();
 store.$reset();
@@ -52,13 +51,13 @@ let state = reactive({
 
 let handleMove: any; 
 let handlePlayAgain: any; 
-let handleTryAgain: any; 
-let joinAgain = () => handleTryAgain()
+let handleJoinAgain: any; 
+let joinAgain = () => handleJoinAgain()
 let playAgain = () => handlePlayAgain()
 const fillField = (cellId: string) => handleMove(cellId);
 
 onMounted(() => {
-    let ws = new WebSocket('ws://192.168.8.187:4500');
+    let ws = new WebSocket('ws://192.168.1.80:4500');
 
     ws.onmessage = message => {
         const data = JSON.parse(message.data);
@@ -146,7 +145,8 @@ onMounted(() => {
         ws.send(JSON.stringify(payLoad))
     }
 
-    handleTryAgain = () => {
+    handleJoinAgain = () => {
+        console.log('trying again')
         state.isLoading = true;
         state.isTwoPlayers = false;
 

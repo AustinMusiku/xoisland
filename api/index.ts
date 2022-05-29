@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 
 import { ClientsMap, Game, GamesMap } from './types';
 import { generateUUID } from './utils';
-import { checkPlayerWin, endGame } from './game';
+import { checkPlayerWin, getReadyGame, addReadyGame, removeReadyGame } from './game';
 
 dotenv.config();
 
@@ -24,16 +24,6 @@ const guidToGames: GamesMap = {};
 // ------------------------------------------------------------
 // place all games that have waiting players in a queue
 let readyGames: Game[] = []
-// queue methods
-const addReadyGame = (game: Game) => readyGames.push(game);
-const getReadyGame = () => {
-    if(readyGames.length < 1) return null;
-    const game = readyGames.shift();
-    return game;
-}
-const removeReadyGame = (gameId: string) => {
-    readyGames = readyGames.filter(game => game.gameId !== gameId);
-}
 
 // ------------------------------------------------------------
 wsServer.on('request', request => {
@@ -72,7 +62,7 @@ wsServer.on('request', request => {
 // ------------------------------------------------------------
 // server methods
 const handleJoin = (result: any) => {
-    let readyGame = getReadyGame();
+    let readyGame = getReadyGame(readyGames);
     if(readyGame){
         readyGame.players.push(result.clientId);
 
@@ -96,7 +86,7 @@ const handleJoin = (result: any) => {
             cells: {c1: '',c2: '',c3: '',c4: '',c5: '',c6: '',c7: '',c8: '',c9: ''}
         };
         guidToGames[gameId] = game;
-        addReadyGame(game);
+        addReadyGame(game, readyGames);
 
         // send the clientId and gameId to the client
         const payLoad = {
@@ -109,23 +99,22 @@ const handleJoin = (result: any) => {
         guidToClients[result.clientId].connection.send(JSON.stringify(payLoad))
         // After 10 seconds, send timeout message to client and remove game from queue
         setTimeout(() => {
+            removeReadyGame(gameId, readyGames)
             const payLoad = {
                 method: "join-timeout",
                 message: `Failed to get another player`,
                 clientId: result.clientId,
                 gameId: gameId,
             }
-            if(guidToGames[gameId].players.length < 2){
-                guidToClients[result.clientId].connection.send(JSON.stringify(payLoad))
-                removeReadyGame(gameId)
-            }
+            guidToClients[result.clientId].connection.send(JSON.stringify(payLoad))
         }, 4000)
     }
 }
 
 const handleMove = (result: any) => {
     // fill game state
-    let game: Game = guidToGames[result.gameId];
+    let game = guidToGames[result.gameId];
+    if(game === null) return;
     let symbol: string = game.players.indexOf(result.clientId) === 0 ? 'X' : 'O';
     game.cells[result.cell] = symbol;
     // send played move to all players in game
@@ -146,16 +135,18 @@ const handleMove = (result: any) => {
 }
 
 const handlePlayAgain = (result: any) => {
-    let game: Game = guidToGames[result.gameId];
+    let game = guidToGames[result.gameId];
     // send play again request to opponent
     let payLoad = {
         method: "play-again",
         gameId: result.gameId,
         message: `Opponent wants to play again`,
     }
-    let opponentId: any = game.players.find(player => player !== result.clientId);
-    
+    let opponentId: any = game?.players.find(player => player !== result.clientId);
+
     guidToClients[opponentId].connection.send(JSON.stringify(payLoad), () => {
+        // if opponent is not found, remove game from map and send error message to client
+        // guidToGames[result.gameId] = null;
         payLoad = {
             method: "play-again-fail",
             gameId: result.gameId,

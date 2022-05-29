@@ -23,6 +23,6 @@ export interface Game{
 }
 
 export interface GamesMap{
-    [key: string]: Game
+    [key: string]: Game | null
 }
 
