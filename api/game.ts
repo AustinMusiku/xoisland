@@ -1,5 +1,20 @@
 import { Cells, ClientsMap, Game, Winner } from './types'
 
+export const flushGameState = (game: Game) => {
+	game.cells = {
+		c1: '',
+		c2: '',
+		c3: '',
+		c4: '',
+		c5: '',
+		c6: '',
+		c7: '',
+		c8: '',
+		c9: '',
+	}
+	return game
+}
+
 export const addReadyGame = (game: Game, readyGames: Game[]) => {
 	readyGames.push(game)
 }

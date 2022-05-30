@@ -1,9 +1,10 @@
 <template>
 	<div class="grid">
 		<div class="grid__container">
-			<Prompt
+			<PromptPopUp
 				v-if="state.prompt"
 				:prompt="state.prompt"
+				@accept="prompt"
 			/>
 			<PopUp
 				v-if="state.popUp"
@@ -32,11 +33,12 @@
 </template>
 
 <script setup context lang="ts">
-import { onMounted, reactive } from '@nuxtjs/composition-api'
+import { onMounted, reactive, useContext } from '@nuxtjs/composition-api'
 import { useGameplayStore } from '../../stores/gameplay'
 
 const store = useGameplayStore()
 store.$reset()
+const { redirect } = useContext()
 
 const state = reactive({
 	clientId: '',
@@ -57,12 +59,14 @@ const state = reactive({
 let handleMove: any
 let handlePlayAgain: any
 let handleJoinAgain: any
+let handlePrompt: any
 const joinAgain = () => handleJoinAgain()
 const playAgain = () => handlePlayAgain()
+const prompt = (value: boolean) => handlePrompt(value)
 const fillField = (cellId: string) => handleMove(cellId)
 
 onMounted(() => {
-	const ws = new WebSocket('ws://192.168.1.80:4500')
+	const ws = new WebSocket('ws://192.168.1.19:4500')
 
 	ws.onmessage = (message) => {
 		const data = JSON.parse(message.data)
@@ -128,8 +132,34 @@ onMounted(() => {
 				state.prompt = data.message
 				break
 			}
-			case 'play-again-fail': {
+			case 'rematch': {
 				state.popUp = data.message
+				if (data.value) {
+					store.$patch({
+						isPlaying: true,
+						isGameOver: false,
+						flag: 1,
+						symbol: 'X',
+						cells: {
+							c1: '',
+							c2: '',
+							c3: '',
+							c4: '',
+							c5: '',
+							c6: '',
+							c7: '',
+							c8: '',
+							c9: '',
+						},
+					})
+					state.message = ''
+					state.winner = { player: '', cells: [] }
+					state.isLoading = false
+					state.comment = 'Player X turn'
+				} else {
+					state.popUp = data.message
+					setTimeout(() => redirect('/'), 2000)
+				}
 				break
 			}
 		}
@@ -166,6 +196,17 @@ onMounted(() => {
 				clientId: state.clientId,
 			})
 		)
+	}
+
+	handlePrompt = (value: boolean) => {
+		const payLoad = {
+			method: 'play-again-prompt',
+			clientId: state.clientId,
+			gameId: state.gameId,
+			isPlayAgain: value,
+		}
+		// create/join game again
+		ws.send(JSON.stringify(payLoad))
 	}
 })
 </script>

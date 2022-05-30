@@ -96,6 +96,7 @@ import { ref, computed, onMounted } from '@nuxtjs/composition-api'
 import { useGameplayStore } from '../stores/gameplay'
 
 const store = useGameplayStore()
+let resetGame: any
 let endGame: any
 const cells = computed(() => store.getCells)
 const isOver = ref<boolean>(false)
@@ -114,9 +115,15 @@ const emits = defineEmits<{
 }>()
 
 const handleClick = (cellId: string) => {
-	if (store.getCells[cellId] !== '') return
-	if (store.getTurn !== store.getFlag) return
-
+	if (store.getCells[cellId] !== '') {
+		console.log('store cell not empty')
+		return
+	}
+	if (store.getTurn !== store.getFlag) {
+		console.log('not your turn')
+		return
+	}
+	console.log('done!')
 	emits('fillField', cellId)
 }
 
@@ -188,17 +195,15 @@ onMounted(() => {
 		animateLoadingGrid.reverse()
 	}
 
-	// resetGame = () => {
-	//     // state.isPlaying = true;
-	//     isOver.value = false;
-	//     // state.comment = 'Player X Turn';
-	//     animateLoadingGrid.play();
-	//     inputFieldElements.forEach(field => field.removeAttribute('disabled'));
-	//     store.$reset();
-	// }
+	resetGame = () => {
+		isOver.value = false
+		animateLoadingGrid.play()
+		inputFieldElements.forEach((field) => field.removeAttribute('disabled'))
+	}
 
 	store.$subscribe(() => {
 		if (store.getIsGameOver) endGame()
+		if (!store.getIsGameOver) resetGame()
 	})
 })
 </script>

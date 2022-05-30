@@ -5,6 +5,7 @@ import { config } from 'dotenv'
 import { ClientsMap, Game, GamesMap } from './types'
 import { generateUUID } from './utils'
 import {
+	flushGameState,
 	checkPlayerWin,
 	getReadyGame,
 	addReadyGame,
@@ -52,6 +53,9 @@ wsServer.on('request', (request) => {
 				break
 			case 'play-again':
 				handlePlayAgain(result)
+				break
+			case 'play-again-prompt':
+				handlePlayAgainPrompt(result)
 				break
 			default:
 				break
@@ -168,16 +172,50 @@ const handlePlayAgain = (result: any) => {
 		(player) => player !== result.clientId
 	)
 
-	guidToClients[opponentId].connection.send(JSON.stringify(payLoad), () => {
-		// if opponent is not found, remove game from map and send error message to client
-		// guidToGames[result.gameId] = null;
-		payLoad = {
-			method: 'play-again-fail',
-			gameId: result.gameId,
-			message: `Opponent has left the game`,
+	guidToClients[opponentId].connection.send(
+		JSON.stringify(payLoad),
+		(err) => {
+			// if opponent is not found, remove game from map and send error message to client
+			if (err) {
+				guidToGames[result.gameId] = null
+				payLoad = {
+					method: 'play-again-fail',
+					gameId: result.gameId,
+					message: `Opponent has left the game, you will be redirected back home`,
+				}
+				guidToClients[result.clientId].connection.send(
+					JSON.stringify(payLoad)
+				)
+			}
 		}
-		guidToClients[result.clientId].connection.send(JSON.stringify(payLoad))
-	})
+	)
+}
+const handlePlayAgainPrompt = (result: any) => {
+	let game = guidToGames[result.gameId]
+	const opponentId: any = game?.players.find(
+		(player) => player !== result.clientId
+	)
+	const isPlayAgain: boolean = result.isPlayAgain
+	if (!isPlayAgain) {
+		// send play again request to opponent
+		const payLoad = {
+			method: 'rematch',
+			value: false,
+			message: `Opponent declined to play again`,
+		}
+		guidToClients[opponentId].connection.send(JSON.stringify(payLoad))
+	} else {
+		// flush game state
+		if (game) game = flushGameState(game)
+		const payLoad = {
+			method: 'rematch',
+			value: true,
+			message: `Opponent accepted to play again`,
+		}
+		game?.players.forEach((player) => {
+			guidToClients[player].connection.send(JSON.stringify(payLoad))
+		})
+	}
 }
 
 httpServer.listen(PORT)
