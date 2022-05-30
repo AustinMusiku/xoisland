@@ -1,10 +1,16 @@
 <template>
 	<div class="grid">
 		<div class="grid__container">
-			<Prompt v-if="state.prompt" :prompt="state.prompt" />
-			<PopUp v-if="state.popUp" :message="state.popUp" />
+			<Prompt
+				v-if="state.prompt"
+				:prompt="state.prompt"
+			/>
+			<PopUp
+				v-if="state.popUp"
+				:message="state.popUp"
+			/>
 			<div class="content-wrapper">
-				<div v-if="$nuxt.isOffline">You are offline</div>
+				<!-- <div v-if="$nuxt.isOffline">You are offline</div> -->
 
 				<Loading
 					v-if="!state.isTwoPlayers"
@@ -13,7 +19,7 @@
 					@joinAgain="joinAgain"
 				/>
 
-				<Grid
+				<GridBox
 					v-if="store.getIsPlaying"
 					:comment="state.comment"
 					:winner="state.winner"
