@@ -2,24 +2,15 @@
     <div class="grid">
         <div class="grid__container">
             <Prompt :prompt="state.prompt" v-if="state.prompt" />
-            <PopUp :message="state.popUp" v-if="state.popUp"/>
+            <PopUp :message="state.popUp" v-if="state.popUp" />
             <div class="content-wrapper">
                 <!-- <div v-if="$nuxt.isOffline">You are offline</div> -->
 
-                <Loading 
-                    v-if="!state.isTwoPlayers"
-                    :isLoading="state.isLoading"
-                    :message="state.message"
-                    @joinAgain="joinAgain"
-                />
+                <Loading v-if="!state.isTwoPlayers" :isLoading="state.isLoading" :message="state.message"
+                    @joinAgain="joinAgain" />
 
-                <Grid
-                    v-if="store.getIsPlaying"
-                    :comment="state.comment"
-                    :winner="state.winner"
-                    @fillField="fillField"
-                    @playAgain="playAgain"
-                />
+                <Grid v-if="store.getIsPlaying" :comment="state.comment" :winner="state.winner" @fillField="fillField"
+                    @playAgain="playAgain" />
             </div>
         </div>
     </div>
@@ -39,7 +30,7 @@ let state = reactive({
     comment: '',
     prompt: '',
     popUp: '',
-    
+
     isLoading: true,
     isTwoPlayers: false,
     winner: {
@@ -49,9 +40,9 @@ let state = reactive({
 })
 
 
-let handleMove: any; 
-let handlePlayAgain: any; 
-let handleJoinAgain: any; 
+let handleMove: any;
+let handlePlayAgain: any;
+let handleJoinAgain: any;
 let joinAgain = () => handleJoinAgain()
 let playAgain = () => handlePlayAgain()
 const fillField = (cellId: string) => handleMove(cellId);
@@ -62,7 +53,7 @@ onMounted(() => {
     ws.onmessage = message => {
         const data = JSON.parse(message.data);
 
-        switch(data.method){
+        switch (data.method) {
             case 'connect':
                 state.clientId = data.clientId;
 
@@ -76,14 +67,16 @@ onMounted(() => {
             case 'join':
                 state.isLoading = false;
                 state.isTwoPlayers = true;
-                if(state.gameId === '') state.gameId = data.gameId;
-                if(store.getTurn == 0) store.setTurn(2);
+                if (state.gameId === '') state.gameId = data.gameId;
+                console.log(`final: ${state.gameId}`)
+                if (store.getTurn == 0) store.setTurn(2);
                 store.toggleIsPlaying();
                 state.comment = 'Player X turn'
                 break;
 
             case 'join-wait':
                 state.gameId = data.gameId;
+                console.log(`initial: ${state.gameId}`)
                 store.setTurn(data.turn);
                 state.message = 'Waiting for another player...';
                 break;
@@ -98,9 +91,9 @@ onMounted(() => {
                 let cellPlayed = data.move.cell;
                 let cellSymbol = data.move.symbol
 
-                store.getFlag === 1 ? state.comment = "Player O Turn": state.comment = "Player X Turn";
+                store.getFlag === 1 ? state.comment = "Player O Turn" : state.comment = "Player X Turn";
                 cellSymbol === 'X' ? store.incrementFlag() : store.decrementFlag();
-                
+
                 store.getCells[cellPlayed] = cellSymbol;
                 break;
 
@@ -125,7 +118,7 @@ onMounted(() => {
         }
     }
 
-    handleMove = (cellId: string) :void => {
+    handleMove = (cellId: string): void => {
         let payLoad = {
             "method": "play",
             "clientId": state.clientId,
@@ -160,9 +153,9 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
-    .content-wrapper{
-        width: 100%;
-        text-align: center;
-        justify-content: center;
-    }
+.content-wrapper {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+}
 </style>

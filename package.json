@@ -6,7 +6,8 @@
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
-    "generate": "nuxt generate"
+    "generate": "nuxt generate",
+    "precommit": "lint-staged" 
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.13.6",
@@ -28,7 +29,18 @@
     "@types/websocket": "^1.0.5",
     "@vue/runtime-dom": "^3.2.33",
     "dotenv": "^16.0.1",
+    "eslint": "^8.16.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-nuxt": "^3.2.0",
+    "eslint-plugin-vue": "^9.0.1",
+    "husky": "^8.0.1",
+    "lint-staged": "^12.4.3",
     "sass": "^1.51.0",
     "sass-loader": "^10.2.1"
+  },
+  "husky": {
+    "hooks": {
+      "precommit": "npm precommit"
+    }
   }
 }
