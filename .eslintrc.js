@@ -6,19 +6,25 @@ module.exports = {
 	},
 	extends: [
 		'@nuxtjs/eslint-config-typescript',
-		// 'plugin:nuxt/recommended',
+		'plugin:nuxt/recommended',
 		'plugin:vue/recommended',
 		'prettier',
 	],
 	plugins: [],
 	// add your custom rules here
 	rules: {
-		'vue/first-attribute-linebreak': [
+		'vue/multi-word-component-names': [
 			'error',
 			{
-				singleline: 'below',
-				multiline: 'below',
+				ignores: ['index'],
 			},
 		],
+		// 'vue/first-attribute-linebreak': [
+		// 	'error',
+		// 	{
+		// 		singleline: 'ignore',
+		// 		multiline: 'below',
+		// 	},
+		// ],
 	},
 }

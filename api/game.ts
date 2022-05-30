@@ -26,25 +26,25 @@ export function checkPlayerWin(
 		isWinner = true
 		winner = {
 			symbol: x,
-			cells: cells,
+			cells,
 		}
 	}
 	// check all possible win conditions
-	if (state.c1 == x && state.c2 == x && state.c3 == x)
+	if (state.c1 === x && state.c2 === x && state.c3 === x)
 		setWinner(x, ['c1', 'c2', 'c3'])
-	if (state.c4 == x && state.c5 == x && state.c6 == x)
+	if (state.c4 === x && state.c5 === x && state.c6 === x)
 		setWinner(x, ['c4', 'c5', 'c6'])
-	if (state.c7 == x && state.c8 == x && state.c9 == x)
+	if (state.c7 === x && state.c8 === x && state.c9 === x)
 		setWinner(x, ['c7', 'c8', 'c9'])
-	if (state.c1 == x && state.c4 == x && state.c7 == x)
+	if (state.c1 === x && state.c4 === x && state.c7 === x)
 		setWinner(x, ['c1', 'c4', 'c7'])
-	if (state.c2 == x && state.c5 == x && state.c8 == x)
+	if (state.c2 === x && state.c5 === x && state.c8 === x)
 		setWinner(x, ['c2', 'c5', 'c8'])
-	if (state.c3 == x && state.c6 == x && state.c9 == x)
+	if (state.c3 === x && state.c6 === x && state.c9 === x)
 		setWinner(x, ['c3', 'c6', 'c9'])
-	if (state.c1 == x && state.c5 == x && state.c9 == x)
+	if (state.c1 === x && state.c5 === x && state.c9 === x)
 		setWinner(x, ['c1', 'c5', 'c9'])
-	if (state.c3 == x && state.c5 == x && state.c7 == x)
+	if (state.c3 === x && state.c5 === x && state.c7 === x)
 		setWinner(x, ['c3', 'c5', 'c7'])
 
 	// if there is a winner, call the end game function

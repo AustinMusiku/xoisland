@@ -1,161 +1,173 @@
 <template>
-    <div class="grid">
-        <div class="grid__container">
-            <Prompt :prompt="state.prompt" v-if="state.prompt" />
-            <PopUp :message="state.popUp" v-if="state.popUp" />
-            <div class="content-wrapper">
-                <!-- <div v-if="$nuxt.isOffline">You are offline</div> -->
+	<div class="grid">
+		<div class="grid__container">
+			<Prompt v-if="state.prompt" :prompt="state.prompt" />
+			<PopUp v-if="state.popUp" :message="state.popUp" />
+			<div class="content-wrapper">
+				<div v-if="$nuxt.isOffline">You are offline</div>
 
-                <Loading v-if="!state.isTwoPlayers" :isLoading="state.isLoading" :message="state.message"
-                    @joinAgain="joinAgain" />
+				<Loading
+					v-if="!state.isTwoPlayers"
+					:is-loading="state.isLoading"
+					:message="state.message"
+					@joinAgain="joinAgain"
+				/>
 
-                <Grid v-if="store.getIsPlaying" :comment="state.comment" :winner="state.winner" @fillField="fillField"
-                    @playAgain="playAgain" />
-            </div>
-        </div>
-    </div>
+				<Grid
+					v-if="store.getIsPlaying"
+					:comment="state.comment"
+					:winner="state.winner"
+					@fillField="fillField"
+					@playAgain="playAgain"
+				/>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script setup context lang="ts">
-import { onMounted, reactive } from '@nuxtjs/composition-api';
-import { useGameplayStore } from '../../stores/gameplay';
+import { onMounted, reactive } from '@nuxtjs/composition-api'
+import { useGameplayStore } from '../../stores/gameplay'
 
-let store = useGameplayStore();
-store.$reset();
+const store = useGameplayStore()
+store.$reset()
 
-let state = reactive({
-    clientId: '',
-    gameId: '',
-    message: '',
-    comment: '',
-    prompt: '',
-    popUp: '',
+const state = reactive({
+	clientId: '',
+	gameId: '',
+	message: '',
+	comment: '',
+	prompt: '',
+	popUp: '',
 
-    isLoading: true,
-    isTwoPlayers: false,
-    winner: {
-        player: '',
-        cells: []
-    },
+	isLoading: true,
+	isTwoPlayers: false,
+	winner: {
+		player: '',
+		cells: [],
+	},
 })
 
-
-let handleMove: any;
-let handlePlayAgain: any;
-let handleJoinAgain: any;
-let joinAgain = () => handleJoinAgain()
-let playAgain = () => handlePlayAgain()
-const fillField = (cellId: string) => handleMove(cellId);
+let handleMove: any
+let handlePlayAgain: any
+let handleJoinAgain: any
+const joinAgain = () => handleJoinAgain()
+const playAgain = () => handlePlayAgain()
+const fillField = (cellId: string) => handleMove(cellId)
 
 onMounted(() => {
-    let ws = new WebSocket('ws://192.168.1.80:4500');
+	const ws = new WebSocket('ws://192.168.1.80:4500')
 
-    ws.onmessage = message => {
-        const data = JSON.parse(message.data);
+	ws.onmessage = (message) => {
+		const data = JSON.parse(message.data)
 
-        switch (data.method) {
-            case 'connect':
-                state.clientId = data.clientId;
+		switch (data.method) {
+			case 'connect': {
+				state.clientId = data.clientId
 
-                // create/join game
-                ws.send(JSON.stringify({
-                    method: 'join',
-                    clientId: state.clientId
-                }))
-                break;
+				// create/join game
+				ws.send(
+					JSON.stringify({
+						method: 'join',
+						clientId: state.clientId,
+					})
+				)
+				break
+			}
+			case 'join': {
+				state.isLoading = false
+				state.isTwoPlayers = true
+				if (state.gameId === '') state.gameId = data.gameId
+				if (store.getTurn === 0) store.setTurn(2)
+				store.toggleIsPlaying()
+				state.comment = 'Player X turn'
+				break
+			}
+			case 'join-wait': {
+				state.gameId = data.gameId
+				store.setTurn(data.turn)
+				state.message = 'Waiting for another player...'
+				break
+			}
+			case 'join-timeout': {
+				state.isLoading = false
+				state.message = data.message
+				state.gameId = ''
+				break
+			}
+			case 'play': {
+				const cellPlayed = data.move.cell
+				const cellSymbol = data.move.symbol
 
-            case 'join':
-                state.isLoading = false;
-                state.isTwoPlayers = true;
-                if (state.gameId === '') state.gameId = data.gameId;
-                console.log(`final: ${state.gameId}`)
-                if (store.getTurn == 0) store.setTurn(2);
-                store.toggleIsPlaying();
-                state.comment = 'Player X turn'
-                break;
+				store.getFlag === 1
+					? (state.comment = 'Player O Turn')
+					: (state.comment = 'Player X Turn')
+				cellSymbol === 'X'
+					? store.incrementFlag()
+					: store.decrementFlag()
 
-            case 'join-wait':
-                state.gameId = data.gameId;
-                console.log(`initial: ${state.gameId}`)
-                store.setTurn(data.turn);
-                state.message = 'Waiting for another player...';
-                break;
+				store.getCells[cellPlayed] = cellSymbol
+				break
+			}
+			case 'end': {
+				state.comment = data.message
+				state.winner = {
+					player: data.symbol,
+					cells: data.cells,
+				}
+				store.toggleIsGameOver()
+				break
+			}
+			case 'play-again': {
+				state.prompt = data.message
+				break
+			}
+			case 'play-again-fail': {
+				state.popUp = data.message
+				break
+			}
+		}
+	}
 
-            case 'join-timeout':
-                state.isLoading = false;
-                state.message = data.message;
-                state.gameId = '';
-                break;
+	handleMove = (cellId: string): void => {
+		const payLoad = {
+			method: 'play',
+			clientId: state.clientId,
+			gameId: state.gameId,
+			cell: cellId,
+		}
+		ws.send(JSON.stringify(payLoad))
+	}
 
-            case 'play':
-                let cellPlayed = data.move.cell;
-                let cellSymbol = data.move.symbol
+	handlePlayAgain = () => {
+		const payLoad = {
+			method: 'play-again',
+			clientId: state.clientId,
+			gameId: state.gameId,
+		}
+		// ask to play game again
+		ws.send(JSON.stringify(payLoad))
+	}
 
-                store.getFlag === 1 ? state.comment = "Player O Turn" : state.comment = "Player X Turn";
-                cellSymbol === 'X' ? store.incrementFlag() : store.decrementFlag();
+	handleJoinAgain = () => {
+		state.isLoading = true
+		state.isTwoPlayers = false
 
-                store.getCells[cellPlayed] = cellSymbol;
-                break;
-
-            case 'end':
-                state.comment = data.message;
-                state.winner = {
-                    player: data.symbol,
-                    cells: data.cells
-                };
-                store.toggleIsGameOver();
-                break;
-
-            case 'play-again':
-                state.prompt = data.message;
-                break;
-            case 'play-again-fail':
-                state.popUp = data.message;
-                break;
-
-            case 'update':
-                break;
-        }
-    }
-
-    handleMove = (cellId: string): void => {
-        let payLoad = {
-            "method": "play",
-            "clientId": state.clientId,
-            "gameId": state.gameId,
-            "cell": cellId
-        }
-        ws.send(JSON.stringify(payLoad))
-    }
-
-    handlePlayAgain = () => {
-        let payLoad = {
-            method: 'play-again',
-            clientId: state.clientId,
-            gameId: state.gameId
-        }
-        // ask to play game again
-        ws.send(JSON.stringify(payLoad))
-    }
-
-    handleJoinAgain = () => {
-        state.isLoading = true;
-        state.isTwoPlayers = false;
-
-        // create/join game again
-        ws.send(JSON.stringify({
-            method: 'join',
-            clientId: state.clientId
-        }))
-    }
+		// create/join game again
+		ws.send(
+			JSON.stringify({
+				method: 'join',
+				clientId: state.clientId,
+			})
+		)
+	}
 })
-
 </script>
 
 <style lang="scss" scoped>
 .content-wrapper {
-    width: 100%;
-    text-align: center;
-    justify-content: center;
+	width: 100%;
+	text-align: center;
+	justify-content: center;
 }
 </style>
