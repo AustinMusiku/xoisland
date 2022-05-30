@@ -74,7 +74,7 @@ onMounted(() => {
 	const WEBSOCKET_URL = 'ws://localhost:4500'
 	const ws = isDev
 		? new WebSocket(WEBSOCKET_URL)
-		: new WebSocket('ws://tictactoeisland.onrender.com:4500')
+		: new WebSocket('ws://tictactoeisland.herokuapp.com:4500')
 
 	ws.onmessage = (message) => {
 		const data = JSON.parse(message.data)
