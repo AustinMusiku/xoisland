@@ -1,33 +1,32 @@
 <template>
-    <div class="pop-up pop-up--message">
-        <div class="content-wrapper">
-            <div class="pop-up__message">
-                {{ message }}
-            </div>
-        </div>
-    </div>
+	<div class="pop-up pop-up--message">
+		<div class="content-wrapper">
+			<div class="pop-up__message">
+				{{ message }}
+			</div>
+		</div>
+	</div>
 </template>
 
 <script setup lang="ts">
-import { onMounted } from '@nuxtjs/composition-api';
-
+import { onMounted } from '@nuxtjs/composition-api'
 
 defineProps<{
-    message: string
+	message: string
+}>()
+const emits = defineEmits<{
+	(el: 'close'): void
 }>()
 
 onMounted(() => {
-    setTimeout(() => {
-        document.querySelector('.pop-up--message')?.classList.add('none');
-    }, 3000)
+	setTimeout(() => emits('close'), 2000)
 })
-
 </script>
 
 <style lang="scss">
-    .pop-up--message{
-        &.none{
-            display: none;
-        }
-    }
+.pop-up--message {
+	&.none {
+		display: none;
+	}
+}
 </style>

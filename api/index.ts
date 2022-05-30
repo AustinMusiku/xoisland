@@ -210,6 +210,7 @@ const handlePlayAgainPrompt = (result: any) => {
 		const payLoad = {
 			method: 'rematch',
 			value: true,
+			clientId: result.clientId,
 			message: `Opponent accepted to play again`,
 		}
 		game?.players.forEach((player) => {

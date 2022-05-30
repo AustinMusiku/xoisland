@@ -115,15 +115,8 @@ const emits = defineEmits<{
 }>()
 
 const handleClick = (cellId: string) => {
-	if (store.getCells[cellId] !== '') {
-		console.log('store cell not empty')
-		return
-	}
-	if (store.getTurn !== store.getFlag) {
-		console.log('not your turn')
-		return
-	}
-	console.log('done!')
+	if (store.getCells[cellId] !== '') return
+	if (store.getTurn !== store.getFlag) return
 	emits('fillField', cellId)
 }
 

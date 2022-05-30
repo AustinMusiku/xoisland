@@ -9,6 +9,7 @@
 			<PopUp
 				v-if="state.popUp"
 				:message="state.popUp"
+				@close="closePopUp"
 			/>
 			<div class="content-wrapper">
 				<!-- <div v-if="$nuxt.isOffline">You are offline</div> -->
@@ -64,6 +65,10 @@ const joinAgain = () => handleJoinAgain()
 const playAgain = () => handlePlayAgain()
 const prompt = (value: boolean) => handlePrompt(value)
 const fillField = (cellId: string) => handleMove(cellId)
+
+function closePopUp() {
+	state.popUp = ''
+}
 
 onMounted(() => {
 	const ws = new WebSocket('ws://192.168.1.19:4500')
@@ -133,7 +138,9 @@ onMounted(() => {
 				break
 			}
 			case 'rematch': {
-				state.popUp = data.message
+				// only show popup on opponents side
+				if (state.clientId !== data.clientId) state.popUp = data.message
+				// if opponent accepts rematch
 				if (data.value) {
 					store.$patch({
 						isPlaying: true,
@@ -157,6 +164,7 @@ onMounted(() => {
 					state.isLoading = false
 					state.comment = 'Player X turn'
 				} else {
+					// show popup and redirect user back to home
 					state.popUp = data.message
 					setTimeout(() => redirect('/'), 2000)
 				}
@@ -199,6 +207,8 @@ onMounted(() => {
 	}
 
 	handlePrompt = (value: boolean) => {
+		state.prompt = ''
+		if (!value) redirect('/')
 		const payLoad = {
 			method: 'play-again-prompt',
 			clientId: state.clientId,
