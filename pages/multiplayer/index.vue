@@ -39,7 +39,7 @@ import { useGameplayStore } from '../../stores/gameplay'
 
 const store = useGameplayStore()
 store.$reset()
-const { redirect } = useContext()
+const { redirect, isDev } = useContext()
 
 const state = reactive({
 	clientId: '',
@@ -71,7 +71,8 @@ function closePopUp() {
 }
 
 onMounted(() => {
-	const ws = new WebSocket('ws://192.168.1.19:4500')
+    const WEBSOCKET_URL = 'ws://localhost:4500'
+	const ws = isDev ? new WebSocket(WEBSOCKET_URL) : new WebSocket('ws://tictactoeisland.onrender.com:4500');
 
 	ws.onmessage = (message) => {
 		const data = JSON.parse(message.data)
