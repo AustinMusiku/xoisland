@@ -1,6 +1,26 @@
 import { Cells, ClientsMap, Game, Winner } from './types'
 
-export const flushGameState = (game: Game) => {
+export const createGame = (gameId: string, players?: string[]): Game => {
+	return {
+		gameId,
+		players: players || [],
+		gameOver: false,
+		cells: {
+			c1: '',
+			c2: '',
+			c3: '',
+			c4: '',
+			c5: '',
+			c6: '',
+			c7: '',
+			c8: '',
+			c9: '',
+		},
+	}
+}
+
+export const flushGameState = (game: Game): Game => {
+	// for(const key in game.cells) game.cells[key] = '';
 	game.cells = {
 		c1: '',
 		c2: '',
@@ -18,12 +38,14 @@ export const flushGameState = (game: Game) => {
 export const addReadyGame = (game: Game, readyGames: Game[]) => {
 	readyGames.push(game)
 }
+
 export const getReadyGame = (readyGames: Game[]) => {
 	if (readyGames.length < 1) return null
 	const game = readyGames.shift()
 	return game
 }
-export const removeReadyGame = (gameId: string, readyGames: Game[]) => {
+
+export const removeReadyGame = (gameId: string, readyGames: Game[]): Game[] => {
 	readyGames = readyGames.filter((game) => game.gameId !== gameId)
 	return readyGames
 }
@@ -72,7 +94,7 @@ export function checkPlayerWin(
 
 export function endGame(game: Game, clients: ClientsMap, winner?: Winner) {
 	// send end game message to all players in game
-	const payLoad = {
+	const payload = {
 		method: 'end',
 		message:
 			winner === null ? 'match draw' : `Player ${winner?.symbol} won`,
@@ -81,6 +103,6 @@ export function endGame(game: Game, clients: ClientsMap, winner?: Winner) {
 		cells: winner?.cells,
 	}
 	game.players.forEach((player) => {
-		clients[player].connection.send(JSON.stringify(payLoad))
+		clients[player].connection.send(JSON.stringify(payload))
 	})
 }
