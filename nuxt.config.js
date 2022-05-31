@@ -54,8 +54,6 @@ export default {
 		],
 	},
 
-	serverMiddleware: [{ path: '/api', handler: '~/api/index.ts' }],
-
 	// Axios module configuration: https://go.nuxtjs.dev/config-axios
 	axios: {},
 
