@@ -71,7 +71,7 @@ function closePopUp() {
 }
 
 onMounted(() => {
-	const WEBSOCKET_URL = 'ws://localhost:4500'
+	const WEBSOCKET_URL = 'ws://localhost:3000'
 	const ws = isDev
 		? new WebSocket(WEBSOCKET_URL)
 		: new WebSocket('wss://tictactoeisland.herokuapp.com')

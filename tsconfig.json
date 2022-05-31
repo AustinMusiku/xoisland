@@ -30,7 +30,7 @@
       "@types/node",
       "@pinia/nuxt",
       "@types/express",
-      "@types/websocket"
+      "@types/websocket",
     ],
     "jsx": "preserve"
   },
