@@ -25,6 +25,7 @@
 					v-if="store.getIsPlaying"
 					:comment="state.comment"
 					:winner="state.winner"
+					:is-game-over="state.isGameOver"
 					@fillField="fillField"
 					@playAgain="playAgain"
 				/>
@@ -51,6 +52,7 @@ const state = reactive({
 
 	isLoading: true,
 	isTwoPlayers: false,
+	isGameOver: false,
 	winner: {
 		player: '',
 		cells: [],
@@ -133,7 +135,7 @@ onMounted(() => {
 					player: data.symbol,
 					cells: data.cells,
 				}
-				store.toggleIsGameOver()
+				state.isGameOver = true
 				break
 			}
 			case 'play-again': {
@@ -147,7 +149,6 @@ onMounted(() => {
 				if (data.value) {
 					store.$patch({
 						isPlaying: true,
-						isGameOver: false,
 						flag: 1,
 						symbol: 'X',
 						cells: {
@@ -164,7 +165,7 @@ onMounted(() => {
 					})
 					state.message = ''
 					state.winner = { player: '', cells: [] }
-					state.isLoading = false
+					state.isLoading = state.isGameOver = false
 					state.comment = 'Player X turn'
 				} else {
 					// show popup and redirect user back to home

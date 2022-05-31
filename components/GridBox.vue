@@ -4,7 +4,7 @@
 			<h1 class="heading2">{{ comment }}</h1>
 
 			<button
-				v-if="isOver"
+				v-if="showPlayAgain"
 				class="sub-heading button"
 				@click="playAgain"
 			>
@@ -12,10 +12,7 @@
 			</button>
 		</div>
 
-		<div
-			v-if="!isOver"
-			class="playSpace"
-		>
+		<div class="playSpace">
 			<div class="bar horizontal horizontal-1"></div>
 			<div class="bar horizontal horizontal-2"></div>
 			<div class="bar vertical vertical-1"></div>
@@ -92,17 +89,18 @@
 
 <script setup lang="ts">
 import gsap from 'gsap'
-import { ref, computed, onMounted } from '@nuxtjs/composition-api'
+import { ref, computed, onMounted, watch } from '@nuxtjs/composition-api'
 import { useGameplayStore } from '../stores/gameplay'
 
 const store = useGameplayStore()
 let resetGame: any
 let endGame: any
 const cells = computed(() => store.getCells)
-const isOver = ref<boolean>(false)
+const showPlayAgain = ref<boolean>(false)
 
 const props = defineProps<{
 	comment: string
+	isGameOver: boolean
 	winner: {
 		player: string
 		cells: string[]
@@ -131,10 +129,12 @@ onMounted(() => {
 	const bars = gsap.utils.toArray('.bar')
 	const animateLoadingGrid = gsap.timeline({
 		onReverseComplete: () => {
-			isOver.value = true
+			showPlayAgain.value = true
+			document
+				.querySelector<HTMLElement>('.playSpace')
+				?.setAttribute('style', 'display:none')
 		},
 	})
-	const animateWinningCombo = gsap.timeline({ repeat: 2 })
 
 	animateLoadingGrid
 		.from(bars.slice(0, 2), {
@@ -145,59 +145,54 @@ onMounted(() => {
 			ease: 'power4.out',
 			stagger: 0.2,
 		})
-		.from(bars.slice(2), {
-			duration: 0.5,
-			scaleY: 0,
-			transformOrigin: 'top center',
-			opacity: 0,
-			ease: 'power4.out',
-			stagger: 0.2,
-		})
+		.from(
+			bars.slice(2),
+			{
+				duration: 0.35,
+				scaleY: 0,
+				transformOrigin: 'top center',
+				opacity: 0,
+				ease: 'power4.out',
+				stagger: 0.2,
+			},
+			'-=.2'
+		)
 
 	endGame = () => {
 		inputFieldElements.forEach((field) =>
 			field.setAttribute('disabled', 'disabled')
 		)
-		gsap.to(playComments, {
-			duration: 0.5,
-			opacity: 0,
-			ease: 'power4.out',
-		})
-		// if there is a winner
-		if (props.winner.cells !== undefined) {
-			const winningCells = props.winner.cells.map((c: string) =>
-				document.getElementById(`${c}`)
-			)
-			// perform winners animation
-			animateWinningCombo.to(winningCells, {
+		setTimeout(() => {
+			gsap.to(playComments, {
 				duration: 0.5,
-				scale: 1.2,
-				transformOrigin: 'center center',
+				opacity: 0,
 				ease: 'power4.out',
-				stagger: 0.2,
 			})
-		}
-		gsap.to(playComments, {
-			duration: 0.5,
-			opacity: 1,
-			ease: 'power4.out',
-			delay: 1.6,
-		})
-		for (const key in store.getCells) store.getCells[key] = ''
-		// perform grid outro animation
-		animateLoadingGrid.reverse()
+			gsap.to(playComments, {
+				duration: 0.5,
+				opacity: 1,
+				ease: 'power4.out',
+				delay: 1.2,
+			})
+			for (const key in store.getCells) store.getCells[key] = ''
+			// perform grid outro animation
+			animateLoadingGrid.reverse()
+		}, 1500)
 	}
 
 	resetGame = () => {
-		isOver.value = false
-		animateLoadingGrid.play()
+		showPlayAgain.value = false
+		document
+			.querySelector<HTMLElement>('.playSpace')
+			?.removeAttribute('style')
+		animateLoadingGrid.restart()
 		inputFieldElements.forEach((field) => field.removeAttribute('disabled'))
 	}
 
-	store.$subscribe(() => {
-		if (store.getIsGameOver) endGame()
-		if (!store.getIsGameOver) resetGame()
-	})
+	watch(
+		() => props.isGameOver,
+		() => (props.isGameOver ? endGame() : resetGame())
+	)
 })
 </script>
 
