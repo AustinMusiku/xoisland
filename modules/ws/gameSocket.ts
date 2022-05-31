@@ -1,5 +1,4 @@
 import { server, connection } from 'websocket'
-import { config } from 'dotenv'
 
 import { ClientsMap, Game, GamesMap } from './types'
 import { generateUUID } from './utils'
@@ -11,8 +10,6 @@ import {
 	addReadyGame,
 	removeReadyGame,
 } from './logic'
-
-config()
 
 const WebsocketServer = server
 

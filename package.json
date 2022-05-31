@@ -21,8 +21,7 @@
 		"nuxt": "^2.2.0",
 		"pinia": "^2.0.14",
 		"sass": "^1.52.1",
-		"websocket": "^1.0.34",
-		"dotenv": "^16.0.1"
+		"websocket": "^1.0.34"
 	},
 	"devDependencies": {
 		"@nuxt/types": "^2.15.7",
