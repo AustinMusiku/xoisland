@@ -14,7 +14,7 @@ import {
 
 config()
 
-const PORT = process.env.WEBSOCKET_PORT
+const PORT = process.env.PORT
 
 const WebsocketServer = server
 const httpServer = createServer()
