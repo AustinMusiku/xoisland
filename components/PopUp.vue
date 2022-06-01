@@ -24,6 +24,17 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
+.pop-up {
+	position: absolute;
+	display: grid;
+	padding: 1em;
+	place-items: center;
+	top: 5%;
+	left: 50%;
+	transform: translateX(-50%);
+	width: fit-content;
+}
+
 .pop-up--message {
 	&.none {
 		display: none;

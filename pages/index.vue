@@ -2,8 +2,8 @@
 	<div class="grid">
 		<div class="grid__container">
 			<PromptPopUp
-				v-if="promptMsg"
-				:prompt="promptMsg"
+				v-if="promptMsg.body"
+				:prompt-msg="promptMsg"
 				@accept="handlePrompt"
 			/>
 
@@ -45,13 +45,24 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from '@nuxtjs/composition-api'
+import { reactive } from '@nuxtjs/composition-api'
 
-const promptMsg = ref<string>(
-	'Sign in with google? You will be able to save your achievements in the leaderboard.'
-)
+// const promptMsg = ref<string>(
+// 	'Sign in with google? You will be able to save your achievements in the leaderboard.'
+// )
+const promptMsg = reactive({
+	head: 'Sign in with google?',
+	body: 'You will be able to save your achievements in the leaderboard.',
+})
+
 const handlePrompt = (value: boolean) => {
-	value ? (promptMsg.value = '') : (promptMsg.value = '')
+	if (value) {
+		promptMsg.head = ''
+		promptMsg.body = ''
+	} else {
+		promptMsg.head = ''
+		promptMsg.body = ''
+	}
 }
 </script>
 

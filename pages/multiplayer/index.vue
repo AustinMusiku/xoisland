@@ -2,8 +2,8 @@
 	<div class="grid">
 		<div class="grid__container">
 			<PromptPopUp
-				v-if="state.prompt"
-				:prompt="state.prompt"
+				v-if="state.promptMsg.body"
+				:prompt-msg="state.promptMsg"
 				@accept="prompt"
 			/>
 			<PopUp
@@ -47,7 +47,10 @@ const state = reactive({
 	gameId: '',
 	message: '',
 	comment: '',
-	prompt: '',
+	promptMsg: {
+		head: '',
+		body: '',
+	},
 	popUp: '',
 
 	isLoading: true,
@@ -139,7 +142,10 @@ onMounted(() => {
 				break
 			}
 			case 'play-again': {
-				state.prompt = data.message
+				state.promptMsg = {
+					head: 'play rematch?',
+					body: data.message,
+				}
 				break
 			}
 			case 'rematch': {
@@ -211,7 +217,10 @@ onMounted(() => {
 	}
 
 	handlePrompt = (value: boolean) => {
-		state.prompt = ''
+		state.promptMsg = {
+			head: '',
+			body: '',
+		}
 		if (!value) redirect('/')
 		const payLoad = {
 			method: 'play-again-prompt',

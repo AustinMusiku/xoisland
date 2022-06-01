@@ -6,7 +6,7 @@ html{
     min-height: 100vh;
     overflow-y: hidden;
     background: rgb(0,58,67);
-    background: linear-gradient(135deg, rgba(0,58,67,1) 0%, rgba(0,220,130,1) 100%);
+    background: linear-gradient(135deg, $clr-accent2 0%, $clr-accent 100%);
 }
 
 // -- GRID SYSTEM --
@@ -38,19 +38,16 @@ html{
 
 }
 
-.pop-up{
-    position: absolute;
-    display: grid;
-    padding: 1em;
-    place-items: center;
-    top: 5%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: fit-content;
+.pop-up, .prompt{
+    .content-wrapper{
+        gap: 1.25em;
+    }
+}
 
-    @media screen and(min-width: 62rem){
+@media(min-width: 61.9375rem){  // 991px 
+    .pop-up, .prompt{
         .content-wrapper{
-            gap: .5em;
+            gap: 2em;
         }
     }
 }
@@ -68,6 +65,7 @@ html{
         }
     
     }
+    
     // -- NAVIGATION --
     nav{
         .navigation{
@@ -75,10 +73,6 @@ html{
             flex-direction: row;
             align-items: center;
             justify-content: space-between;
-            
-            .logo{
-                
-            }
             
             .navigation__links{
                 display: none;
