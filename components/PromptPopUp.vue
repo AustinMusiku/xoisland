@@ -1,6 +1,6 @@
 <template>
-	<div class="prompt-container">
-		<div class="prompt">
+	<div class="grid prompt-container">
+		<div class="grid__container prompt">
 			<div class="content-wrapper">
 				<div class="prompt__message">
 					<p class="head">{{ promptMsg.head }}</p>
@@ -62,6 +62,7 @@ const handlePrompt = (value: boolean) => emits('accept', value)
 		position: relative;
 		display: grid;
 		width: 100%;
+		height: fit-content;
 		padding: 1em;
 		background-color: $clr-light;
 		max-width: 350px;
