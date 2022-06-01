@@ -2,9 +2,9 @@
 	<div class="grid">
 		<div class="grid__container">
 			<PromptPopUp
-				v-if="promptMsg && store.isAuth"
-				:prompt="prompt"
-				@accept="prompt"
+				v-if="promptMsg"
+				:prompt="promptMsg"
+				@accept="handlePrompt"
 			/>
 
 			<div class="content-wrapper --two-sections">
@@ -45,27 +45,13 @@
 </template>
 
 <script setup lang="ts">
-import { getAuth, GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
 import { ref } from '@nuxtjs/composition-api'
 
-const isAuth = ref<boolean>(false)
 const promptMsg = ref<string>(
 	'Sign in with google? You will be able to save your achievements in the leaderboard.'
 )
-// let user;
-
-const prompt = (value: true) => {
-	if (value) {
-		const provider = new GoogleAuthProvider()
-		const auth = getAuth()
-		signInWithPopup(auth, provider).then(() => {
-			// const credential = GoogleAuthProvider.credentialFromResult(result);
-			// const token = credential.accessToken;
-			// The signed-in user info.
-			// user = result.user;
-			isAuth.value = true
-		})
-	}
+const handlePrompt = (value: boolean) => {
+	value ? (promptMsg.value = '') : (promptMsg.value = '')
 }
 </script>
 
