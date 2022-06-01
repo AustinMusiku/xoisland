@@ -44,14 +44,6 @@ html{
     }
 }
 
-@media(min-width: 61.9375rem){  // 991px 
-    .pop-up, .prompt{
-        .content-wrapper{
-            gap: 2em;
-        }
-    }
-}
-
 @media(max-width: 61.9375rem){  // 991px 
     .content-wrapper{
         gap: 1em;
