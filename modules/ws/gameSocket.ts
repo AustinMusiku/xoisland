@@ -151,7 +151,7 @@ const handlePlayAgain = (result: any) => {
 	// check for time since last rematch request in order to avoid collisions
 	const now = Date.now()
 	const timeDifference = now - game.rematchTime
-	if (timeDifference < 5000) return
+	if (timeDifference < 5000) return // reject if last request was <5s ago
 	game.rematchTime = now
 	// send play again request to opponent
 	let payload = {

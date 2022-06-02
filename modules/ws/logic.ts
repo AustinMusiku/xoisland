@@ -98,7 +98,9 @@ export function endGame(game: Game, clients: ClientsMap, winner?: Winner) {
 	const payload = {
 		method: 'end',
 		message:
-			winner === null ? 'match draw' : `Player ${winner?.symbol} won`,
+			winner === undefined
+				? 'match draw'
+				: `Player ${winner?.symbol} won`,
 		gameId: game.gameId,
 		symbol: `${winner?.symbol}`,
 		cells: winner?.cells,
