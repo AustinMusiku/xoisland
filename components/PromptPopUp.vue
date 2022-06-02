@@ -33,6 +33,9 @@
 </template>
 
 <script setup lang="ts">
+import gsap from 'gsap'
+import { onMounted } from '@nuxtjs/composition-api'
+
 defineProps<{
 	promptMsg: {
 		head: string
@@ -44,7 +47,17 @@ const emits = defineEmits<{
 	(el: 'accept', value: boolean): void
 }>()
 
-const handlePrompt = (value: boolean) => emits('accept', value)
+const handlePrompt = (value: boolean) => {
+	emits('accept', value)
+}
+onMounted(() => {
+	const prompt = document.querySelector('.prompt')
+	gsap.from(prompt, {
+		duration: 0.35,
+		opacity: 0,
+		y: '25%',
+	})
+})
 </script>
 
 <style lang="scss" scoped>
