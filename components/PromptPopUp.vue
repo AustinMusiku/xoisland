@@ -55,7 +55,8 @@ onMounted(() => {
 	gsap.from(prompt, {
 		duration: 0.35,
 		opacity: 0,
-		y: '25%',
+		scale: 0.75,
+		// y: '25%',
 	})
 })
 </script>
@@ -78,6 +79,7 @@ onMounted(() => {
 		height: fit-content;
 		padding: 1em;
 		background-color: $clr-light;
+		border-radius: 9px;
 		max-width: 350px;
 		text-align: center;
 		z-index: 100;
@@ -107,13 +109,18 @@ onMounted(() => {
 					display: flex;
 					align-items: center;
 					justify-content: center;
-					gap: 0.5em;
+					gap: 0.25em;
 					box-sizing: border-box;
 					padding: 0.25em 0;
 					width: 100%;
+					border-radius: 5px;
 					text-decoration: none;
 					&.accept {
 						background-color: $clr-accent;
+
+						.svg-container {
+							margin-left: -0.5em;
+						}
 					}
 				}
 			}
