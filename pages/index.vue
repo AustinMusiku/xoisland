@@ -56,7 +56,6 @@
 <script setup lang="ts">
 import { reactive, ref } from '@nuxtjs/composition-api'
 import { useAuthenticationStore } from '~/store/authentication'
-import PopUp from '~/components/PopUp.vue'
 
 const authStore = useAuthenticationStore()
 
