@@ -247,7 +247,7 @@ onMounted(() => {
 				break
 			}
 			case 'abort-game': {
-				state.popUp = data.msg
+				state.popUp = data.message
 				setTimeout(() => redirect('/'), 2000)
 				break
 			}
