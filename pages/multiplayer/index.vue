@@ -18,7 +18,7 @@
 					v-if="!state.isTwoPlayers"
 					:is-loading="state.isLoading"
 					:message="state.message"
-					@joinAgain="joinAgain"
+					@joinAgain="handleJoinAgain"
 				/>
 
 				<GridBox
@@ -27,7 +27,7 @@
 					:winner="state.winner"
 					:is-game-over="state.isGameOver"
 					@fillField="fillField"
-					@playAgain="playAgain"
+					@playAgain="handlePlayAgain"
 				/>
 			</div>
 		</div>
@@ -35,7 +35,12 @@
 </template>
 
 <script setup context lang="ts">
-import { onMounted, reactive, useContext } from '@nuxtjs/composition-api'
+import {
+	onMounted,
+	onUnmounted,
+	reactive,
+	useContext,
+} from '@nuxtjs/composition-api'
 import { useGameplayStore } from '../../store/gameplay'
 
 const store = useGameplayStore()
@@ -52,7 +57,6 @@ const state = reactive({
 		body: '',
 	},
 	popUp: '',
-
 	isLoading: true,
 	isTwoPlayers: false,
 	isGameOver: false,
@@ -62,26 +66,73 @@ const state = reactive({
 	},
 })
 
-let handleMove: any
-let handlePlayAgain: any
-let handleJoinAgain: any
-let handlePrompt: any
-const joinAgain = () => handleJoinAgain()
-const playAgain = () => handlePlayAgain()
+let ws: WebSocket
 const prompt = (value: boolean) => handlePrompt(value)
 const fillField = (cellId: string) => handleMove(cellId)
+
+// initial websocket connection
+if (process.client) {
+	const WEBSOCKET_URL = 'ws://localhost:3000'
+	ws = isDev
+		? new WebSocket(WEBSOCKET_URL)
+		: new WebSocket('wss://tictactoeisland.herokuapp.com')
+}
 
 function closePopUp() {
 	state.popUp = ''
 }
 
-onMounted(() => {
-	const WEBSOCKET_URL = 'ws://localhost:3000'
-	const ws = isDev
-		? new WebSocket(WEBSOCKET_URL)
-		: new WebSocket('wss://tictactoeisland.herokuapp.com')
+function handleMove(cellId: string): void {
+	const payLoad = {
+		method: 'play',
+		clientId: state.clientId,
+		gameId: state.gameId,
+		cell: cellId,
+	}
+	ws.send(JSON.stringify(payLoad))
+}
 
-	ws.onmessage = (message) => {
+function handlePlayAgain() {
+	const payLoad = {
+		method: 'play-again',
+		clientId: state.clientId,
+		gameId: state.gameId,
+	}
+	// ask to play game again
+	ws.send(JSON.stringify(payLoad))
+}
+
+function handleJoinAgain() {
+	state.isLoading = true
+	state.isTwoPlayers = false
+
+	// create/join game again
+	ws.send(
+		JSON.stringify({
+			method: 'join',
+			clientId: state.clientId,
+		})
+	)
+}
+
+function handlePrompt(value: boolean) {
+	state.promptMsg = {
+		head: '',
+		body: '',
+	}
+	if (!value) redirect('/')
+	const payLoad = {
+		method: 'play-again-prompt',
+		clientId: state.clientId,
+		gameId: state.gameId,
+		isPlayAgain: value,
+	}
+	// create/join game again
+	ws.send(JSON.stringify(payLoad))
+}
+
+onMounted(() => {
+	ws.onmessage = (message: { data: string }) => {
 		const data = JSON.parse(message.data)
 
 		switch (data.method) {
@@ -182,53 +233,21 @@ onMounted(() => {
 			}
 		}
 	}
+})
 
-	handleMove = (cellId: string): void => {
+onUnmounted(() => {
+	// if exits screen while still loading, send cancel game request
+	if (state.isLoading) {
+		// persist initial states before resetting
+		const initialGameId = state.gameId
+		const initialClientId = state.clientId
+		state.gameId = state.clientId = ''
+		// send request
 		const payLoad = {
-			method: 'play',
-			clientId: state.clientId,
-			gameId: state.gameId,
-			cell: cellId,
+			method: 'join-cancel',
+			gameId: initialGameId,
+			clientId: initialClientId,
 		}
-		ws.send(JSON.stringify(payLoad))
-	}
-
-	handlePlayAgain = () => {
-		const payLoad = {
-			method: 'play-again',
-			clientId: state.clientId,
-			gameId: state.gameId,
-		}
-		// ask to play game again
-		ws.send(JSON.stringify(payLoad))
-	}
-
-	handleJoinAgain = () => {
-		state.isLoading = true
-		state.isTwoPlayers = false
-
-		// create/join game again
-		ws.send(
-			JSON.stringify({
-				method: 'join',
-				clientId: state.clientId,
-			})
-		)
-	}
-
-	handlePrompt = (value: boolean) => {
-		state.promptMsg = {
-			head: '',
-			body: '',
-		}
-		if (!value) redirect('/')
-		const payLoad = {
-			method: 'play-again-prompt',
-			clientId: state.clientId,
-			gameId: state.gameId,
-			isPlayAgain: value,
-		}
-		// create/join game again
 		ws.send(JSON.stringify(payLoad))
 	}
 })

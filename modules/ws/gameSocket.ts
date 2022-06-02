@@ -41,6 +41,9 @@ export default function (httpServer: any) {
 				case 'join':
 					handleJoin(result)
 					break
+				case 'join-cancel':
+					handleCancel(result)
+					break
 				case 'play':
 					handleMove(result)
 					break
@@ -107,7 +110,7 @@ const handleJoin = (result: any) => {
 				clientId: result.clientId,
 				gameId,
 			}
-			if (game.players.length < 2) {
+			if (readyGames.includes(game) && game.players.length < 2) {
 				readyGames = removeReadyGame(gameId, readyGames)
 				guidToClients[result.clientId].connection.send(
 					JSON.stringify(payload)
@@ -196,4 +199,13 @@ const handlePlayAgainPrompt = (result: any) => {
 			guidToClients[player].connection.send(JSON.stringify(payload))
 		})
 	}
+}
+const handleCancel = (result: any) => {
+	const { clientId, gameId } = result
+	readyGames = removeReadyGame(gameId, readyGames)
+	const payload = {
+		method: 'join-cancel',
+		message: 'you have left the game',
+	}
+	guidToClients[clientId].connection.send(JSON.stringify(payload))
 }
