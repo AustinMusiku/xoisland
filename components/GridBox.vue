@@ -89,7 +89,13 @@
 
 <script setup lang="ts">
 import gsap from 'gsap'
-import { ref, computed, onMounted, watch } from '@nuxtjs/composition-api'
+import {
+	ref,
+	computed,
+	onMounted,
+	watch,
+	onBeforeUnmount,
+} from '@nuxtjs/composition-api'
 import { useGameplayStore } from '../store/gameplay'
 
 const store = useGameplayStore()
@@ -109,6 +115,7 @@ const props = defineProps<{
 
 const emits = defineEmits<{
 	(e: 'playAgain'): void
+	(e: 'abortGame'): void
 	(e: 'fillField', cellId: string): void
 }>()
 
@@ -193,6 +200,13 @@ onMounted(() => {
 		() => props.isGameOver,
 		() => (props.isGameOver ? endGame() : resetGame())
 	)
+})
+
+onBeforeUnmount(() => {
+	// if player leaves before game over, emit exit event
+	if (!props.isGameOver) {
+		emits('abortGame')
+	}
 })
 </script>
 

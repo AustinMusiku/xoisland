@@ -28,6 +28,7 @@
 					:is-game-over="state.isGameOver"
 					@fillField="fillField"
 					@playAgain="handlePlayAgain"
+					@abortGame="abortGame"
 				/>
 			</div>
 		</div>
@@ -80,6 +81,20 @@ if (process.client) {
 
 function closePopUp() {
 	state.popUp = ''
+}
+
+function abortGame() {
+	// persist initial states before resetting
+	const initialGameId = state.gameId
+	const initialClientId = state.clientId
+	state.gameId = state.clientId = ''
+	// send request
+	const payLoad = {
+		method: 'abort-game',
+		gameId: initialGameId,
+		clientId: initialClientId,
+	}
+	ws.send(JSON.stringify(payLoad))
 }
 
 function handleMove(cellId: string): void {
@@ -229,6 +244,11 @@ onMounted(() => {
 					state.popUp = data.message
 					setTimeout(() => redirect('/'), 2000)
 				}
+				break
+			}
+			case 'abort-game': {
+				state.popUp = data.msg
+				setTimeout(() => redirect('/'), 2000)
 				break
 			}
 		}

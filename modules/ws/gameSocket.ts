@@ -53,6 +53,9 @@ export default function (httpServer: any) {
 				case 'play-again-prompt':
 					handlePlayAgainPrompt(result)
 					break
+				case 'abort-game':
+					handleAbortGame(result)
+					break
 				default:
 					break
 			}
@@ -208,4 +211,19 @@ const handleCancel = (result: any) => {
 		message: 'you have left the game',
 	}
 	guidToClients[clientId].connection.send(JSON.stringify(payload))
+}
+const handleAbortGame = (result: any) => {
+	const game = guidToGames[result.gameId]
+	if (game === null) return
+	const opponentId: any = game?.players.find(
+		(player) => player !== result.clientId
+	)
+	// clear game from guid
+	guidToGames[result.gameId] = null
+	// send abort to opponent
+	const payload = {
+		method: 'abort-game',
+		message: `Opponent has left the game`,
+	}
+	guidToClients[opponentId].connection.send(JSON.stringify(payload))
 }
