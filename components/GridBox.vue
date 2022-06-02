@@ -90,7 +90,7 @@
 <script setup lang="ts">
 import gsap from 'gsap'
 import { ref, computed, onMounted, watch } from '@nuxtjs/composition-api'
-import { useGameplayStore } from '../stores/gameplay'
+import { useGameplayStore } from '../store/gameplay'
 
 const store = useGameplayStore()
 let resetGame: any

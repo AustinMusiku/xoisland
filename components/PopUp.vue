@@ -19,7 +19,7 @@ const emits = defineEmits<{
 }>()
 
 onMounted(() => {
-	setTimeout(() => emits('close'), 2000)
+	setTimeout(() => emits('close'), 2500)
 })
 </script>
 

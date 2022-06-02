@@ -36,7 +36,7 @@
 
 <script setup context lang="ts">
 import { onMounted, reactive, useContext } from '@nuxtjs/composition-api'
-import { useGameplayStore } from '../../stores/gameplay'
+import { useGameplayStore } from '../../store/gameplay'
 
 const store = useGameplayStore()
 store.$reset()
