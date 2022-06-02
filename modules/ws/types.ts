@@ -20,6 +20,7 @@ export interface Game {
 	players: string[]
 	gameOver: boolean
 	cells: Cells
+	rematchTime: number
 }
 
 export interface GamesMap {

@@ -5,6 +5,7 @@ export const createGame = (gameId: string, players?: string[]): Game => {
 		gameId,
 		players: players || [],
 		gameOver: false,
+		rematchTime: 0,
 		cells: {
 			c1: '',
 			c2: '',

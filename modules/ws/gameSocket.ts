@@ -147,6 +147,12 @@ const handleMove = (result: any) => {
 }
 const handlePlayAgain = (result: any) => {
 	const game = guidToGames[result.gameId]
+	if (game === null) return
+	// check for time since last rematch request in order to avoid collisions
+	const now = Date.now()
+	const timeDifference = now - game.rematchTime
+	if (timeDifference < 5000) return
+	game.rematchTime = now
 	// send play again request to opponent
 	let payload = {
 		method: 'play-again',
