@@ -1,7 +1,10 @@
 html{
-    height: fit-content;
-    background: rgb(0,58,67);
-    background: linear-gradient(135deg, $clr-accent2 0%, $clr-accent 100%);
+    height: 100%;
+}
+
+.layout-wrapper{
+    background: $clr-accent;
+    background: linear-gradient(180deg, $clr-accent2 0%, $clr-accent 100%);
 }
 
 // -- GRID SYSTEM --
@@ -16,6 +19,7 @@ html{
     .grid__container{
         grid-column: 2/4;
         height: 100vh;
+        overflow-x: hidden;
         overflow-y: hidden;
     }
 }

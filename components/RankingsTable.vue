@@ -6,7 +6,7 @@
 				<div class="item-stat win">Win</div>
 				<div class="item-stat draw">Draw</div>
 				<div class="item-stat loss">Loss</div>
-				<div class="item-stat points">Points</div>
+				<div class="item-stat points">Pts</div>
 			</div>
 		</div>
 		<TableItem
@@ -18,15 +18,34 @@
 </template>
 
 <script setup lang="ts">
+import gsap from 'gsap'
+import { onMounted } from '@nuxtjs/composition-api'
+
 defineProps<{
 	players: {
-		name: number
+		name: string
 		win: number
 		draw: number
 		loss: number
 		points: number
 	}[]
 }>()
+
+onMounted(() => {
+	const items = gsap.utils.toArray('.item-line')
+	const items2 = gsap.utils.toArray('.table__item')
+	gsap.from(items, {
+		duration: 0.25,
+		scaleX: 0,
+		transformOrigin: 'left',
+		stagger: 0.25,
+	})
+	gsap.from(items2, {
+		duration: 0.25,
+		opacity: 0,
+		stagger: 0.125,
+	})
+})
 </script>
 
 <style lang="scss" scoped>

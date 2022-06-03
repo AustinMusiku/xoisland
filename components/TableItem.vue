@@ -9,6 +9,7 @@
 			<div class="item-stat loss">{{ player.loss }}</div>
 			<div class="item-stat points">{{ player.points }}</div>
 		</div>
+		<div class="item-line"></div>
 	</div>
 </template>
 
@@ -26,10 +27,11 @@ defineProps<{
 
 <style lang="scss">
 .table__item {
+	position: relative;
 	padding: 1em 0;
 	display: grid;
-	grid-template-columns: repeat(2, 1fr);
-	border-bottom: 1px solid black;
+	grid-template-columns: 1fr 1.5fr;
+	// border-bottom: 1px solid black;
 
 	&.table__head {
 		padding: 0;
@@ -45,6 +47,15 @@ defineProps<{
 			width: 100%;
 			text-align: right;
 		}
+	}
+	.item-line {
+		position: absolute;
+		content: '';
+		background-color: $clr-dark;
+		width: 100%;
+		height: 1px;
+		left: 0;
+		top: 100%;
 	}
 }
 </style>

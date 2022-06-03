@@ -14,7 +14,6 @@ export function useSaveOutcome(
 	playerSymbol: string,
 	name: string
 ) {
-	// let updates: any;
 	// check if user exists in database
 	onValue(
 		ref(db, `players/${name}/`),
@@ -25,7 +24,6 @@ export function useSaveOutcome(
 			} else {
 				// add user to db then update
 				addUser(name).then(() => {
-					// updates = updateUserDetails(symbol, playerSymbol, name);
 					update(
 						ref(db),
 						updateUserDetails(symbol, playerSymbol, name)
