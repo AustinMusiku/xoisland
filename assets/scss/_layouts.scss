@@ -1,10 +1,5 @@
 html{
-    min-height: 100vh;
-}
-
-.layout-wrapper{
-    min-height: 100vh;
-    overflow-y: hidden;
+    height: fit-content;
     background: rgb(0,58,67);
     background: linear-gradient(135deg, $clr-accent2 0%, $clr-accent 100%);
 }
@@ -14,9 +9,14 @@ html{
     display: grid;
     grid-template-columns: 4em repeat(2, minmax(auto, 130em)) 4em;
     
+    &.grid--small{
+        grid-template-columns: 1fr repeat(2, minmax(auto, 25em)) 1fr;
+    }
+    
     .grid__container{
         grid-column: 2/4;
         height: 100vh;
+        overflow-y: hidden;
     }
 }
 
@@ -73,9 +73,18 @@ html{
     }
 }
 
+@media(max-width: 62rem){ // 992px
+    .grid{
+        &.grid--small{ grid-template-columns: 1.5em repeat(2, minmax(auto, 31em)) 1.5em }
+    }
+}
 @media(max-width: 48rem){ // 768px
     .grid{ grid-template-columns: 1.5em repeat(2, minmax(auto, 130em)) 1.5em }
 }
 @media(max-width: 20rem){ // 320px
-    .grid{ grid-template-columns: 1em repeat(2, minmax(auto, 130em)) 1em }
+    .grid{ 
+        grid-template-columns: 1em repeat(2, minmax(auto, 130em)) 1em;
+
+        &.grid--small{ grid-template-columns: 1em repeat(2, minmax(auto, 31em)) 1em }
+    }
 }

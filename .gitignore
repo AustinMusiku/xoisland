@@ -89,6 +89,4 @@ sw.*
 # Vim swap files
 *.swp
 
-train.ts
-scratch.scss
-firebase.config.ts
+scratch.*
