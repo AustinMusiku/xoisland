@@ -16,7 +16,7 @@ module.exports = {
 		'vue/multi-word-component-names': [
 			'error',
 			{
-				ignores: ['index', 'Loading'],
+				ignores: ['default', 'index', 'Loading'],
 			},
 		],
 		'vue/first-attribute-linebreak': [
