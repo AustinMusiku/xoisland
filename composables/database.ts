@@ -21,12 +21,10 @@ export function useSaveOutcome(
 		(snapshot) => {
 			if (snapshot.exists()) {
 				// update user if exists
-				console.log('updating old user')
 				update(ref(db), updateUserDetails(symbol, playerSymbol, name))
 			} else {
 				// add user to db then update
 				addUser(name).then(() => {
-					console.log('updating new user')
 					// updates = updateUserDetails(symbol, playerSymbol, name);
 					update(
 						ref(db),
@@ -37,8 +35,6 @@ export function useSaveOutcome(
 		},
 		{ onlyOnce: true }
 	)
-	// console.log(updates)
-	// return update(ref(db), updates)
 }
 
 // helpers
@@ -66,6 +62,5 @@ function updateUserDetails(symbol: string, playerSymbol: string, name: string) {
 		// loss
 		updates[pathSuffix + 'loss'] = increment(1)
 	}
-	console.log(updates)
 	return updates
 }
