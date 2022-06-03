@@ -146,7 +146,7 @@ function handlePrompt(value: boolean) {
 }
 
 onMounted(() => {
-	ws.onmessage = async (message: { data: string }) => {
+	ws.onmessage = (message: { data: string }) => {
 		const data = JSON.parse(message.data)
 
 		switch (data.method) {
@@ -165,15 +165,14 @@ onMounted(() => {
 			case 'join': {
 				state.isLoading = false
 				state.isTwoPlayers = true
-				if (state.gameId === '') state.gameId = data.gameId
-				if (gameStore.getTurn === 0) gameStore.setTurn(2)
+				state.gameId = data.gameId
+				gameStore.setTurn(data.turn)
+				gameStore.setSymbol(data.turn === 1 ? 'X' : 'O')
 				gameStore.toggleIsPlaying()
 				state.comment = 'Player X turn'
 				break
 			}
 			case 'join-wait': {
-				state.gameId = data.gameId
-				gameStore.setTurn(data.turn)
 				state.message = 'Waiting for another player...'
 				break
 			}
@@ -203,11 +202,7 @@ onMounted(() => {
 					const winningSymbol = data.symbol
 					const playerSymbol = gameStore.symbol
 					const playerName = authStore.user.displayName
-					await useSaveOutcome(
-						winningSymbol,
-						playerSymbol,
-						playerName
-					)
+					useSaveOutcome(winningSymbol, playerSymbol, playerName)
 				}
 				state.comment = data.message
 				state.winner = {
@@ -232,7 +227,6 @@ onMounted(() => {
 					gameStore.$patch({
 						isPlaying: true,
 						flag: 1,
-						symbol: 'X',
 						cells: {
 							c1: '',
 							c2: '',

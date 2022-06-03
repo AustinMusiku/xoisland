@@ -76,17 +76,18 @@ export default function (httpServer: any) {
 const handleJoin = (result: any) => {
 	const readyGame = getReadyGame(readyGames)
 	if (readyGame) {
-		readyGame?.players.push(result.clientId)
+		readyGame.players.push(result.clientId)
 
 		// send broadcast to all players in game
-		const payload = {
-			method: 'join',
-			message: `${result.clientId} joined ${readyGame.gameId}`,
-			clientId: result.clientId,
-			gameId: readyGame.gameId,
-		}
-		readyGame.players.forEach((player) => {
-			guidToClients[player].connection.send(JSON.stringify(payload))
+		readyGame.players.forEach((playerId) => {
+			const payload = {
+				method: 'join',
+				message: `${result.clientId} joined ${readyGame.gameId}`,
+				clientId: result.clientId,
+				gameId: readyGame.gameId,
+				turn: readyGame.players.indexOf(playerId) === 0 ? 1 : 2,
+			}
+			guidToClients[playerId].connection.send(JSON.stringify(payload))
 		})
 	} else {
 		// create a new game and add it to the queue of ready games
@@ -100,7 +101,6 @@ const handleJoin = (result: any) => {
 			message: `new game ${gameId} created`,
 			clientId: result.clientId,
 			gameId,
-			turn: 1,
 		}
 		guidToClients[result.clientId].connection.send(JSON.stringify(payload))
 		// Send timeout message to client and remove game from queue

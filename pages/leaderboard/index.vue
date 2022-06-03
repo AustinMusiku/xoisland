@@ -14,105 +14,14 @@
 import { useAsync } from '@nuxtjs/composition-api'
 import { getDatabase, ref, onValue } from 'firebase/database'
 
-// const players = [
-//     {
-//         name:"Austin Musiku",
-//         draw: 10,
-//         loss: 20,
-//         points: 263,
-//         win: 103
-//     },
-//     {
-//         name:"Austin Musiku",
-//         draw: 10,
-//         loss: 20,
-//         points: 263,
-//         win: 103
-//     },
-//     {
-//         name:"Austin Musiku",
-//         draw: 10,
-//         loss: 20,
-//         points: 263,
-//         win: 103
-//     },
-//     {
-//         name:"Austin Musiku",
-//         draw: 10,
-//         loss: 20,
-//         points: 263,
-//         win: 103
-//     },
-//     {
-//         name:"Austin Musiku",
-//         draw: 10,
-//         loss: 20,
-//         points: 263,
-//         win: 103
-//     },
-//     {
-//         name:"Austin Musiku",
-//         draw: 10,
-//         loss: 20,
-//         points: 263,
-//         win: 103
-//     },
-//     {
-//         name:"Austin Musiku",
-//         draw: 10,
-//         loss: 20,
-//         points: 263,
-//         win: 103
-//     },
-//     {
-//         name:"Austin Musiku",
-//         draw: 10,
-//         loss: 20,
-//         points: 263,
-//         win: 103
-//     },
-//     {
-//         name:"Austin Musiku",
-//         draw: 10,
-//         loss: 20,
-//         points: 263,
-//         win: 103
-//     },
-//     {
-//         name:"Austin Musiku",
-//         draw: 10,
-//         loss: 20,
-//         points: 263,
-//         win: 103
-//     },
-//     {
-//         name:"Austin Musiku",
-//         draw: 10,
-//         loss: 20,
-//         points: 263,
-//         win: 103
-//     },
-//     {
-//         name:"Austin Musiku",
-//         draw: 10,
-//         loss: 20,
-//         points: 263,
-//         win: 103
-//     },
-
-// ]
 const players = useAsync(() => {
 	const players: any[] = []
 	const playersRef = ref(getDatabase(), `players/`)
-	onValue(
-		playersRef,
-		(snapshot) => {
-			snapshot.forEach((child) => {
-				players.push({ name: child.key, ...child.val() })
-			})
-		},
-		{ onlyOnce: true }
-	)
+	onValue(playersRef, (snapshot) => {
+		snapshot.forEach((child) => {
+			players.push({ name: child.key, ...child.val() })
+		})
+	})
 	return players
 })
 </script>
