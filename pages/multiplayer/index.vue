@@ -80,7 +80,7 @@ if (process.client) {
 	const WEBSOCKET_URL = 'ws://localhost:3000'
 	ws = isDev
 		? new WebSocket(WEBSOCKET_URL)
-		: new WebSocket('wss://tictactoeisland.herokuapp.com')
+		: new WebSocket('wss://xoisland.herokuapp.com')
 }
 
 function closePopUp() {
@@ -203,7 +203,11 @@ onMounted(() => {
 					const winningSymbol = data.symbol
 					const playerSymbol = gameStore.symbol
 					const playerName = authStore.user.displayName
-					await useSaveOutcome(winningSymbol, playerSymbol, playerName)
+					await useSaveOutcome(
+						winningSymbol,
+						playerSymbol,
+						playerName
+					)
 				}
 				state.comment = data.message
 				state.winner = {
