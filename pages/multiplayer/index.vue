@@ -22,7 +22,7 @@
 				/>
 
 				<GridBox
-					v-if="store.getIsPlaying"
+					v-if="gameStore.getIsPlaying"
 					:comment="state.comment"
 					:winner="state.winner"
 					:is-game-over="state.isGameOver"
@@ -43,10 +43,14 @@ import {
 	useContext,
 } from '@nuxtjs/composition-api'
 import { useGameplayStore } from '../../store/gameplay'
+import { useAuthenticationStore } from '../../store/authentication'
+import { useSaveOutcome } from '@/composables/database'
 
-const store = useGameplayStore()
-store.$reset()
 const { redirect, isDev } = useContext()
+
+const authStore = useAuthenticationStore()
+const gameStore = useGameplayStore()
+gameStore.$reset()
 
 const state = reactive({
 	clientId: '',
@@ -82,7 +86,6 @@ if (process.client) {
 function closePopUp() {
 	state.popUp = ''
 }
-
 function abortGame() {
 	// persist initial states before resetting
 	const initialGameId = state.gameId
@@ -96,7 +99,6 @@ function abortGame() {
 	}
 	ws.send(JSON.stringify(payLoad))
 }
-
 function handleMove(cellId: string): void {
 	const payLoad = {
 		method: 'play',
@@ -106,7 +108,6 @@ function handleMove(cellId: string): void {
 	}
 	ws.send(JSON.stringify(payLoad))
 }
-
 function handlePlayAgain() {
 	const payLoad = {
 		method: 'play-again',
@@ -116,7 +117,6 @@ function handlePlayAgain() {
 	// ask to play game again
 	ws.send(JSON.stringify(payLoad))
 }
-
 function handleJoinAgain() {
 	state.isLoading = true
 	state.isTwoPlayers = false
@@ -129,7 +129,6 @@ function handleJoinAgain() {
 		})
 	)
 }
-
 function handlePrompt(value: boolean) {
 	state.promptMsg = {
 		head: '',
@@ -147,7 +146,7 @@ function handlePrompt(value: boolean) {
 }
 
 onMounted(() => {
-	ws.onmessage = (message: { data: string }) => {
+	ws.onmessage = async (message: { data: string }) => {
 		const data = JSON.parse(message.data)
 
 		switch (data.method) {
@@ -167,14 +166,14 @@ onMounted(() => {
 				state.isLoading = false
 				state.isTwoPlayers = true
 				if (state.gameId === '') state.gameId = data.gameId
-				if (store.getTurn === 0) store.setTurn(2)
-				store.toggleIsPlaying()
+				if (gameStore.getTurn === 0) gameStore.setTurn(2)
+				gameStore.toggleIsPlaying()
 				state.comment = 'Player X turn'
 				break
 			}
 			case 'join-wait': {
 				state.gameId = data.gameId
-				store.setTurn(data.turn)
+				gameStore.setTurn(data.turn)
 				state.message = 'Waiting for another player...'
 				break
 			}
@@ -188,17 +187,24 @@ onMounted(() => {
 				const cellPlayed = data.move.cell
 				const cellSymbol = data.move.symbol
 
-				store.getFlag === 1
+				gameStore.getFlag === 1
 					? (state.comment = 'Player O Turn')
 					: (state.comment = 'Player X Turn')
 				cellSymbol === 'X'
-					? store.incrementFlag()
-					: store.decrementFlag()
+					? gameStore.incrementFlag()
+					: gameStore.decrementFlag()
 
-				store.getCells[cellPlayed] = cellSymbol
+				gameStore.getCells[cellPlayed] = cellSymbol
 				break
 			}
 			case 'end': {
+				// save to db
+				if (authStore.isAuth) {
+					const winningSymbol = data.symbol
+					const playerSymbol = gameStore.symbol
+					const playerName = authStore.user.displayName
+					await useSaveOutcome(winningSymbol, playerSymbol, playerName)
+				}
 				state.comment = data.message
 				state.winner = {
 					player: data.symbol,
@@ -219,7 +225,7 @@ onMounted(() => {
 				if (state.clientId !== data.clientId) state.popUp = data.message
 				// if opponent accepts rematch
 				if (data.value) {
-					store.$patch({
+					gameStore.$patch({
 						isPlaying: true,
 						flag: 1,
 						symbol: 'X',

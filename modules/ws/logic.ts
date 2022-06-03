@@ -86,9 +86,11 @@ export function checkPlayerWin(
 		setWinner(x, ['c3', 'c5', 'c7'])
 
 	// if there is a winner, call the end game function
-	if (isWinner) endGame(game, clients, winner)
+	if (isWinner) {
+		endGame(game, clients, winner)
+	}
 	// else if all cells are filled, match draw
-	if (Object.entries(state).every((x) => x[1] !== '')) {
+	else if (Object.entries(state).every((x) => x[1] !== '')) {
 		endGame(game, clients)
 	}
 }
@@ -102,7 +104,7 @@ export function endGame(game: Game, clients: ClientsMap, winner?: Winner) {
 				? 'match draw'
 				: `Player ${winner?.symbol} won`,
 		gameId: game.gameId,
-		symbol: `${winner?.symbol}`,
+		symbol: winner ? winner.symbol : 'D',
 		cells: winner?.cells,
 	}
 	game.players.forEach((player) => {

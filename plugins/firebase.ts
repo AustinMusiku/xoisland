@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import * as firebase from 'firebase/app'
-// import { getAnalytics } from "firebase/analytics";
+import { getDatabase } from 'firebase/database'
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -10,6 +10,7 @@ import * as firebase from 'firebase/app'
 const firebaseConfig = {
 	apiKey: process.env.apiKey,
 	authDomain: process.env.authDomain,
+	databaseURL: process.env.databaseURL,
 	projectId: process.env.projectId,
 	storageBucket: process.env.storageBucket,
 	messagingSenderId: process.env.messagingSenderId,
@@ -18,11 +19,13 @@ const firebaseConfig = {
 }
 
 // Initialize Firebase
-let app = null
+let app
+let db = null
 if (!firebase.getApps.length) {
 	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	app = firebase.initializeApp(firebaseConfig)
-	// const analytics = getAnalytics(app);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
+	db = getDatabase(app)
 }
 
 export default firebase
