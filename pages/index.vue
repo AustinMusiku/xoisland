@@ -36,12 +36,13 @@
 					<li class="menu__item">
 						<nuxt-link
 							class="heading"
-							to="/help"
-						>help </nuxt-link>
+							to="/settings"
+						>settings
+						</nuxt-link>
 					</li>
 					<li class="menu__item">
 						<a
-							href="https://github.com/AustinMusiku/tictactoe"
+							href="https://github.com/AustinMusiku/xoisland"
 							target="_blank"
 							class="heading"
 						>github

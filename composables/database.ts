@@ -57,7 +57,7 @@ function updateUserDetails(symbol: string, playerSymbol: string, name: string) {
 		updates[pathSuffix + 'draw'] = increment(1)
 		updates[pathSuffix + 'points'] = increment(1)
 	} else {
-		// loss
+		// lose
 		updates[pathSuffix + 'loss'] = increment(1)
 	}
 	return updates
