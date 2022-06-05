@@ -14,10 +14,7 @@
 			/>
 
 			<div class="content-wrapper --two-sections">
-				<h1
-					class="super-heading"
-					@click="authStore.logout()"
-				>XO</h1>
+				<h1 class="super-heading">XO</h1>
 				<ul class="menu">
 					<li class="menu__item">
 						<nuxt-link

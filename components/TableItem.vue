@@ -1,5 +1,5 @@
 <template>
-	<div class="table__item">
+	<div class="table__item table__item--data">
 		<div class="item-name">
 			{{ player.name }}
 		</div>
@@ -14,6 +14,9 @@
 </template>
 
 <script setup lang="ts">
+import gsap from 'gsap'
+import { onMounted } from '@nuxtjs/composition-api'
+
 defineProps<{
 	player: {
 		name: number
@@ -23,6 +26,26 @@ defineProps<{
 		points: number
 	}
 }>()
+
+onMounted(() => {
+	const tabeItemAnimationTl = gsap.timeline()
+	tabeItemAnimationTl
+		.to('.table__item--data', {
+			duration: 0.25,
+			opacity: 1,
+			stagger: 0.125,
+		})
+		.to(
+			'.item-line',
+			{
+				duration: 0.25,
+				scaleX: 1,
+				transformOrigin: 'left',
+				stagger: 0.125,
+			},
+			'-=1.75'
+		)
+})
 </script>
 
 <style lang="scss">
@@ -31,11 +54,14 @@ defineProps<{
 	padding: 1em 0;
 	display: grid;
 	grid-template-columns: 1fr 1.5fr;
-	// border-bottom: 1px solid black;
 
-	&.table__head {
+	&.table__item--head {
 		padding: 0;
 		border: none;
+	}
+
+	&.table__item--data {
+		opacity: 0;
 	}
 
 	.item-stats {
@@ -56,6 +82,7 @@ defineProps<{
 		height: 1px;
 		left: 0;
 		top: 100%;
+		transform: scaleX(0);
 	}
 }
 </style>

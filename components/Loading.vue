@@ -104,7 +104,7 @@ onMounted(() => {
 
 		.bar {
 			position: absolute;
-			background-color: black;
+			background-color: $clr-dark;
 			z-index: 5;
 
 			&.vertical {

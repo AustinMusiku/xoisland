@@ -1,6 +1,6 @@
 <template>
 	<div class="table">
-		<div class="table__item table__head">
+		<div class="table__item table__item--head">
 			<div class="item-name">Name</div>
 			<div class="item-stats">
 				<div class="item-stat win">Win</div>
@@ -10,40 +10,33 @@
 			</div>
 		</div>
 		<TableItem
-			v-for="player in players"
-			:key="player.name"
+			v-for="player in state.players"
+			:key="player.points"
 			:player="player"
 		></TableItem>
 	</div>
 </template>
 
 <script setup lang="ts">
-import gsap from 'gsap'
-import { onMounted } from '@nuxtjs/composition-api'
+import { reactive } from '@nuxtjs/composition-api'
+import { getDatabase, ref, get, orderByChild, query } from 'firebase/database'
+interface Player {
+	name: string
+	win: number
+	draw: number
+	loss: number
+	points: number
+}
+const state: { players: Player[] } = reactive({ players: [] })
 
-defineProps<{
-	players: {
-		name: string
-		win: number
-		draw: number
-		loss: number
-		points: number
-	}[]
-}>()
-
-onMounted(() => {
-	const items = gsap.utils.toArray('.item-line')
-	const items2 = gsap.utils.toArray('.table__item')
-	gsap.from(items, {
-		duration: 0.25,
-		scaleX: 0,
-		transformOrigin: 'left',
-		stagger: 0.25,
-	})
-	gsap.from(items2, {
-		duration: 0.25,
-		opacity: 0,
-		stagger: 0.125,
+const playersQuery = query(
+	ref(getDatabase(), 'players'),
+	orderByChild('points')
+)
+// populate table
+get(playersQuery).then((snapshot) => {
+	snapshot.forEach((child) => {
+		state.players.unshift({ name: child.key, ...child.val() })
 	})
 })
 </script>

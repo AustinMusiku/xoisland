@@ -225,7 +225,7 @@ onBeforeUnmount(() => {
 
 		.bar {
 			position: absolute;
-			background-color: black;
+			background-color: $clr-dark;
 			z-index: 5;
 
 			&.vertical {
@@ -272,7 +272,7 @@ onBeforeUnmount(() => {
 				border: none;
 				outline: none;
 				font-size: 70px;
-				color: black;
+				color: $clr-dark;
 				background-color: transparent;
 				text-align: center;
 				caret-color: transparent;
