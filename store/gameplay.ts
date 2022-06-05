@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import cookies from 'js-cookie'
 
 interface Cells {
 	[key: string]: string
@@ -7,6 +8,7 @@ interface Cells {
 export const useGameplayStore = defineStore('gameplayStore', {
 	state: () => {
 		return {
+			prefersNoLogin: false,
 			isPlaying: false,
 			flag: 1,
 			turn: 0,
@@ -48,6 +50,10 @@ export const useGameplayStore = defineStore('gameplayStore', {
 		},
 		setCells(cells: Cells) {
 			this.cells = cells
+		},
+		togglePrefersNoLogin() {
+			this.prefersNoLogin = true
+			cookies.set('prefers_no_login', 'true')
 		},
 		toggleIsPlaying() {
 			this.isPlaying = !this.isPlaying

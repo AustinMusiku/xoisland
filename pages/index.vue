@@ -8,7 +8,11 @@
 			/>
 
 			<PromptPopUp
-				v-if="promptMsg.body && !authStore.isAuth"
+				v-if="
+					promptMsg.body &&
+						!authStore.isAuth &&
+						!gameStore.prefersNoLogin
+				"
 				:prompt-msg="promptMsg"
 				@accept="handlePrompt"
 			/>
@@ -54,8 +58,10 @@
 <script setup lang="ts">
 import { reactive, ref } from '@nuxtjs/composition-api'
 import { useAuthenticationStore } from '~/store/authentication'
+import { useGameplayStore } from '~/store/gameplay'
 
 const authStore = useAuthenticationStore()
+const gameStore = useGameplayStore()
 
 const popUpMsg = ref<string>('')
 
@@ -69,6 +75,8 @@ const handlePrompt = (value: boolean) => {
 			const firstName = authStore.user.displayName.split(' ')[0]
 			popUpMsg.value = `Hello ${firstName}`
 		})
+	} else {
+		gameStore.togglePrefersNoLogin()
 	}
 	promptMsg.head = promptMsg.body = ''
 }
