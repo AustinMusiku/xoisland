@@ -5,7 +5,35 @@
     --fs-sl: 2rem;
     --fs-x: 1.1rem;
     --fs-s: .85rem;
+
+    --clr-dark: #0d0d0d;
+    --clr-light: #fff;
+    --clr-grey: #4f4f4f;
+    --clr-accent: rgba(0,220,130,1);
+    --clr-accent2: rgba(0,58,67,1);
+
+    .light-mode {
+        --clr-dark: #0d0d0d;
+        --clr-light: #fff;
+        --clr-grey: #4f4f4f;
+        --clr-accent: rgba(0,220,130,1);
+        --clr-accent2: rgba(0,58,67,1);
+    }
+    .dark-mode {
+        --clr-light: #0d0d0d;
+        --clr-accent: black;
+        --clr-grey: #4f4f4f;
+        --clr-dark: rgba(0,220,130,1);
+        --clr-accent2: rgba(0,58,67,1);
+    }
 }
+
+$ff: 'Bidan', sans-serif;
+$clr-dark: var(--clr-dark);
+$clr-light: var(--clr-light);
+$clr-grey: var(--clr-grey);
+$clr-accent: var(--clr-accent);
+$clr-accent2: var(--clr-accent2);
 
 @media(max-width: 62rem){ // 991px
     :root{
@@ -16,11 +44,3 @@
         --fs-s: .75rem;
     }
 }
-
-$ff: 'Bidan', sans-serif;
-
-$clr-dark: #0d0d0d;
-$clr-light: #fff;
-$clr-grey: #4f4f4f;
-$clr-accent: rgba(0,220,130,1);
-$clr-accent2: rgba(0,58,67,1);

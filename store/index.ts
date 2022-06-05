@@ -1,7 +1,8 @@
 import cookieParser from 'cookieparser'
 import jwtdecode from 'jwt-decode'
+import { base64 } from '@firebase/util'
 import { useAuthenticationStore } from './authentication'
-import { useGameplayStore } from './gameplay'
+import { useUserStore } from './user'
 
 export const actions = {
 	nuxtServerInit(_: any, { req, $pinia }: any) {
@@ -10,8 +11,12 @@ export const actions = {
 
 		const parsed = cookieParser.parse(req.headers.cookie)
 		// disable signin popup if user declined before
-		if (parsed.prefers_no_login)
-			useGameplayStore($pinia).togglePrefersNoLogin()
+		if (parsed.preferences) {
+			const preferences = JSON.parse(
+				base64.decodeString(parsed.preferences, false)
+			)
+			useUserStore().preferences = preferences
+		}
 		// call the auth store
 		const authStore = useAuthenticationStore($pinia)
 

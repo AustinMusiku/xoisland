@@ -13,15 +13,12 @@
 					<p>Dark mode</p>
 					<button
 						class="button"
-						@click="handleLogin"
-					>off</button>
-				</div>
-				<div class="slab">
-					<p>Sound</p>
-					<button
-						class="button"
-						@click="handleLogin"
-					>on</button>
+						@click="toggleDarkMode"
+					>
+						{{
+							userStore.preferences.prefersDarkMode ? 'on' : 'off'
+						}}
+					</button>
 				</div>
 			</section>
 			<section class="block">
@@ -56,10 +53,12 @@
 <script setup lang="ts">
 import { ref } from '@nuxtjs/composition-api'
 import { useAuthenticationStore } from '~/store/authentication'
+import { useUserStore } from '~/store/user'
 
 const authStore = useAuthenticationStore()
-const isAuth = ref<boolean>(authStore.isAuth)
+const userStore = useUserStore()
 
+const isAuth = ref<boolean>(authStore.isAuth)
 const popUpMsg = ref<string>('')
 
 const handleLogin = () => {
@@ -75,6 +74,9 @@ const handleLogout = () => {
 		isAuth.value = authStore.isAuth
 		popUpMsg.value = `You have signed out`
 	})
+}
+const toggleDarkMode = () => {
+	userStore.toggleDarkMode()
 }
 
 const closePopUp = () => {
