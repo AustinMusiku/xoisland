@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // Import the functions you need from the SDKs you need
 import * as firebase from 'firebase/app'
 import { getDatabase } from 'firebase/database'
+import { getAnalytics } from 'firebase/analytics'
+import { useContext } from '@nuxtjs/composition-api'
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -21,11 +24,11 @@ const firebaseConfig = {
 // Initialize Firebase
 let app
 let db = null
+let analytics = null
 if (!firebase.getApps.length) {
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	app = firebase.initializeApp(firebaseConfig)
-	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	db = getDatabase(app)
+	if (process.client && !useContext().isDev) analytics = getAnalytics(app)
 }
 
 export default firebase
