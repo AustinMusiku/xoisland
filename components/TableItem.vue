@@ -61,7 +61,21 @@ onMounted(() => {
 	}
 
 	&.table__item--data {
+		counter-increment: (item-counter);
 		opacity: 0;
+
+		&:before {
+			content: counter(item-counter);
+			position: absolute;
+			top: 50%;
+			left: 0;
+			transform: translateY(-50%);
+			color: $clr-dark;
+		}
+
+		.item-name {
+			padding: 0 0 0 1em;
+		}
 	}
 
 	.item-stats {
