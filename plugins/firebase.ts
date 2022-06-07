@@ -3,7 +3,6 @@
 import * as firebase from 'firebase/app'
 import { getDatabase } from 'firebase/database'
 import { getAnalytics } from 'firebase/analytics'
-import { useContext } from '@nuxtjs/composition-api'
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -22,13 +21,17 @@ const firebaseConfig = {
 }
 
 // Initialize Firebase
-let app
-let db = null
-let analytics = null
-if (!firebase.getApps.length) {
-	app = firebase.initializeApp(firebaseConfig)
-	db = getDatabase(app)
-	if (process.client && !useContext().isDev) analytics = getAnalytics(app)
-}
+export default ({ isDev }: any) => {
+	let app
+	let db = null
+	let analytics = null
+	if (!firebase.getApps.length) {
+		app = firebase.initializeApp(firebaseConfig)
+		db = getDatabase(app)
+		if (process.client && !isDev) {
+			analytics = getAnalytics(app)
+		}
+	}
 
-export default firebase
+	return firebase
+}
