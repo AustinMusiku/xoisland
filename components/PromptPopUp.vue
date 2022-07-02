@@ -62,6 +62,12 @@ onMounted(() => {
 </script>
 
 <style lang="scss" scoped>
+$clr-dark: #0d0d0d;
+$clr-light: #fff;
+$clr-grey: #4f4f4f;
+$clr-accent: rgba(0, 220, 130, 1);
+$clr-accent2: rgba(0, 58, 67, 1);
+
 .prompt-container {
 	position: fixed;
 	display: grid;
@@ -93,6 +99,7 @@ onMounted(() => {
 
 			.head {
 				font-size: 1.4rem;
+				color: $clr-dark;
 			}
 			.body {
 				color: $clr-grey;
@@ -115,6 +122,11 @@ onMounted(() => {
 					width: 100%;
 					border-radius: 5px;
 					text-decoration: none;
+
+					p {
+						color: $clr-dark;
+					}
+
 					&.accept {
 						background-color: $clr-accent;
 
