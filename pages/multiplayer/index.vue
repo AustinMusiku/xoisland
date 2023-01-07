@@ -80,7 +80,7 @@ if (process.client) {
 	const WEBSOCKET_URL = 'ws://192.168.137.1:3000'
 	ws = isDev
 		? new WebSocket(WEBSOCKET_URL)
-		: new WebSocket('wss://https://xoisland.up.railway.app/')
+		: new WebSocket('wss://xoisland.up.railway.app/')
 }
 
 function closePopUp() {
