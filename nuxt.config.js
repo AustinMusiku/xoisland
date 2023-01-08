@@ -35,6 +35,7 @@ export default {
 		'@nuxt/typescript-build',
 		'@nuxtjs/composition-api/module',
 		['@pinia/nuxt', { disableVuex: false }],
+		'@nuxtjs/pwa',
 	],
 
 	// Modules: https://go.nuxtjs.dev/config-modules
@@ -79,5 +80,20 @@ export default {
 		messagingSenderId: process.env.MESSAGING_SENDER_ID,
 		appId: process.env.APP_ID,
 		measurementId: process.env.MEASUREMENT_ID,
+	},
+	pwa: {
+		icon: {
+			source: 'static/icon.png',
+			sizes: [64, 120, 144, 152, 192, 384, 512],
+		},
+		manifest: {
+			name: 'XOIsland',
+			short_name: 'XO',
+			lang: 'en',
+			display: 'standalone',
+			theme_color: 'linear-gradient(135deg, #003A43 -100%, #00DC82 0%)',
+			background_color:
+				'linear-gradient(135deg, #003A43 -100%, #00DC82 0%)',
+		},
 	},
 }
