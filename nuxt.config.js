@@ -84,20 +84,9 @@ export default {
 	},
 	pwa: {
 		icon: {
-			icons: [
-				{
-					src: 'static/regular_icon.png',
-					sizes: '512x512',
-					type: 'image/png',
-					purpose: 'any',
-				},
-				{
-					src: 'static/maskable_icon.png',
-					sizes: '512x512',
-					type: 'image/png',
-					purpose: 'maskable',
-				},
-			],
+			source: 'static/maskable_icon.png',
+			purpose: ['maskable', 'any'],
+			sizes: [192, 512],
 		},
 		manifest: {
 			name: 'XOIsland',
