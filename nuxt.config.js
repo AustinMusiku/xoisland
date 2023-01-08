@@ -84,7 +84,6 @@ export default {
 	},
 	pwa: {
 		icon: {
-			source: 'static/icon.png',
 			icons: [
 				{
 					src: '/regular_icon.png',
