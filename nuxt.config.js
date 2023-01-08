@@ -86,13 +86,13 @@ export default {
 		icon: {
 			icons: [
 				{
-					src: '/regular_icon.png',
+					src: 'static/regular_icon.png',
 					sizes: '512x512',
 					type: 'image/png',
 					purpose: 'any',
 				},
 				{
-					src: '/maskable_icon.png',
+					src: 'static/maskable_icon.png',
 					sizes: '512x512',
 					type: 'image/png',
 					purpose: 'maskable',
