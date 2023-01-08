@@ -91,9 +91,8 @@ export default {
 			short_name: 'XO',
 			lang: 'en',
 			display: 'standalone',
-			theme_color: 'linear-gradient(135deg, #003A43 -100%, #00DC82 0%)',
-			background_color:
-				'linear-gradient(135deg, #003A43 -100%, #00DC82 0%)',
+			theme_color: '#00DC82',
+			background_color: '#00DC82',
 		},
 	},
 }
