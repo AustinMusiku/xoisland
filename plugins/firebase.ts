@@ -4,7 +4,8 @@
 import * as firebase from 'firebase/app'
 import { getDatabase } from 'firebase/database'
 import { getAnalytics } from 'firebase/analytics'
-import { getMessaging, getToken } from 'firebase/messaging'
+import { getMessaging, getToken, onMessage } from 'firebase/messaging'
+import { onBackgroundMessage } from 'firebase/messaging/sw'
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -59,6 +60,24 @@ export default ({ isDev }: any) => {
 					)
 					// ...
 				})
+
+			onBackgroundMessage(messaging, (payload) => {
+				console.log(
+					'[firebase-messaging-sw.js] Received background message ',
+					payload
+				)
+				// Customize notification here
+				const notificationTitle = 'Background Message Title'
+				const notificationOptions = {
+					body: 'Background Message body.',
+					icon: '/firebase-logo.png',
+				}
+			})
+
+			onMessage(messaging, (payload) => {
+				console.log('Message received. ', payload)
+				// ...
+			})
 		}
 
 		// function requestPermission() {
