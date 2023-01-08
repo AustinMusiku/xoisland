@@ -1,8 +1,10 @@
+/* eslint-disable no-console */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 // Import the functions you need from the SDKs you need
 import * as firebase from 'firebase/app'
 import { getDatabase } from 'firebase/database'
 import { getAnalytics } from 'firebase/analytics'
+import { getMessaging, getToken } from 'firebase/messaging'
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -28,9 +30,42 @@ export default ({ isDev }: any) => {
 	if (!firebase.getApps.length) {
 		app = firebase.initializeApp(firebaseConfig)
 		db = getDatabase(app)
-		if (process.client && !isDev) {
-			analytics = getAnalytics(app)
+		if (process.client) {
+			if (!isDev) {
+				analytics = getAnalytics(app)
+			}
+			const messaging = getMessaging(app)
+			const vapidKey =
+				'BLmEJ4hKPo_RLj23m2RREguKpZKNx7_4cMIg4T1Ocbz0XTYGXVCxPml1v09w6ZKlndPgF1EymRY-Z0qxDTJmMi8'
+			console.log('vapidKey', vapidKey)
+			// Add the public key generated from the console here.
+			getToken(messaging, { vapidKey })
+				.then((currentToken) => {
+					if (currentToken) {
+						// Send the token to your server and update the UI if necessary
+						console.log(currentToken)
+					} else {
+						// Show permission request UI
+						console.log(
+							'No registration token available. Request permission to generate one.'
+						)
+						// ...
+					}
+				})
+				.catch((err) => {
+					console.log(
+						'An error occurred while retrieving token. ',
+						err
+					)
+					// ...
+				})
 		}
+
+		// function requestPermission() {
+		// 	console.log('Requesting permission...');
+		// 	Notification.requestPermission().then((permission) => {
+		// 	  if (permission === 'granted') {
+		// 		console.log('Notification permission granted.');
 	}
 
 	return firebase
