@@ -68,9 +68,6 @@ export default {
 			},
 		},
 	},
-	server: {
-		host: '0.0.0.0',
-	},
 	env: {
 		apiKey: process.env.API_KEY,
 		authDomain: process.env.AUTH_DOMAIN,
