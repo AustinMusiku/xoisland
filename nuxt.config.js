@@ -68,6 +68,9 @@ export default {
 			},
 		},
 	},
+	server: {
+		port: process.env.PORT || 3000,
+	},
 	env: {
 		apiKey: process.env.API_KEY,
 		authDomain: process.env.AUTH_DOMAIN,
