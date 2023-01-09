@@ -77,7 +77,7 @@ const fillField = (cellId: string) => handleMove(cellId)
 
 // initial websocket connection
 if (process.client) {
-	const WEBSOCKET_URL = 'ws://192.168.137.1:3000'
+	const WEBSOCKET_URL = 'ws://192.168.8.161:3000'
 	ws = isDev
 		? new WebSocket(WEBSOCKET_URL)
 		: new WebSocket('wss://xoisland.up.railway.app/')
