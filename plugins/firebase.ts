@@ -3,7 +3,7 @@
 import { initializeApp, getApps } from 'firebase/app'
 import { getDatabase } from 'firebase/database'
 import { getAnalytics } from 'firebase/analytics'
-import { getMessaging, Messaging } from 'firebase/messaging'
+import { getMessaging, Messaging, onMessage } from 'firebase/messaging'
 
 const firebaseConfig = {
 	apiKey: process.env.apiKey,
@@ -25,8 +25,12 @@ let messaging: Messaging
 
 export default ({ isDev }: any) => {
 	if (process.client && !isDev) {
-		messaging = getMessaging(app)
 		getAnalytics(app)
+		messaging = getMessaging(app)
+		onMessage(messaging, (payload) => {
+			console.log('Message received. ', payload)
+			// ...
+		})
 	}
 }
 
