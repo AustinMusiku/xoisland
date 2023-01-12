@@ -32,6 +32,7 @@ export const useAuthenticationStore = defineStore('authenticationStore', {
 			if (token !== undefined)
 				cookies.set('access_token', token, {
 					secure: !this.$nuxt.isDev,
+					expires: 7,
 				})
 
 			// set user in store
