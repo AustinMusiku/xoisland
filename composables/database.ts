@@ -1,13 +1,5 @@
-import {
-	getDatabase,
-	ref,
-	update,
-	increment,
-	onValue,
-	set,
-} from 'firebase/database'
-
-const db = getDatabase()
+import { ref, update, increment, onValue, set } from 'firebase/database'
+import { db } from '~/plugins/firebase'
 
 export function useSaveOutcome(
 	symbol: string,
