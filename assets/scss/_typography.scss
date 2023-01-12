@@ -20,8 +20,13 @@
     line-height: 1.6;
     letter-spacing: 1px;
 }
+.caption{
+    font-size: var(--fs-s);
+    line-height: 1.6;
+    letter-spacing: 1px;
+}
 
-a,p{
+a,p,input{
     font-size: var(--fs-x);
     line-height: 1.6;
 }

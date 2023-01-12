@@ -1,6 +1,10 @@
 <template>
 	<div class="grid">
 		<div class="grid__container">
+			<invitePromptPopUp
+				v-if="true"
+				@accept="handlePrompt"
+			/>
 			<PopUp
 				v-if="popUpMsg"
 				:message="popUpMsg"
