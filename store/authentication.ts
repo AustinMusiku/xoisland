@@ -43,22 +43,25 @@ export const useAuthenticationStore = defineStore('authenticationStore', {
 				displayName: displayName || '',
 			}
 
-			// Add the public key generated from the console here.
 			const vapidKey =
 				'BLmEJ4hKPo_RLj23m2RREguKpZKNx7_4cMIg4T1Ocbz0XTYGXVCxPml1v09w6ZKlndPgF1EymRY-Z0qxDTJmMi8'
 			const currentToken = await getToken(messaging, { vapidKey })
-			// eslint-disable-next-line no-console
-			if (currentToken) {
-				console.log(currentToken)
-			}
 
 			// check if user exists in db
 			if (displayName) {
-				if (!checkUserExists(displayName)) {
+				const userExists = await checkUserExists(displayName)
+				if (!userExists) {
 					addUser(displayName)
 				}
 				addMsgToken(displayName, currentToken)
 			}
+
+			// request permission for notifications
+			// const permission = await Notification.requestPermission()
+			// if (permission === 'granted') {
+			// 	// eslint-disable-next-line no-console
+			// 	console.log('Notification permission granted.')
+			// }
 		},
 		async logout() {
 			const auth = getAuth()
@@ -76,16 +79,16 @@ export const useAuthenticationStore = defineStore('authenticationStore', {
 })
 
 // chexk if user exists in db
-function checkUserExists(name: string): boolean {
-	let exists = false
-	onValue(
-		ref(db, `players/${name}`),
-		(snapshot) => {
-			exists = snapshot.exists()
-		},
-		{ onlyOnce: true }
-	)
-	return exists
+function checkUserExists(name: string): Promise<boolean> {
+	return new Promise((resolve) => {
+		onValue(
+			ref(db, `players/${name}/`),
+			(snapshot: any) => {
+				resolve(snapshot.exists())
+			},
+			{ onlyOnce: true }
+		)
+	})
 }
 
 // add user to db
