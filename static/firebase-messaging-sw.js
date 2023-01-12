@@ -3,6 +3,8 @@ importScripts(
 	'https://www.gstatic.com/firebasejs/9.8.1/firebase-messaging-compat.js'
 )
 
+importScripts('./swenv.js')
+
 firebase.initializeApp({
 	apiKey: process.env.apiKey,
 	authDomain: process.env.authDomain,

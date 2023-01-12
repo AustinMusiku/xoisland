@@ -90,3 +90,5 @@ sw.*
 *.swp
 
 scratch.*
+
+swenv.js
