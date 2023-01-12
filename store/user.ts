@@ -26,5 +26,7 @@ export const useUserStore = defineStore('userStore', {
 
 function savePreferences(preferences: any) {
 	const JSONPrefs = base64.encodeString(JSON.stringify(preferences))
-	cookies.set('preferences', JSONPrefs)
+	cookies.set('preferences', JSONPrefs, {
+		expires: 7,
+	})
 }
