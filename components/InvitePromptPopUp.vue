@@ -140,8 +140,10 @@ const handlePrompt = async () => {
 	}
 	emits('invite', selectedPlayer.value)
 	// send invite to player via firebase messaging on client side (not server)
-	const inviteResponse = await (messaging as any).send(message)
-	console.log(inviteResponse)
+	if (process.client) {
+		const inviteResponse = await messaging.send(message)
+		console.log(inviteResponse)
+	}
 }
 
 const handleClose = () => {
