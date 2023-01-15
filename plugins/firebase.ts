@@ -19,18 +19,11 @@ const firebaseConfig = {
 const apps = getApps()
 const app = !apps.length ? initializeApp(firebaseConfig) : apps[0]
 const db = getDatabase(app)
-
-// eslint-disable-next-line import/no-mutable-exports
-let messaging: any
+const messaging = getMessaging(app)
 
 export default ({ isDev }: any) => {
 	if (process.client && !isDev) {
 		getAnalytics(app)
-		messaging = getMessaging(app)
-		onMessage(messaging, (payload) => {
-			console.log('Message received. ', payload)
-			// ...
-		})
 	}
 }
 
