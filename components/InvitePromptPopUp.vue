@@ -127,10 +127,20 @@ const handlePrompt = async () => {
 	}
 
 	const message = {
-		data: { score: '850', time: '2:45' },
-		token: 'f2ifuwJ1Ifg9zHkKFK0HXP:APA91bGAbcHYnzYH78AM1h_I88s2Wt-HIYo9SpetjcOB6pPU3B94hr2xhJOoXhZ4o6ZtMUFnhTfa0M2NtCuDnLSpLORL3oZBhINI8U6-18WUNwXvebmijm_k2Y4V4w3xbAt18v-5pioT',
+		notification: {
+			title: 'You have been invited to play',
+			body: 'Click to join',
+		},
+		webpush: {
+			fcm_options: {
+				link: 'http://xoisland.up.railway.app/multiplayer?mode=host',
+			},
+		},
+		token: 'dOChYnyJh4SBXiQ6HyITrd:APA91bEsK7fa-YZo6uNcVXwMJFR_GWziU8MTXd6n2CujNGre6qfhpxGcRwHdyxYkWS26HhiUYIK6TzxQjeiadxN5Uzyh90RRKL219exXn-YWKEmkwfwOq0QHafAe13PndhKJ5Td6Efgd',
 	}
-	await messaging.send(message)
+	const inviteResponse = await messaging.send(message)
+	// eslint-disable-next-line no-console
+	console.log(inviteResponse)
 	emits('invite', selectedPlayer.value)
 }
 
