@@ -3,7 +3,7 @@
 import { initializeApp, getApps } from 'firebase/app'
 import { getDatabase } from 'firebase/database'
 import { getAnalytics } from 'firebase/analytics'
-import { getMessaging, Messaging, onMessage } from 'firebase/messaging'
+import { getMessaging, onMessage } from 'firebase/messaging'
 
 const firebaseConfig = {
 	apiKey: process.env.apiKey,
@@ -21,7 +21,7 @@ const app = !apps.length ? initializeApp(firebaseConfig) : apps[0]
 const db = getDatabase(app)
 
 // eslint-disable-next-line import/no-mutable-exports
-let messaging: Messaging
+let messaging: any
 
 export default ({ isDev }: any) => {
 	if (process.client && !isDev) {

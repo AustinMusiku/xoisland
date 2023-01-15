@@ -120,7 +120,7 @@ const handleChooseFriend = (value: string) => {
 	selectedPlayer.value = value
 }
 
-const handlePrompt = () => {
+const handlePrompt = async () => {
 	if (selectedPlayer.value === '') {
 		inputError.value = 'Please enter a name or choose below'
 		return
@@ -130,15 +130,7 @@ const handlePrompt = () => {
 		data: { score: '850', time: '2:45' },
 		token: 'f2ifuwJ1Ifg9zHkKFK0HXP:APA91bGAbcHYnzYH78AM1h_I88s2Wt-HIYo9SpetjcOB6pPU3B94hr2xhJOoXhZ4o6ZtMUFnhTfa0M2NtCuDnLSpLORL3oZBhINI8U6-18WUNwXvebmijm_k2Y4V4w3xbAt18v-5pioT',
 	}
-	messaging
-		.send(message)
-		.then((response) => {
-			// Response is a message ID string.
-			console.log('Successfully sent message:', response)
-		})
-		.catch((error) => {
-			console.log('Error sending message:', error)
-		})
+	await messaging.send(message)
 	emits('invite', selectedPlayer.value)
 }
 
