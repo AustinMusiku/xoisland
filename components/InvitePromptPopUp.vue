@@ -85,9 +85,8 @@
 <script setup lang="ts">
 import gsap from 'gsap'
 import { onMounted, ref, watch } from '@nuxtjs/composition-api'
-import { getMessaging } from 'firebase/messaging'
 import { useCheckUserExists } from '~/composables/database'
-// import { messaging } from '~/plugins/firebase'
+import { messaging } from '~/plugins/firebase'
 
 const emits = defineEmits<{
 	(el: 'invite', value: string): void
@@ -122,11 +121,11 @@ const handleChooseFriend = (value: string) => {
 }
 
 const handlePrompt = async () => {
+	console.log('handlePrompt')
 	if (selectedPlayer.value === '') {
 		inputError.value = 'Please enter a name or choose below'
 		return
 	}
-
 	const message = {
 		notification: {
 			title: 'You have been invited to play',
@@ -139,10 +138,12 @@ const handlePrompt = async () => {
 		},
 		token: 'dOChYnyJh4SBXiQ6HyITrd:APA91bEsK7fa-YZo6uNcVXwMJFR_GWziU8MTXd6n2CujNGre6qfhpxGcRwHdyxYkWS26HhiUYIK6TzxQjeiadxN5Uzyh90RRKL219exXn-YWKEmkwfwOq0QHafAe13PndhKJ5Td6Efgd',
 	}
-	const inviteResponse = await getMessaging().send(message)
-	// eslint-disable-next-line no-console
-	console.log(inviteResponse)
 	emits('invite', selectedPlayer.value)
+	// send invite to player via firebase messaging on client side (not server)
+	if (process.client) {
+		const inviteResponse = await messaging.send(message)
+		console.log(inviteResponse)
+	}
 }
 
 const handleClose = () => {
