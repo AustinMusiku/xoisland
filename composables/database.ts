@@ -54,3 +54,11 @@ function updateUserDetails(symbol: string, playerSymbol: string, name: string) {
 	}
 	return updates
 }
+
+export function useCheckUserExists(name: string): Promise<boolean> {
+	return new Promise((resolve) => {
+		onValue(ref(db, `players/${name}/`), (snapshot: any) => {
+			resolve(snapshot.exists())
+		})
+	})
+}

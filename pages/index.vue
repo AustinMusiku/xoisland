@@ -2,9 +2,10 @@
 	<div class="grid">
 		<div class="grid__container">
 			<invitePromptPopUp
-				v-if="true"
-				@accept="handlePrompt"
+				v-if="showInvitePrompt"
+				@close="showInvitePrompt = false"
 			/>
+
 			<PopUp
 				v-if="popUpMsg"
 				:message="popUpMsg"
@@ -25,22 +26,30 @@
 				<h1 class="super-heading">XO</h1>
 				<ul class="menu">
 					<li class="menu__item">
+						<button
+							class="item__content button button--clear button--header"
+							@click="showInvitePrompt = true"
+						>
+							host match
+						</button>
+					</li>
+					<li class="menu__item">
 						<nuxt-link
-							class="heading"
-							to="/multiplayer"
-						>play
+							class="item__content heading2"
+							to="/multiplayer?mode=random"
+						>random match
 						</nuxt-link>
 					</li>
 					<li class="menu__item">
 						<nuxt-link
-							class="heading"
+							class="item__content heading2"
 							to="/leaderboard"
 						>leaderboard
 						</nuxt-link>
 					</li>
 					<li class="menu__item">
 						<nuxt-link
-							class="heading"
+							class="item__content heading2"
 							to="/settings"
 						>settings
 						</nuxt-link>
@@ -49,7 +58,7 @@
 						<a
 							href="https://github.com/AustinMusiku/xoisland"
 							target="_blank"
-							class="heading"
+							class="item__content heading2"
 						>github
 						</a>
 					</li>
@@ -69,10 +78,13 @@ const userStore = useUserStore()
 
 const popUpMsg = ref<string>('')
 
+const showInvitePrompt = ref(false)
+
 const promptMsg = reactive({
 	head: 'Sign in with google?',
 	body: 'You will be able to save your achievements in the leaderboard.',
 })
+
 const handlePrompt = (value: boolean) => {
 	if (value) {
 		authStore.login().then(() => {
@@ -93,10 +105,38 @@ const closePopUp = () => {
 .menu__item {
 	position: relative;
 	width: fit-content;
-	transition: 0.25s;
 
-	&:hover {
-		transform: translateX(10px);
+	.item__content {
+		transition: 0.25s;
+		width: fit-content;
+		display: block;
+	}
+}
+
+// desktop
+@media (min-width: 62rem) {
+	.menu__item {
+		&:hover {
+			.item__content {
+				transform: translateX(20px);
+			}
+		}
+
+		&::before {
+			content: '';
+			position: absolute;
+			width: 5px;
+			height: 5px;
+			left: 0;
+			top: 60%;
+			transform: translateY(-50%) scale(0);
+			background-color: $clr-dark;
+			transition: 0.25s;
+		}
+
+		&:hover::before {
+			transform: translateY(-50%) scale(1);
+		}
 	}
 }
 
@@ -104,6 +144,10 @@ const closePopUp = () => {
 @media (max-width: 62rem) {
 	.menu__item {
 		width: 100%;
+
+		.item__content {
+			width: 100%;
+		}
 	}
 }
 </style>

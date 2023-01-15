@@ -48,4 +48,17 @@ a{
     background-color: transparent;
     cursor: pointer;
     text-decoration: underline;
+
+    &.button--clear{
+        padding: 0;
+        background-color: transparent;
+        border: none;
+        outline: none;
+        text-decoration: none;
+    }
+
+    &.button--header{
+        font-size: var(--fs-sl);
+        line-height: 1.2;
+    }
 }
