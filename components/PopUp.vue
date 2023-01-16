@@ -11,6 +11,7 @@
 </template>
 
 <script setup lang="ts">
+import gsap from 'gsap'
 import { onMounted } from '@nuxtjs/composition-api'
 
 defineProps<{
@@ -21,7 +22,26 @@ const emits = defineEmits<{
 }>()
 
 onMounted(() => {
-	setTimeout(() => emits('close'), 2500)
+	const prompt = document.querySelector('.pop-up--message')
+	gsap.from(prompt, {
+		duration: 0.35,
+		opacity: 0,
+		scale: 0.75,
+		y: '-25%',
+	})
+
+	setTimeout(() => {
+		gsap.timeline({
+			onComplete: () => {
+				emits('close')
+			},
+		}).to(prompt, {
+			duration: 0.35,
+			opacity: 0,
+			scale: 0.75,
+			y: '-25%',
+		})
+	}, 2500)
 })
 </script>
 
