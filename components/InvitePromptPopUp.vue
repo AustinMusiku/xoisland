@@ -86,7 +86,6 @@
 import gsap from 'gsap'
 import { onMounted, ref, watch } from '@nuxtjs/composition-api'
 import { useCheckUserExists } from '~/composables/database'
-import { messaging } from '~/plugins/firebase'
 
 const emits = defineEmits<{
 	(el: 'invite', value: string): void
@@ -120,30 +119,13 @@ const handleChooseFriend = (value: string) => {
 	selectedPlayer.value = value
 }
 
-const handlePrompt = async () => {
-	console.log('handlePrompt')
+const handlePrompt = () => {
 	if (selectedPlayer.value === '') {
 		inputError.value = 'Please enter a name or choose below'
 		return
 	}
-	const message = {
-		notification: {
-			title: 'You have been invited to play',
-			body: 'Click to join',
-		},
-		webpush: {
-			fcm_options: {
-				link: 'http://xoisland.up.railway.app/multiplayer?mode=host',
-			},
-		},
-		token: 'dOChYnyJh4SBXiQ6HyITrd:APA91bEsK7fa-YZo6uNcVXwMJFR_GWziU8MTXd6n2CujNGre6qfhpxGcRwHdyxYkWS26HhiUYIK6TzxQjeiadxN5Uzyh90RRKL219exXn-YWKEmkwfwOq0QHafAe13PndhKJ5Td6Efgd',
-	}
 	emits('invite', selectedPlayer.value)
-	// send invite to player via firebase messaging on client side (not server)
-	if (process.client) {
-		const inviteResponse = await messaging.send(message)
-		console.log(inviteResponse)
-	}
+	// send invite to player
 }
 
 const handleClose = () => {
