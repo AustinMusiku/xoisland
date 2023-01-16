@@ -3,6 +3,7 @@
 		<div class="grid__container">
 			<invitePromptPopUp
 				v-if="showInvitePrompt"
+				@invite="handleInvite"
 				@close="showInvitePrompt = false"
 			/>
 
@@ -84,6 +85,10 @@ const promptMsg = reactive({
 	head: 'Sign in with google',
 	body: 'You will be able to save your achievements in the leaderboard.',
 })
+
+const handleInvite = () => {
+	popUpMsg.value = 'This feature is not yet available'
+}
 
 const handlePrompt = (value: boolean) => {
 	if (value) {
