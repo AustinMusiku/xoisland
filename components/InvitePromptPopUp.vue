@@ -122,6 +122,7 @@ const handleInput = (e: any) => {
 
 const handleChooseFriend = (value: string) => {
 	selectedPlayer.value = value
+	inputPlayer.value = value
 }
 
 const handlePrompt = () => {
@@ -138,6 +139,7 @@ const handleClose = () => {
 }
 
 watch(inputPlayer, async (value) => {
+	selectedPlayer.value = ''
 	const isValidPlayer = await checkPlayer(value)
 	isCheckLoading.value = false
 	if (isValidPlayer) {
@@ -343,6 +345,7 @@ $clr-accent2: rgba(0, 58, 67, 1);
 
 						p {
 							color: $clr-dark;
+							transition: 0.25s;
 						}
 
 						&.accept {
