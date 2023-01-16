@@ -2,7 +2,9 @@
 	<div class="pop-up pop-up--message">
 		<div class="content-wrapper">
 			<div class="pop-up__message">
-				{{ message }}
+				<p>
+					{{ message }}
+				</p>
 			</div>
 		</div>
 	</div>
@@ -27,12 +29,26 @@ onMounted(() => {
 .pop-up {
 	position: absolute;
 	display: grid;
-	padding: 1em;
+	padding: 0.75em 2em !important;
 	place-items: center;
 	top: 5%;
 	left: 50%;
 	transform: translateX(-50%);
-	width: fit-content;
+	width: 85%;
+	background-color: #003a4330;
+	border-radius: 9px;
+
+	.pop-up__message {
+		color: $clr-light;
+	}
+}
+
+// desktop and tablet
+@media (min-width: 62rem) {
+	.pop-up {
+		width: fit-content;
+		padding: 0.75em 6em !important;
+	}
 }
 
 .pop-up--message {
