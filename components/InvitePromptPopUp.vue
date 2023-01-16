@@ -22,10 +22,11 @@
 						<p>Enter player's name</p>
 						<div class="input-container">
 							<input
-								v-model="inputPlayer"
+								:value="inputPlayer"
 								type="text"
 								class="input"
 								placeholder="e.g. Austin Musiku"
+								@input="handleInput"
 							/>
 							<div
 								v-if="isCheckLoading"
@@ -113,6 +114,10 @@ const checkPlayer = async (value: string) => {
 		valid.value = true
 	}
 	return valid.value
+}
+
+const handleInput = (e: any) => {
+	inputPlayer.value = e.target.value
 }
 
 const handleChooseFriend = (value: string) => {
