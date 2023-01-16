@@ -81,7 +81,7 @@ const popUpMsg = ref<string>('')
 const showInvitePrompt = ref(false)
 
 const promptMsg = reactive({
-	head: 'Sign in with google?',
+	head: 'Sign in with google',
 	body: 'You will be able to save your achievements in the leaderboard.',
 })
 

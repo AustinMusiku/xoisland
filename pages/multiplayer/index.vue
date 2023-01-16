@@ -214,7 +214,7 @@ onMounted(() => {
 			}
 			case 'play-again': {
 				state.promptMsg = {
-					head: 'play rematch?',
+					head: 'Rematch',
 					body: data.message,
 				}
 				break
