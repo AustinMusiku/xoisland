@@ -72,6 +72,7 @@ export default {
 		host: '0.0.0.0',
 		port: process.env.PORT || 3000,
 	},
+	serverMiddleware: ['~/api/index'],
 	env: {
 		apiKey: process.env.API_KEY,
 		authDomain: process.env.AUTH_DOMAIN,
