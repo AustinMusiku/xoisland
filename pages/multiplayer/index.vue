@@ -41,12 +41,16 @@ import {
 	onUnmounted,
 	reactive,
 	useContext,
+	useRoute,
 } from '@nuxtjs/composition-api'
 import { useGameplayStore } from '../../store/gameplay'
 import { useAuthenticationStore } from '../../store/authentication'
 import { useSaveOutcome } from '@/composables/database'
 
 const { redirect, isDev } = useContext()
+const route = useRoute()
+
+const { mode, gameId, opponent } = route.value.query
 
 const authStore = useAuthenticationStore()
 const gameStore = useGameplayStore()
@@ -122,13 +126,14 @@ function handleJoinAgain() {
 	state.isLoading = true
 	state.isTwoPlayers = false
 
+	const payLoad = {
+		method: 'join',
+		clientId: state.clientId,
+		gameId: gameId as string | null,
+		mode: mode as string | null,
+	}
 	// create/join game again
-	ws.send(
-		JSON.stringify({
-			method: 'join',
-			clientId: state.clientId,
-		})
-	)
+	ws.send(JSON.stringify(payLoad))
 }
 function handlePrompt(value: boolean) {
 	state.promptMsg = {
@@ -153,14 +158,15 @@ onMounted(() => {
 		switch (data.method) {
 			case 'connect': {
 				state.clientId = data.clientId
+				const payLoad = {
+					method: 'join',
+					clientId: state.clientId,
+					gameId: gameId as string | null,
+					mode: mode as string | null,
+				}
 
 				// create/join game
-				ws.send(
-					JSON.stringify({
-						method: 'join',
-						clientId: state.clientId,
-					})
-				)
+				ws.send(JSON.stringify(payLoad))
 				break
 			}
 			case 'join': {
@@ -173,8 +179,18 @@ onMounted(() => {
 				state.comment = 'Player X turn'
 				break
 			}
+			case 'join-create': {
+				state.message = `Waiting for ${opponent} to join...`
+				break
+			}
 			case 'join-wait': {
 				state.message = 'Waiting for another player...'
+				break
+			}
+			case 'join-create-timeout': {
+				state.isLoading = false
+				state.message = data.message
+				state.gameId = ''
 				break
 			}
 			case 'join-timeout': {

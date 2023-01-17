@@ -16,12 +16,15 @@ const WebsocketServer = server
 // ------------------------------------------------------------
 // clients map
 const guidToClients: ClientsMap = {}
+
 // games map
-const guidToGames: GamesMap = {}
+const guidToRandomGames: GamesMap = {}
+const guidToHostedGames: GamesMap = {}
 
 // ------------------------------------------------------------
 // place all games that have waiting players in a queue
-let readyGames: Game[] = []
+let readyRandomGames: Game[] = []
+let readyHostedGames: Game[] = []
 
 export default function (httpServer: any) {
 	const wsServer = new WebsocketServer({ httpServer })
@@ -74,57 +77,125 @@ export default function (httpServer: any) {
 // ------------------------------------------------------------
 // server methods
 const handleJoin = (result: any) => {
-	const readyGame = getReadyGame(readyGames)
-	if (readyGame) {
-		readyGame.players.push(result.clientId)
+	// -----------
+	// Hosted mode
+	// -----------
+	if (result.mode === 'hosted') {
+		const readyGame = readyHostedGames.find(
+			(game) => game.gameId === result.gameId
+		)
+		if (readyGame) {
+			readyGame.players.push(result.clientId)
 
-		// send broadcast to all players in game
-		readyGame.players.forEach((playerId) => {
+			// send broadcast to all players in game
+			readyGame.players.forEach((playerId) => {
+				const payload = {
+					method: 'join',
+					message: `${result.clientId} joined ${readyGame.gameId}`,
+					clientId: result.clientId,
+					gameId: readyGame.gameId,
+					turn: readyGame.players.indexOf(playerId) === 0 ? 1 : 2,
+				}
+				guidToClients[playerId].connection.send(JSON.stringify(payload))
+			})
+		} else {
+			// create a new game and add it to the queue of ready games
+			const { gameId } = result
+			const game = createGame(gameId, [result.clientId])
+			guidToHostedGames[gameId] = game
+			addReadyGame(game, readyHostedGames)
+			// send the clientId and gameId to the client
 			const payload = {
-				method: 'join',
-				message: `${result.clientId} joined ${readyGame.gameId}`,
-				clientId: result.clientId,
-				gameId: readyGame.gameId,
-				turn: readyGame.players.indexOf(playerId) === 0 ? 1 : 2,
-			}
-			guidToClients[playerId].connection.send(JSON.stringify(payload))
-		})
-	} else {
-		// create a new game and add it to the queue of ready games
-		const gameId = generateUUID()
-		const game = createGame(gameId, [result.clientId])
-		guidToGames[gameId] = game
-		addReadyGame(game, readyGames)
-		// send the clientId and gameId to the client
-		const payload = {
-			method: 'join-wait',
-			message: `new game ${gameId} created`,
-			clientId: result.clientId,
-			gameId,
-		}
-		guidToClients[result.clientId].connection.send(JSON.stringify(payload))
-		// Send timeout message to client and remove game from queue
-		const TIME_OUT =
-			process.env.NODE_ENV === 'development' ? 4000 : 120 * 1000
-		setTimeout(() => {
-			const payload = {
-				method: 'join-timeout',
-				message: `Failed to get another player`,
+				method: 'join-create',
+				message: `new game ${gameId} created`,
 				clientId: result.clientId,
 				gameId,
 			}
-			if (readyGames.includes(game) && game.players.length < 2) {
-				readyGames = removeReadyGame(gameId, readyGames)
-				guidToClients[result.clientId].connection.send(
-					JSON.stringify(payload)
-				)
+			guidToClients[result.clientId].connection.send(
+				JSON.stringify(payload)
+			)
+			// Send timeout message to client and remove game from queue
+			const TIME_OUT =
+				process.env.NODE_ENV === 'development' ? 4000 : 60 * 1000
+			setTimeout(() => {
+				const payload = {
+					method: 'join-create-timeout',
+					message: 'Invite timeout',
+					clientId: result.clientId,
+					gameId,
+				}
+				if (
+					readyHostedGames.includes(game) &&
+					game.players.length < 2
+				) {
+					readyHostedGames = removeReadyGame(gameId, readyHostedGames)
+					guidToClients[result.clientId].connection.send(
+						JSON.stringify(payload)
+					)
+				}
+			}, TIME_OUT)
+		}
+	} else {
+		// ---------------
+		// random mode
+		// ---------------
+		const readyGame = getReadyGame(readyRandomGames)
+		if (readyGame) {
+			readyGame.players.push(result.clientId)
+
+			// send broadcast to all players in game
+			readyGame.players.forEach((playerId) => {
+				const payload = {
+					method: 'join',
+					message: `${result.clientId} joined ${readyGame.gameId}`,
+					clientId: result.clientId,
+					gameId: readyGame.gameId,
+					turn: readyGame.players.indexOf(playerId) === 0 ? 1 : 2,
+				}
+				guidToClients[playerId].connection.send(JSON.stringify(payload))
+			})
+		} else {
+			// create a new game and add it to the queue of ready games
+			const gameId = generateUUID()
+			const game = createGame(gameId, [result.clientId])
+			guidToRandomGames[gameId] = game
+			addReadyGame(game, readyRandomGames)
+			// send the clientId and gameId to the client
+			const payload = {
+				method: 'join-wait',
+				message: `new game ${gameId} created`,
+				clientId: result.clientId,
+				gameId,
 			}
-		}, TIME_OUT)
+			guidToClients[result.clientId].connection.send(
+				JSON.stringify(payload)
+			)
+			// Send timeout message to client and remove game from queue
+			const TIME_OUT =
+				process.env.NODE_ENV === 'development' ? 4000 : 60 * 1000
+			setTimeout(() => {
+				const payload = {
+					method: 'join-timeout',
+					message: `Failed to get another player`,
+					clientId: result.clientId,
+					gameId,
+				}
+				if (
+					readyRandomGames.includes(game) &&
+					game.players.length < 2
+				) {
+					readyRandomGames = removeReadyGame(gameId, readyRandomGames)
+					guidToClients[result.clientId].connection.send(
+						JSON.stringify(payload)
+					)
+				}
+			}, TIME_OUT)
+		}
 	}
 }
 const handleMove = (result: any) => {
 	// fill game state
-	const game = guidToGames[result.gameId]
+	const game = guidToRandomGames[result.gameId]
 	if (game === null) return
 	const symbol: string =
 		game.players.indexOf(result.clientId) === 0 ? 'X' : 'O'
@@ -146,7 +217,7 @@ const handleMove = (result: any) => {
 	checkPlayerWin(symbol, game.cells, game, guidToClients)
 }
 const handlePlayAgain = (result: any) => {
-	const game = guidToGames[result.gameId]
+	const game = guidToRandomGames[result.gameId]
 	if (game === null) return
 	// check for time since last rematch request in order to avoid collisions
 	const now = Date.now()
@@ -168,7 +239,7 @@ const handlePlayAgain = (result: any) => {
 		(err) => {
 			// if opponent is not found, remove game from map and send error message to client
 			if (err) {
-				guidToGames[result.gameId] = null
+				guidToRandomGames[result.gameId] = null
 				payload = {
 					method: 'play-again-fail',
 					gameId: result.gameId,
@@ -182,7 +253,7 @@ const handlePlayAgain = (result: any) => {
 	)
 }
 const handlePlayAgainPrompt = (result: any) => {
-	let game = guidToGames[result.gameId]
+	let game = guidToRandomGames[result.gameId]
 	const opponentId: any = game?.players.find(
 		(player) => player !== result.clientId
 	)
@@ -211,7 +282,7 @@ const handlePlayAgainPrompt = (result: any) => {
 }
 const handleCancel = (result: any) => {
 	const { clientId, gameId } = result
-	readyGames = removeReadyGame(gameId, readyGames)
+	readyRandomGames = removeReadyGame(gameId, readyRandomGames)
 	const payload = {
 		method: 'join-cancel',
 		message: 'you have left the game',
@@ -219,13 +290,13 @@ const handleCancel = (result: any) => {
 	guidToClients[clientId].connection.send(JSON.stringify(payload))
 }
 const handleAbortGame = (result: any) => {
-	const game = guidToGames[result.gameId]
+	const game = guidToRandomGames[result.gameId]
 	if (game === null) return
 	const opponentId: any = game?.players.find(
 		(player) => player !== result.clientId
 	)
 	// clear game from guid
-	guidToGames[result.gameId] = null
+	guidToRandomGames[result.gameId] = null
 	// send abort to opponent
 	const payload = {
 		method: 'abort-game',

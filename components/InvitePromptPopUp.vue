@@ -94,7 +94,7 @@ interface Player {
 }
 
 const emits = defineEmits<{
-	(el: 'invite', token: string): void
+	(el: 'invite', player: Player): void
 	(el: 'close'): void
 }>()
 
@@ -139,7 +139,7 @@ const handlePrompt = () => {
 		inputError.value = 'Please enter a name or choose below'
 		return
 	}
-	emits('invite', selectedPlayer.token)
+	emits('invite', selectedPlayer)
 }
 
 const handleClose = () => {

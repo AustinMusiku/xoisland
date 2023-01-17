@@ -75,6 +75,11 @@ import { useAuthenticationStore } from '~/store/authentication'
 import { useUserStore } from '~/store/user'
 import { generateUUID } from '~/modules/ws/utils'
 
+interface Player {
+	name: string
+	token: string
+}
+
 const authStore = useAuthenticationStore()
 const userStore = useUserStore()
 const router = useRouter()
@@ -88,7 +93,7 @@ const promptMsg = reactive({
 	body: 'You will be able to save your achievements in the leaderboard.',
 })
 
-const handleInvite = async (token: string) => {
+const handleInvite = async ({ name, token }: Player) => {
 	const inviteHandlerUrl = 'https://fcm-push.fly.dev/notify'
 	const gameID = generateUUID()
 	const inviteResponse = await fetch(inviteHandlerUrl, {
@@ -104,7 +109,9 @@ const handleInvite = async (token: string) => {
 		}),
 	})
 	if (inviteResponse.status === 200) {
-		router.push(`/multiplayer?mode=hosted&gameId=${gameID}`)
+		router.push(
+			`/multiplayer?mode=hosted&opponent=${name}&gameId=${gameID}`
+		)
 	} else {
 		popUpMsg.value = 'Server error: Could not send invite'
 	}
