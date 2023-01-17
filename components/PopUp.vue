@@ -55,7 +55,7 @@ onMounted(() => {
 	left: 50%;
 	transform: translateX(-50%);
 	width: 85%;
-	background-color: #003a4330;
+	background-color: #00be77;
 	border-radius: 9px;
 
 	.pop-up__message {
