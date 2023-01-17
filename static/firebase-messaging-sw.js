@@ -18,13 +18,8 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging()
 
-messaging.onBackgroundMessage(({ notification: { title, body, image } }) => {
-	console.log('[firebase-messaging-sw.js] Received background message ', {
-		title,
-		body,
-		image,
-	})
-	self.registration.showNotification(title, {
+await messaging.onBackgroundMessage(({ notification: { title, body } }) => {
+	return self.registration.showNotification(title, {
 		body,
 		icon: '/maskable_icon.png',
 	})
