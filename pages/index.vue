@@ -70,12 +70,14 @@
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from '@nuxtjs/composition-api'
+import { reactive, ref, useRouter } from '@nuxtjs/composition-api'
 import { useAuthenticationStore } from '~/store/authentication'
 import { useUserStore } from '~/store/user'
+import { generateUUID } from '~/modules/ws/utils'
 
 const authStore = useAuthenticationStore()
 const userStore = useUserStore()
+const router = useRouter()
 
 const popUpMsg = ref<string>('')
 
@@ -86,8 +88,26 @@ const promptMsg = reactive({
 	body: 'You will be able to save your achievements in the leaderboard.',
 })
 
-const handleInvite = () => {
-	popUpMsg.value = 'This feature is not yet available'
+const handleInvite = async (token: string) => {
+	const inviteHandlerUrl = 'https://fcm-push.fly.dev/notify'
+	const gameID = generateUUID()
+	const inviteResponse = await fetch(inviteHandlerUrl, {
+		method: 'POST',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({
+			title: 'Match Invite',
+			body: `You have been challenged to a match by ${authStore.getUser.displayName}`,
+			sendToSpecificDeviceToken: token,
+			gameID,
+		}),
+	})
+	if (inviteResponse.status === 200) {
+		router.push(`/multiplayer?mode=hosted&gameId=${gameID}`)
+	} else {
+		popUpMsg.value = 'Server error: Could not send invite'
+	}
 }
 
 const handlePrompt = (value: boolean) => {

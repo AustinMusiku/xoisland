@@ -20,15 +20,21 @@
 				/>
 			</div>
 			<!-- fixed height scrollable list of clickable names -->
+			<div
+				v-if="fetchState.pending"
+				class="prompt__list prompt__list--loading"
+			>
+				<p>Loading...</p>
+			</div>
 			<div class="prompt__list">
 				<div
-					v-for="friend in filteredFriends"
+					v-for="friend in friends"
 					:key="friend.id"
 					class="list__item"
 				>
 					<button
 						class="button"
-						@click="handlePrompt(friend.name)"
+						@click="handlePrompt(friend.name, friend.token)"
 					>
 						<p>{{ friend.name }}</p>
 					</button>
@@ -40,78 +46,49 @@
 
 <script setup lang="ts">
 import gsap from 'gsap'
-import { computed, onMounted, ref, watch } from '@nuxtjs/composition-api'
-import { onValue, ref as fireRef } from 'firebase/database'
-import { db } from '~/plugins/firebase'
+import { onMounted, ref, watch, useFetch } from '@nuxtjs/composition-api'
+import { useGetFriends } from '@/composables/database'
 
 // Each friend has an id and name
-interface Friend {
+interface Player {
 	name: string
+	token: string
 }
 
 const emits = defineEmits<{
-	(el: 'invite', value: string): void
+	(el: 'invite', value: string, token: string): void
 	(el: 'close'): void
 }>()
-
-// reactive list of 30 friends.
-// const friends = ref<Friend[]>([
-// 	{ id: '1', name: 'Austin Musiku' },
-// 	{ id: '2', name: 'Rick Grimmes' },
-// 	{ id: '3', name: 'Shane Walsh' },
-// 	{ id: '4', name: 'Daryl Dixon' },
-// 	{ id: '5', name: 'Eugene Porter' },
-// 	{ id: '6', name: 'Glenn Rhee' },
-// 	{ id: '7', name: 'Maggie Greene' },
-// 	{ id: '8', name: 'Merle Dixon' },
-// 	{ id: '9', name: 'Carol Peletier' },
-// 	{ id: '10', name: 'Abraham Ford' },
-// 	{ id: '11', name: 'Tara Chambler' },
-// 	{ id: '12', name: 'Tyreese Williams' },
-// 	{ id: '13', name: 'Bob Stookey' },
-// 	{ id: '14', name: 'Sasha Williams' },
-// 	{ id: '15', name: 'Carl Grimmes' }
-// ])
 
 // input binding
 const listInput = ref('')
 
-// fetch users from db
-const friends = ref<Friend[]>([])
-const friendsRef = fireRef(db, 'players')
+const friends = ref<Player[]>([])
 
-onValue(friendsRef, (snapshot) => {
-	const data = snapshot.val()
-	const friendsList: Friend[] = []
-	for (const key in data) {
-		friendsList.push({ name: key })
-	}
-	friends.value = friendsList
+const { fetchState } = useFetch(async () => {
+	friends.value = await useGetFriends()
 })
 
-// computed friends list
-const sortedFriends = computed(() => {
-	return friends.value.sort((a, b) => {
-		if (a.name < b.name) {
-			return -1
-		}
-		if (a.name > b.name) {
-			return 1
-		}
-		return 0
-	})
-})
+const sortFriends = (friendsArr: Player[]) => {
+	return friendsArr.sort((a, b) => (a.name < b.name ? -1 : 1))
+}
 
 // reactive filtered friends
-const filteredFriends = ref<Friend[]>(sortedFriends.value)
+const filteredFriends = ref<Player[]>([])
+
+// watch for changes in fetchState
+watch(fetchState, (state) => {
+	if (!state.pending && !state.error) {
+		filteredFriends.value = sortFriends(friends.value)
+	}
+})
 
 // watch for changes in listInput
 watch(listInput, (value) => {
 	if (!value) {
-		filteredFriends.value = friends.value
+		filteredFriends.value = sortFriends(friends.value)
 	} else {
-		console.log(value)
-		filteredFriends.value = friends.value.filter((friend) =>
+		filteredFriends.value.filter((friend) =>
 			friend.name.toLowerCase().includes(value.toLowerCase())
 		)
 	}
@@ -124,8 +101,8 @@ const handleInput = (e: Event) => {
 }
 
 // emit invite event with the selected friend name
-const handlePrompt = (value: string) => {
-	emits('invite', value)
+const handlePrompt = (name: string, token: string) => {
+	emits('invite', name, token)
 	emits('close')
 }
 

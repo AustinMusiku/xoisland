@@ -1,6 +1,11 @@
 import { ref, update, increment, onValue, set } from 'firebase/database'
 import { db } from '~/plugins/firebase'
 
+interface Player {
+	name: string
+	token: string
+}
+
 export function useSaveOutcome(
 	symbol: string,
 	playerSymbol: string,
@@ -59,6 +64,29 @@ export function useCheckUserExists(name: string): Promise<boolean> {
 	return new Promise((resolve) => {
 		onValue(ref(db, `players/${name}/`), (snapshot: any) => {
 			resolve(snapshot.exists())
+		})
+	})
+}
+
+// get users as a list
+export function useGetFriends(): Promise<Player[]> {
+	const users: any[] = []
+	return new Promise((resolve) => {
+		onValue(ref(db, `players/`), (snapshot) => {
+			const data = snapshot.val()
+			for (const key in data) {
+				users.push({ name: key, token: data[key].msgToken })
+			}
+			resolve(users)
+		})
+	})
+}
+
+// get token for a user
+export function useGetToken(name: string): Promise<string> {
+	return new Promise((resolve) => {
+		onValue(ref(db, `players/${name}/msgToken`), (snapshot) => {
+			resolve(snapshot.val())
 		})
 	})
 }

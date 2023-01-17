@@ -73,7 +73,7 @@
 								@click="handlePrompt"
 							>
 								<SvgIcon name="check" />
-								<p>Invite {{ selectedPlayer }}</p>
+								<p>Invite {{ selectedPlayer.name }}</p>
 							</button>
 						</div>
 					</div>
@@ -85,17 +85,25 @@
 
 <script setup lang="ts">
 import gsap from 'gsap'
-import { onMounted, ref, watch } from '@nuxtjs/composition-api'
-import { useCheckUserExists } from '~/composables/database'
+import { onMounted, reactive, ref, watch } from '@nuxtjs/composition-api'
+import { useCheckUserExists, useGetToken } from '~/composables/database'
+
+interface Player {
+	name: string
+	token: string
+}
 
 const emits = defineEmits<{
-	(el: 'invite', value: string): void
+	(el: 'invite', token: string): void
 	(el: 'close'): void
 }>()
 
 const inputError = ref<string>('')
 const inputPlayer = ref<string>('')
-const selectedPlayer = ref<string>('')
+const selectedPlayer = reactive<Player>({
+	name: '',
+	token: '',
+})
 const showChooseFriend = ref<boolean>(false)
 const isCheckLoading = ref<boolean>(false)
 
@@ -120,18 +128,18 @@ const handleInput = (e: any) => {
 	inputPlayer.value = e.target.value
 }
 
-const handleChooseFriend = (value: string) => {
-	selectedPlayer.value = value
-	inputPlayer.value = value
+const handleChooseFriend = (name: string, token: string) => {
+	selectedPlayer.name = name
+	selectedPlayer.token = token
+	inputPlayer.value = name
 }
 
 const handlePrompt = () => {
-	if (selectedPlayer.value === '') {
+	if (selectedPlayer.name === '') {
 		inputError.value = 'Please enter a name or choose below'
 		return
 	}
-	emits('invite', selectedPlayer.value)
-	// send invite to player
+	emits('invite', selectedPlayer.token)
 }
 
 const handleClose = () => {
@@ -139,11 +147,13 @@ const handleClose = () => {
 }
 
 watch(inputPlayer, async (value) => {
-	selectedPlayer.value = ''
+	selectedPlayer.name = ''
+	selectedPlayer.token = ''
 	const isValidPlayer = await checkPlayer(value)
 	isCheckLoading.value = false
 	if (isValidPlayer) {
-		selectedPlayer.value = value
+		selectedPlayer.name = value
+		selectedPlayer.token = await useGetToken(value)
 	}
 })
 
