@@ -176,7 +176,8 @@ onMounted(() => {
 				gameStore.setTurn(data.turn)
 				gameStore.setSymbol(data.turn === 1 ? 'X' : 'O')
 				gameStore.toggleIsPlaying()
-				state.comment = 'Player X turn'
+				state.comment =
+					data.turn === 1 ? 'Your turn' : "Opponent's turn"
 				break
 			}
 			case 'join-create': {
@@ -203,9 +204,9 @@ onMounted(() => {
 				const cellPlayed = data.move.cell
 				const cellSymbol = data.move.symbol
 
-				gameStore.getFlag === 1
-					? (state.comment = 'Player O Turn')
-					: (state.comment = 'Player X Turn')
+				gameStore.getFlag === gameStore.turn
+					? (state.comment = "Opponent's turn")
+					: (state.comment = 'Your turn')
 				cellSymbol === 'X'
 					? gameStore.incrementFlag()
 					: gameStore.decrementFlag()
@@ -221,10 +222,17 @@ onMounted(() => {
 					const playerName = authStore.user.displayName
 					useSaveOutcome(winningSymbol, playerSymbol, playerName)
 				}
-				state.comment = data.message
 				state.winner = {
 					player: data.symbol,
 					cells: data.cells,
+				}
+				if (data.symbol === 'D') {
+					state.comment = 'Draw!'
+				} else {
+					state.comment =
+						gameStore.symbol === data.symbol
+							? 'You won!'
+							: 'You lost!'
 				}
 				state.isGameOver = true
 				break
@@ -259,7 +267,8 @@ onMounted(() => {
 					state.message = ''
 					state.winner = { player: '', cells: [] }
 					state.isLoading = state.isGameOver = false
-					state.comment = 'Player X turn'
+					state.comment =
+						gameStore.turn === 1 ? 'Your turn' : "Opponent's turn"
 				} else {
 					// show popup and redirect user back to home
 					state.popUp = data.message
