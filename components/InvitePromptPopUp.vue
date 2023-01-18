@@ -235,7 +235,7 @@ $clr-accent2: rgba(0, 58, 67, 1);
 							width: 100%;
 							padding: 0.125em 0.5em;
 							border-radius: 5px;
-							border: 1px solid $clr-grey;
+							border: 1px solid #8d8d8d;
 							outline: none;
 							font-size: 1.2rem;
 							color: $clr-dark;

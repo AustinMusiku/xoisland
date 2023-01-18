@@ -161,7 +161,7 @@ $clr-accent2: rgba(0, 58, 67, 1);
 				width: 100%;
 				padding: 0.125em 0.5em;
 				border-radius: 5px;
-				border: 1px solid $clr-grey;
+				border: 1px solid #8d8d8d;
 				outline: none;
 				color: $clr-dark;
 			}
@@ -187,16 +187,15 @@ $clr-accent2: rgba(0, 58, 67, 1);
 
 			.list__item {
 				display: flex;
-				// justify-content: center;
 				align-items: center;
-				border-top: 1px solid $clr-grey;
+				border-top: 1px solid #d4d4d4;
 				width: 100%;
 				.button {
 					padding: 0.25em 0.5em;
 					width: 100%;
 					height: 100%;
 					text-align: left;
-					// border-radius: 5px;
+					border-radius: 0;
 					transition: all 0.25s ease-in-out;
 					cursor: pointer;
 					text-decoration: none;
