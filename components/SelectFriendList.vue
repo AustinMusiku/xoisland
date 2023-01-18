@@ -28,7 +28,7 @@
 			</div>
 			<div class="prompt__list">
 				<div
-					v-for="friend in friends"
+					v-for="friend in filteredFriends"
 					:key="friend.id"
 					class="list__item"
 				>
@@ -88,8 +88,10 @@ watch(listInput, (value) => {
 	if (!value) {
 		filteredFriends.value = sortFriends(friends.value)
 	} else {
-		filteredFriends.value.filter((friend) =>
-			friend.name.toLowerCase().includes(value.toLowerCase())
+		filteredFriends.value = sortFriends(
+			friends.value.filter((friend) =>
+				friend.name.toLowerCase().includes(value.toLowerCase())
+			)
 		)
 	}
 })
