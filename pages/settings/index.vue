@@ -1,7 +1,7 @@
 <template>
 	<div class="grid grid--small">
 		<div class="grid__container">
-			<h1 class="heading">settings</h1>
+			<!-- <h1 class="heading">settings</h1> -->
 			<PopUp
 				v-if="popUpMsg"
 				:message="popUpMsg"
@@ -10,48 +10,87 @@
 			<section class="block">
 				<h2 class="heading2">Preferences</h2>
 				<div class="slab">
-					<p>Dark mode</p>
-					<button
-						class="button"
-						@click="toggleDarkMode"
-					>
-						{{
-							userStore.preferences.prefersDarkMode ? 'on' : 'off'
-						}}
-					</button>
+					<div class="slab__header">
+						<p>Dark mode</p>
+						<button
+							class="button"
+							@click="toggleDarkMode"
+						>
+							{{
+								userStore.preferences.prefersDarkMode
+									? 'on'
+									: 'off'
+							}}
+						</button>
+					</div>
+
+					<div class="slab__txt"></div>
+				</div>
+
+				<div class="slab">
+					<div class="slab__header">
+						<p>Notifications</p>
+						<button
+							class="button"
+							@click="toggleNotifications"
+						>
+							{{ isNotificationsEnabled ? 'on' : 'off' }}
+						</button>
+					</div>
+					<div class="slab__txt">
+						Allow notifications in order to receive match invites.
+						After you toggle this setting, you will be prompted to
+						allow notifications in your browser.<br />
+						To disable this setting, locate the notification/lock
+						icon in your browser's address bar and click it.
+					</div>
 				</div>
 			</section>
+
 			<section class="block">
 				<h2 class="heading2">Account</h2>
-				<div
-					v-if="isAuth"
-					class="slab"
-				>
-					<p>logged in as {{ authStore.user.displayName }}</p>
-					<button
-						class="button red"
-						@click="handleLogout"
+				<div class="slab">
+					<div
+						v-if="isAuth"
+						class="slab__header"
 					>
-						logout
-					</button>
+						<p>logged in as {{ authStore.user.displayName }}</p>
+						<button
+							class="button red"
+							@click="handleLogout"
+						>
+							logout
+						</button>
+					</div>
+
+					<div
+						v-else
+						class="slab__header"
+					>
+						<p>You are not logged in</p>
+						<button
+							class="button"
+							@click="handleLogin"
+						>
+							login
+						</button>
+					</div>
+
+					<div class="slab__txt">
+						Login with your Google account to invite friends to
+						hosted matches and keep track of your stats on the
+						leaderboard.
+					</div>
 				</div>
-				<div
-					v-else
-					class="slab"
-				>
-					<p>You are not logged in</p>
-					<button
-						class="button"
-						@click="handleLogin"
-					>login</button>
-				</div>
+
+				<!-- TODO: add delete account -->
 			</section>
 		</div>
 	</div>
 </template>
 
 <script setup lang="ts">
-import { ref } from '@nuxtjs/composition-api'
+import { onMounted, ref } from '@nuxtjs/composition-api'
 import { useAuthenticationStore } from '~/store/authentication'
 import { useUserStore } from '~/store/user'
 
@@ -59,6 +98,8 @@ const authStore = useAuthenticationStore()
 const userStore = useUserStore()
 
 const isAuth = ref<boolean>(authStore.isAuth)
+const isNotificationsEnabled = ref<boolean>(false)
+
 const popUpMsg = ref<string>('')
 
 const handleLogin = () => {
@@ -79,9 +120,23 @@ const toggleDarkMode = () => {
 	userStore.toggleDarkMode()
 }
 
+const toggleNotifications = () => {
+	Notification.requestPermission()
+	// getToken if user is logged in
+	if (isAuth) {
+		userStore.toggleNotification(authStore.user.displayName)
+	}
+}
+
 const closePopUp = () => {
 	popUpMsg.value = ''
 }
+
+onMounted(() => {
+	if (Notification.permission === 'granted') {
+		isNotificationsEnabled.value = true
+	}
+})
 </script>
 
 <style lang="scss" scoped>
@@ -96,33 +151,34 @@ const closePopUp = () => {
 }
 .block {
 	width: 100%;
-	padding-top: 1em;
-
-	&:nth-of-type(1) {
-		padding-top: 0;
-	}
+	padding-top: 2.5em;
 
 	.slab {
 		padding: 1em 0;
 		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		width: 100%;
+		flex-direction: column;
+		gap: 0.5em;
 		border-bottom: 1px solid $clr-dark;
 
-		// .button {
-		// 	padding: .35em 1em;
-		// 	border-radius: 2px;
-		// 	text-decoration: none;
-		// 	background-color: $clr-light;
-		// }
+		.slab__header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			width: 100%;
+		}
+
+		.slab__txt {
+			max-width: 60ch;
+			line-height: 1.2;
+		}
 	}
 }
 @media screen and(max-width: 768px) {
-	.slab {
-		padding: 1em 0;
-		display: flex;
-		flex-direction: row;
+	.block {
+		padding-top: 2em;
+		.slab {
+			padding: 1em 0;
+		}
 	}
 }
 </style>

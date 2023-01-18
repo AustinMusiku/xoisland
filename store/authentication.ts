@@ -45,25 +45,24 @@ export const useAuthenticationStore = defineStore('authenticationStore', {
 				displayName: displayName || '',
 			}
 
-			const vapidKey =
-				'BLmEJ4hKPo_RLj23m2RREguKpZKNx7_4cMIg4T1Ocbz0XTYGXVCxPml1v09w6ZKlndPgF1EymRY-Z0qxDTJmMi8'
-			const currentToken = await getToken(messaging, { vapidKey })
+			// if client and Notification is supported and permission is granted
+			if (
+				typeof window !== 'undefined' &&
+				'Notification' in window &&
+				Notification.permission === 'granted'
+			) {
+				const vapidKey = process.env.vapidKey
+				const currentToken = await getToken(messaging, { vapidKey })
 
-			// check if user exists in db
-			if (displayName) {
-				const userExists = await checkUserExists(displayName)
-				if (!userExists) {
-					addUser(displayName)
+				// check if user exists in db
+				if (displayName) {
+					const userExists = await checkUserExists(displayName)
+					if (!userExists) {
+						addUser(displayName)
+					}
+					addMsgToken(displayName, currentToken)
 				}
-				addMsgToken(displayName, currentToken)
 			}
-
-			// request permission for notifications
-			// const permission = await Notification.requestPermission()
-			// if (permission === 'granted') {
-			// 	// eslint-disable-next-line no-console
-			// 	console.log('Notification permission granted.')
-			// }
 		},
 		async logout() {
 			const auth = getAuth()
