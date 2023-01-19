@@ -310,6 +310,8 @@ const handleCancel = (result: any) => {
 	guidToClients[clientId].connection.send(JSON.stringify(payload))
 }
 const handleAbortGame = (result: any) => {
+	if (!result.gameId || !result.gameId) return
+
 	const game =
 		result.mode === 'hosted'
 			? guidToHostedGames[result.gameId]

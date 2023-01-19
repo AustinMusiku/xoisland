@@ -306,6 +306,9 @@ onMounted(() => {
 			}
 		}
 	}
+
+	// abort game if user exits screen while playing
+	window.addEventListener('beforeunload', abortGame)
 })
 
 onUnmounted(() => {
