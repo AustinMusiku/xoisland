@@ -15,12 +15,3 @@ firebase.initializeApp({
 	appId: process.env.appId,
 	measurementId: process.env.measurementId,
 })
-
-const messaging = firebase.messaging()
-
-messaging.onBackgroundMessage(({ notification: { title, body } }) => {
-	return self.registration.showNotification(title, {
-		body,
-		icon: '/maskable_icon.png',
-	})
-})
