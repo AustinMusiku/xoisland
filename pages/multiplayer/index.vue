@@ -52,6 +52,10 @@ const route = useRoute()
 
 const { mode, gameId, opponent } = route.value.query
 
+const OpponentName: string =
+	opponent !== undefined ? (opponent as string) : 'Opponent'
+const formattedOpponentName = formatName(OpponentName)
+
 const authStore = useAuthenticationStore()
 const gameStore = useGameplayStore()
 gameStore.$reset()
@@ -79,7 +83,7 @@ let ws: WebSocket
 const prompt = (value: boolean) => handlePrompt(value)
 const fillField = (cellId: string) => handleMove(cellId)
 
-if (mode === 'hosted' && authStore.getUser.displayName !== opponent) {
+if (mode === 'hosted' && authStore.getUser.displayName !== OpponentName) {
 	state.popUp = 'Invite sent successfully'
 }
 
@@ -91,22 +95,26 @@ if (process.client) {
 		? new WebSocket(WEBSOCKET_URL)
 		: new WebSocket('wss://xoisland.up.railway.app/')
 }
+// do not add apostrophe if opponent's name ends with s
+function formatName(name: string) {
+	return name.endsWith('s') ? `${name}'` : `${name}'s`
+}
 
 function closePopUp() {
 	state.popUp = ''
 }
 function abortGame() {
-	// persist initial states before resetting
-	const initialGameId = state.gameId
-	const initialClientId = state.clientId
-	state.gameId = state.clientId = ''
-	// send request
+	// reset game data
+	gameStore.$reset()
+
 	const payLoad = {
 		method: 'abort-game',
 		mode,
-		gameId: initialGameId,
-		clientId: initialClientId,
+		gameId: state.gameId,
+		clientId: state.clientId,
 	}
+	// reset game meta data
+	state.gameId = state.clientId = ''
 	ws.send(JSON.stringify(payLoad))
 }
 function handleMove(cellId: string): void {
@@ -184,12 +192,15 @@ onMounted(() => {
 				gameStore.setTurn(data.turn)
 				gameStore.setSymbol(data.turn === 1 ? 'X' : 'O')
 				gameStore.toggleIsPlaying()
+
 				state.comment =
-					data.turn === 1 ? 'Your turn' : "Opponent's turn"
+					data.turn === 1
+						? 'Your turn'
+						: `${formattedOpponentName} turn`
 				break
 			}
 			case 'join-create': {
-				state.message = `Waiting for ${opponent} to join...`
+				state.message = `Waiting for ${OpponentName} to join...`
 				break
 			}
 			case 'join-wait': {
@@ -212,9 +223,11 @@ onMounted(() => {
 				const cellPlayed = data.move.cell
 				const cellSymbol = data.move.symbol
 
-				gameStore.getFlag === gameStore.turn
-					? (state.comment = "Opponent's turn")
-					: (state.comment = 'Your turn')
+				state.comment =
+					gameStore.getFlag === gameStore.turn
+						? `${formattedOpponentName} turn`
+						: 'Your turn'
+
 				cellSymbol === 'X'
 					? gameStore.incrementFlag()
 					: gameStore.decrementFlag()
@@ -248,7 +261,7 @@ onMounted(() => {
 			case 'play-again': {
 				state.promptMsg = {
 					head: 'Rematch',
-					body: data.message,
+					body: `${OpponentName} wants to play again.`,
 				}
 				break
 			}
@@ -276,7 +289,9 @@ onMounted(() => {
 					state.winner = { player: '', cells: [] }
 					state.isLoading = state.isGameOver = false
 					state.comment =
-						gameStore.turn === 1 ? 'Your turn' : "Opponent's turn"
+						gameStore.turn === 1
+							? 'Your turn'
+							: `${formattedOpponentName} turn`
 				} else {
 					// show popup and redirect user back to home
 					state.popUp = data.message
@@ -294,7 +309,7 @@ onMounted(() => {
 })
 
 onUnmounted(() => {
-	// if exits screen while still loading, send cancel game request
+	// if exits screen while still looking for opponent, send cancel request
 	if (state.isLoading) {
 		// persist initial states before resetting
 		const initialGameId = state.gameId
