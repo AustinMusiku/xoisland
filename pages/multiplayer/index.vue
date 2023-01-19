@@ -79,10 +79,14 @@ let ws: WebSocket
 const prompt = (value: boolean) => handlePrompt(value)
 const fillField = (cellId: string) => handleMove(cellId)
 
+if (mode === 'hosted') {
+	state.popUp = 'Invite sent successfully'
+}
+
 // initial websocket connection
 if (process.client) {
 	state.message = 'Establishing connection...'
-	const WEBSOCKET_URL = 'ws://192.168.8.156:3000'
+	const WEBSOCKET_URL = 'ws://192.168.8.122:3000'
 	ws = isDev
 		? new WebSocket(WEBSOCKET_URL)
 		: new WebSocket('wss://xoisland.up.railway.app/')
@@ -99,6 +103,7 @@ function abortGame() {
 	// send request
 	const payLoad = {
 		method: 'abort-game',
+		mode,
 		gameId: initialGameId,
 		clientId: initialClientId,
 	}
@@ -107,6 +112,7 @@ function abortGame() {
 function handleMove(cellId: string): void {
 	const payLoad = {
 		method: 'play',
+		mode,
 		clientId: state.clientId,
 		gameId: state.gameId,
 		cell: cellId,
@@ -116,6 +122,7 @@ function handleMove(cellId: string): void {
 function handlePlayAgain() {
 	const payLoad = {
 		method: 'play-again',
+		mode,
 		clientId: state.clientId,
 		gameId: state.gameId,
 	}
@@ -128,9 +135,9 @@ function handleJoinAgain() {
 
 	const payLoad = {
 		method: 'join',
+		mode,
 		clientId: state.clientId,
 		gameId: gameId as string | null,
-		mode: mode as string | null,
 	}
 	// create/join game again
 	ws.send(JSON.stringify(payLoad))
@@ -143,6 +150,7 @@ function handlePrompt(value: boolean) {
 	if (!value) redirect('/')
 	const payLoad = {
 		method: 'play-again-prompt',
+		mode,
 		clientId: state.clientId,
 		gameId: state.gameId,
 		isPlayAgain: value,
@@ -162,7 +170,7 @@ onMounted(() => {
 					method: 'join',
 					clientId: state.clientId,
 					gameId: gameId as string | null,
-					mode: mode as string | null,
+					mode,
 				}
 
 				// create/join game
@@ -295,6 +303,7 @@ onUnmounted(() => {
 		// send request
 		const payLoad = {
 			method: 'join-cancel',
+			mode,
 			gameId: initialGameId,
 			clientId: initialClientId,
 		}

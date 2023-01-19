@@ -195,7 +195,12 @@ const handleJoin = (result: any) => {
 }
 const handleMove = (result: any) => {
 	// fill game state
-	const game = guidToRandomGames[result.gameId]
+
+	const game =
+		result.mode === 'hosted'
+			? guidToHostedGames[result.gameId]
+			: guidToRandomGames[result.gameId]
+
 	if (game === null) return
 	const symbol: string =
 		game.players.indexOf(result.clientId) === 0 ? 'X' : 'O'
@@ -217,7 +222,11 @@ const handleMove = (result: any) => {
 	checkPlayerWin(symbol, game.cells, game, guidToClients)
 }
 const handlePlayAgain = (result: any) => {
-	const game = guidToRandomGames[result.gameId]
+	const game =
+		result.mode === 'hosted'
+			? guidToHostedGames[result.gameId]
+			: guidToRandomGames[result.gameId]
+
 	if (game === null) return
 	// check for time since last rematch request in order to avoid collisions
 	const now = Date.now()
@@ -239,7 +248,10 @@ const handlePlayAgain = (result: any) => {
 		(err) => {
 			// if opponent is not found, remove game from map and send error message to client
 			if (err) {
-				guidToRandomGames[result.gameId] = null
+				result.mode === 'hosted'
+					? (guidToHostedGames[result.gameId] = null)
+					: (guidToRandomGames[result.gameId] = null)
+
 				payload = {
 					method: 'play-again-fail',
 					gameId: result.gameId,
@@ -253,7 +265,11 @@ const handlePlayAgain = (result: any) => {
 	)
 }
 const handlePlayAgainPrompt = (result: any) => {
-	let game = guidToRandomGames[result.gameId]
+	let game =
+		result.mode === 'hosted'
+			? guidToHostedGames[result.gameId]
+			: guidToRandomGames[result.gameId]
+
 	const opponentId: any = game?.players.find(
 		(player) => player !== result.clientId
 	)
@@ -282,7 +298,11 @@ const handlePlayAgainPrompt = (result: any) => {
 }
 const handleCancel = (result: any) => {
 	const { clientId, gameId } = result
-	readyRandomGames = removeReadyGame(gameId, readyRandomGames)
+	// remove game from queue
+	result.mode === 'hosted'
+		? (readyHostedGames = removeReadyGame(gameId, readyHostedGames))
+		: (readyRandomGames = removeReadyGame(gameId, readyRandomGames))
+
 	const payload = {
 		method: 'join-cancel',
 		message: 'you have left the game',
@@ -290,13 +310,20 @@ const handleCancel = (result: any) => {
 	guidToClients[clientId].connection.send(JSON.stringify(payload))
 }
 const handleAbortGame = (result: any) => {
-	const game = guidToRandomGames[result.gameId]
+	const game =
+		result.mode === 'hosted'
+			? guidToHostedGames[result.gameId]
+			: guidToRandomGames[result.gameId]
+
 	if (game === null) return
 	const opponentId: any = game?.players.find(
 		(player) => player !== result.clientId
 	)
 	// clear game from guid
-	guidToRandomGames[result.gameId] = null
+	result.mode === 'hosted'
+		? (guidToHostedGames[result.gameId] = null)
+		: (guidToRandomGames[result.gameId] = null)
+
 	// send abort to opponent
 	const payload = {
 		method: 'abort-game',
