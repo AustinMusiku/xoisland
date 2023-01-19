@@ -79,7 +79,7 @@ let ws: WebSocket
 const prompt = (value: boolean) => handlePrompt(value)
 const fillField = (cellId: string) => handleMove(cellId)
 
-if (mode === 'hosted') {
+if (mode === 'hosted' && authStore.getUser.displayName !== opponent) {
 	state.popUp = 'Invite sent successfully'
 }
 
