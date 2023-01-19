@@ -18,7 +18,7 @@ firebase.initializeApp({
 
 const messaging = firebase.messaging()
 
-await messaging.onBackgroundMessage(({ notification: { title, body } }) => {
+messaging.onBackgroundMessage(({ notification: { title, body } }) => {
 	return self.registration.showNotification(title, {
 		body,
 		icon: '/maskable_icon.png',
