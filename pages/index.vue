@@ -106,6 +106,7 @@ const handleInvite = async ({ name, token }: Player) => {
 			body: `You have been challenged to a match by ${authStore.getUser.displayName}`,
 			sendToSpecificDeviceToken: token,
 			gameID,
+			name,
 		}),
 	})
 	if (inviteResponse.status === 200) {
