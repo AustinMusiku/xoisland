@@ -197,8 +197,6 @@ $clr-accent2: rgba(0, 58, 67, 1);
 		z-index: 100;
 
 		.content-wrapper {
-			gap: 0;
-
 			.prompt__header {
 				width: 100%;
 				display: flex;
