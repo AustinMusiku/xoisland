@@ -15,3 +15,7 @@ firebase.initializeApp({
 	appId: process.env.appId,
 	measurementId: process.env.measurementId,
 })
+
+if (firebase.messaging.isSupported()) {
+	firebase.messaging()
+}
