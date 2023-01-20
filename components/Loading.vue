@@ -14,9 +14,12 @@
 			>Back</nuxt-link>
 
 			<button
+				v-if="canTryAgain"
 				class="button"
 				@click="joinAgain"
-			>Try again</button>
+			>
+				Try again
+			</button>
 		</div>
 	</div>
 </template>
@@ -28,6 +31,7 @@ import gsap from 'gsap'
 const props = defineProps<{
 	message: string
 	isLoading: boolean
+	canTryAgain: boolean
 }>()
 
 const emits = defineEmits<{

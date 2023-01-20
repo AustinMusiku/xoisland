@@ -71,6 +71,7 @@ const state = reactive({
 	},
 	popUp: '',
 	isLoading: true,
+	canTryAgain: true,
 	isTwoPlayers: false,
 	isGameOver: false,
 	winner: {
@@ -82,10 +83,6 @@ const state = reactive({
 let ws: WebSocket
 const prompt = (value: boolean) => handlePrompt(value)
 const fillField = (cellId: string) => handleMove(cellId)
-
-if (mode === 'hosted' && authStore.getUser.displayName !== OpponentName) {
-	state.popUp = 'Invite sent successfully'
-}
 
 // initial websocket connection
 if (process.client) {
@@ -217,6 +214,13 @@ onMounted(() => {
 				state.isLoading = false
 				state.message = data.message
 				state.gameId = ''
+				break
+			}
+			case 'join-expire': {
+				state.isLoading = false
+				state.message = data.message
+				state.gameId = ''
+				state.canTryAgain = false
 				break
 			}
 			case 'play': {

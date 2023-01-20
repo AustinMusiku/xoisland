@@ -26,6 +26,10 @@ const guidToHostedGames: GamesMap = {}
 let readyRandomGames: Game[] = []
 let readyHostedGames: Game[] = []
 
+// ------------------------------------------------------------
+// place expired games in a set
+const expiredGames: Set<string> = new Set()
+
 export default function (httpServer: any) {
 	const wsServer = new WebsocketServer({ httpServer })
 
@@ -81,6 +85,21 @@ const handleJoin = (result: any) => {
 	// Hosted mode
 	// -----------
 	if (result.mode === 'hosted') {
+		// check if game is expired
+		if (expiredGames.has(result.gameId)) {
+			const payload = {
+				method: 'join-expire',
+				message: 'This game has expired',
+				clientId: result.clientId,
+				gameId: result.gameId,
+			}
+			guidToClients[result.clientId].connection.send(
+				JSON.stringify(payload)
+			)
+			return
+		}
+
+		// check if there is a ready game with the same gameId
 		const readyGame = readyHostedGames.find(
 			(game) => game.gameId === result.gameId
 		)
@@ -98,6 +117,9 @@ const handleJoin = (result: any) => {
 				}
 				guidToClients[playerId].connection.send(JSON.stringify(payload))
 			})
+
+			// add gameId to expired games
+			expiredGames.add(readyGame.gameId)
 		} else {
 			// create a new game and add it to the queue of ready games
 			const { gameId } = result
