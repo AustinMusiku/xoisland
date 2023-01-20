@@ -2,9 +2,9 @@
 	<div class="grid">
 		<div class="grid__container">
 			<invitePromptPopUp
-				v-if="showInvitePrompt"
+				v-if="isInvitePromptOpen"
 				@invite="handleInvite"
-				@close="showInvitePrompt = false"
+				@close="toggleInvitePrompt"
 			/>
 
 			<PopUp
@@ -29,7 +29,7 @@
 					<li class="menu__item">
 						<button
 							class="item__content button button--clear button--header"
-							@click="showInvitePrompt = true"
+							@click="toggleInvitePrompt"
 						>
 							host match
 						</button>
@@ -86,16 +86,32 @@ const router = useRouter()
 
 const popUpMsg = ref<string>('')
 
-const showInvitePrompt = ref(false)
+const isInvitePromptOpen = ref(false)
 
 const promptMsg = reactive({
 	head: 'Sign in with google',
 	body: 'You will be able to save your achievements in the leaderboard.',
 })
 
+// toggle invite prompt if user is logged in
+const toggleInvitePrompt = () => {
+	if (authStore.isAuth) {
+		isInvitePromptOpen.value = !isInvitePromptOpen.value
+	} else {
+		popUpMsg.value = 'Sign in to host a match'
+	}
+}
+
 const handleInvite = async ({ name, token }: Player) => {
 	const inviteHandlerUrl = 'https://fcm-push.fly.dev/notify'
+	// block user from inviting self
+	if (name === authStore.getUser.displayName) {
+		popUpMsg.value = 'You cannot invite yourself'
+		return
+	}
+	// generate a unique game id
 	const gameID = generateUUID()
+	// send invite to opponent
 	const inviteResponse = await fetch(inviteHandlerUrl, {
 		method: 'POST',
 		headers: {
