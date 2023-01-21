@@ -19,6 +19,7 @@
 			"unplugin-vue2-script-setup/types",
 			"@nuxt/types",
 			"@nuxtjs/axios",
+			"@nuxt/content",
 			"@types/node",
 			"@pinia/nuxt",
 			"@types/express",
