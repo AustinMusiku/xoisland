@@ -1,0 +1,33 @@
+[
+	{
+		"problem": "I can't receive invites from my friends",
+		"solution": "Make sure you have enabled notifications for the app. You can trigger the browser's notification permission prompt by toggling the notifications switch within the app. if it doesn't work, try the following:",
+		"options": [
+			"If you are using Chrome, click on the lock icon in the address bar and select permissions. Then enable notifications.",
+			"If you are using Firefox, click on the lock icon in the address bar and then enable notifications.",
+			"If you are using Opera, click on the shield icon in the address bar and select permissions. Then enable notifications.",
+			"If you are using Opera mini, have some shame and switch to a real browser."
+		],
+		"note": "Currently, the app only supports background notifications. Make sure you don't have the app open in a tab in your browser."
+	},
+	{
+		"problem": "I can't see the app icon on my app drawer",
+		"solution": "Open the app in your browser and click on the menu button (often appears as three dots) in the top or bottom right corner, then click on 'Add to home screen'."
+	},
+	{
+		"problem": "The colors look funny on my phone",
+		"solution": "The app is not optimized for dark mode. Switch to light mode while using the app."
+	},
+	{
+		"problem": "The wait time is too long",
+		"solution": "The wait time is determined by the number of people currently playing the game. The less the number of people, the longer the wait time as there are less chances of finding a match."
+	},
+	{
+		"problem": "Is the source code available?",
+		"solution": "Yes, the source code is available on:",
+		"options": [
+			"frontend: <a href=\"https://github.com/AustinMusiku/xoisland\">github.com/AustinMusiku/xoisland</a>",
+			"backend: <a href=\"https://github.com/AustinMusiku/XOserver\">github.com/AustinMusiku/XOSERVER</a>"
+		]
+	}
+]
