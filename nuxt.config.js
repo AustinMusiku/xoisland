@@ -43,7 +43,6 @@ export default {
 		// https://go.nuxtjs.dev/axios
 		'@nuxtjs/axios',
 		'@nuxtjs/style-resources',
-		'@nuxt/content',
 		'@/modules/ws',
 	],
 
