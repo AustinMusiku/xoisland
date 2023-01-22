@@ -1,7 +1,7 @@
 <template>
 	<div class="grid grid--small">
 		<div class="grid__container">
-			<!-- <h1 class="heading">settings</h1> -->
+			<h1 class="heading">SETTINGS</h1>
 			<PopUp
 				v-if="popUpMsg"
 				:message="popUpMsg"
@@ -23,8 +23,6 @@
 							}}
 						</button>
 					</div>
-
-					<div class="slab__txt"></div>
 				</div>
 
 				<div class="slab">
@@ -36,13 +34,6 @@
 						>
 							{{ isNotificationsEnabled ? 'on' : 'off' }}
 						</button>
-					</div>
-					<div class="slab__txt">
-						Allow notifications in order to receive match invites.
-						After you toggle this setting, you will be prompted to
-						allow notifications in your browser.<br />
-						To disable this setting, locate the notification/lock
-						icon in your browser's address bar and click it.
 					</div>
 				</div>
 			</section>
@@ -74,12 +65,6 @@
 						>
 							login
 						</button>
-					</div>
-
-					<div class="slab__txt">
-						Login with your Google account to invite friends to
-						hosted matches and keep track of your stats on the
-						leaderboard.
 					</div>
 				</div>
 
@@ -147,14 +132,18 @@ onMounted(() => {
 	}
 }
 .heading {
-	margin: 1em 0;
+	margin: 1em 0 0;
 }
 .block {
 	width: 100%;
-	padding-top: 2.5em;
+	padding: 1.5em 0;
+
+	&:first-of-type {
+		padding-top: 2.5em;
+	}
 
 	.slab {
-		padding: 1em 0;
+		padding: 2em 0;
 		display: flex;
 		flex-direction: column;
 		gap: 0.5em;
@@ -177,7 +166,7 @@ onMounted(() => {
 	.block {
 		padding-top: 2em;
 		.slab {
-			padding: 1em 0;
+			padding: 1.25em 0;
 		}
 	}
 }

@@ -1,7 +1,7 @@
 <template>
 	<div class="grid grid--small">
 		<div class="grid__container">
-			<h1 class="heading">leaderboard</h1>
+			<h1 class="heading">LEADERBOARD</h1>
 			<RankingsTable />
 		</div>
 	</div>
