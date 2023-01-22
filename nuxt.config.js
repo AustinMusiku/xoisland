@@ -17,6 +17,7 @@ export default {
 		link: [
 			{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
 			{ rel: 'stylesheet', href: 'https://fonts.cdnfonts.com/css/bidan' },
+			{ rel: 'stylesheet', href: 'https://fonts.cdnfonts.com/css/inter' },
 		],
 	},
 
