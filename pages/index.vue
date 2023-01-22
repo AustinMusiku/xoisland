@@ -56,12 +56,11 @@
 						</nuxt-link>
 					</li>
 					<li class="menu__item">
-						<a
-							href="https://github.com/AustinMusiku/xoisland"
-							target="_blank"
+						<nuxt-link
 							class="item__content heading2"
-						>github
-						</a>
+							to="/help"
+						>help
+						</nuxt-link>
 					</li>
 				</ul>
 			</div>
