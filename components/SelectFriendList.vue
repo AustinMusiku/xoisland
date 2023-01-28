@@ -21,10 +21,16 @@
 			</div>
 			<!-- fixed height scrollable list of clickable names -->
 			<div
-				v-if="fetchState.pending"
+				v-if="fetchState.pending || friends.length === 0"
 				class="prompt__list prompt__list--loading"
 			>
-				<p>Loading...</p>
+				<p>
+					{{
+						friends.length === 0
+							? 'you have no friends'
+							: 'loading...'
+					}}
+				</p>
 			</div>
 			<div class="prompt__list">
 				<div
@@ -48,6 +54,7 @@
 import gsap from 'gsap'
 import { onMounted, ref, watch, useFetch } from '@nuxtjs/composition-api'
 import { useGetFriends } from '@/composables/database'
+import { useAuthenticationStore } from '@/store/authentication'
 
 // Each friend has an id and name
 interface Player {
@@ -60,13 +67,15 @@ const emits = defineEmits<{
 	(el: 'close'): void
 }>()
 
+const authStore = useAuthenticationStore()
+
 // input binding
 const listInput = ref('')
 
 const friends = ref<Player[]>([])
 
 const { fetchState } = useFetch(async () => {
-	friends.value = await useGetFriends()
+	friends.value = await useGetFriends(authStore.user.displayName)
 })
 
 const sortFriends = (friendsArr: Player[]) => {
@@ -192,6 +201,12 @@ $clr-accent2: rgba(0, 58, 67, 1);
 				align-items: center;
 				border-top: 1px solid #d4d4d4;
 				width: 100%;
+
+				&.--item-center {
+					padding: 1em 0 0;
+					justify-content: center;
+					border-top: none;
+				}
 				.button {
 					padding: 0.25em 0.5em;
 					width: 100%;

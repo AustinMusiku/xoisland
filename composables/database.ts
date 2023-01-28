@@ -69,13 +69,16 @@ export function useCheckUserExists(name: string): Promise<boolean> {
 }
 
 // get users as a list
-export function useGetFriends(): Promise<Player[]> {
+export function useGetFriends(name: string): Promise<Player[]> {
 	const users: any[] = []
 	return new Promise((resolve) => {
-		onValue(ref(db, `players/`), (snapshot) => {
-			const data = snapshot.val()
-			for (const key in data) {
-				users.push({ name: key, token: data[key].msgToken })
+		onValue(ref(db, `players/${name}/friends`), (snapshot) => {
+			const friends = snapshot.val()
+			for (const friend in friends) {
+				users.push({
+					name: friend,
+					token: friends[friend].msgToken,
+				})
 			}
 			resolve(users)
 		})
