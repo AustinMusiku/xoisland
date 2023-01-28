@@ -94,23 +94,27 @@ const promptMsg = reactive({
 
 // toggle invite prompt if user is logged in
 const toggleInvitePrompt = () => {
-	if (authStore.isAuth) {
-		isInvitePromptOpen.value = !isInvitePromptOpen.value
-	} else {
-		popUpMsg.value = 'Sign in to host a match'
-	}
+	isInvitePromptOpen.value = !isInvitePromptOpen.value
 }
 
 const handleInvite = async ({ name, token }: Player) => {
-	const inviteHandlerUrl = 'https://fcm-push.fly.dev/notify'
+	// block user from hosting a match if not logged in
+	if (!authStore.isAuth) {
+		toggleInvitePrompt()
+		popUpMsg.value = 'Sign in to host a match'
+		return
+	}
 	// block user from inviting self
 	if (name === authStore.getUser.displayName) {
 		popUpMsg.value = 'You cannot invite yourself'
 		return
 	}
+
 	// generate a unique game id
 	const gameID = generateUUID()
+
 	// send invite to opponent
+	const inviteHandlerUrl = 'https://fcm-push.fly.dev/notify'
 	const inviteResponse = await fetch(inviteHandlerUrl, {
 		method: 'POST',
 		headers: {
