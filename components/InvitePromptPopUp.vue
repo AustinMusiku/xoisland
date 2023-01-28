@@ -38,7 +38,7 @@
 								:name="inputError ? 'close' : 'check'"
 							></SvgIcon>
 						</div>
-						<!-- <p class="error caption">{{ inputError }}</p> -->
+						<p class="error caption">{{ inputError }}</p>
 					</div>
 					<p
 						v-if="!showChooseFriend"
@@ -116,7 +116,6 @@ const checkPlayer = async (value: string) => {
 	const userExists = await useCheckUserExists(value)
 	if (!userExists) {
 		valid.value = false
-		inputError.value = 'Player does not exist'
 	} else {
 		inputError.value = ''
 		valid.value = true
@@ -126,6 +125,7 @@ const checkPlayer = async (value: string) => {
 
 const handleInput = (e: any) => {
 	inputPlayer.value = e.target.value
+	inputError.value = ''
 }
 
 const handleChooseFriend = (name: string, token: string) => {
@@ -136,7 +136,10 @@ const handleChooseFriend = (name: string, token: string) => {
 
 const handlePrompt = () => {
 	if (selectedPlayer.name === '') {
-		inputError.value = 'Please enter a name or choose below'
+		inputError.value =
+			inputPlayer.value === ''
+				? 'Please enter a name or choose below'
+				: 'Player does not exist'
 		return
 	}
 	emits('invite', selectedPlayer)
@@ -197,6 +200,8 @@ $clr-accent2: rgba(0, 58, 67, 1);
 		z-index: 100;
 
 		.content-wrapper {
+			gap: 0.25em;
+
 			.prompt__header {
 				width: 100%;
 				display: flex;
