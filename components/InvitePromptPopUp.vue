@@ -38,7 +38,12 @@
 								:name="inputError ? 'close' : 'check'"
 							></SvgIcon>
 						</div>
-						<p class="error caption">{{ inputError }}</p>
+						<p
+							v-if="showInputError"
+							class="error caption"
+						>
+							{{ inputError }}
+						</p>
 					</div>
 					<p
 						v-if="!showChooseFriend"
@@ -99,6 +104,7 @@ const emits = defineEmits<{
 }>()
 
 const inputError = ref<string>('')
+const showInputError = ref<boolean>(false)
 const inputPlayer = ref<string>('')
 const selectedPlayer = reactive<Player>({
 	name: '',
@@ -116,6 +122,7 @@ const checkPlayer = async (value: string) => {
 	const userExists = await useCheckUserExists(value)
 	if (!userExists) {
 		valid.value = false
+		inputError.value = 'Player does not exist'
 	} else {
 		inputError.value = ''
 		valid.value = true
@@ -126,6 +133,7 @@ const checkPlayer = async (value: string) => {
 const handleInput = (e: any) => {
 	inputPlayer.value = e.target.value
 	inputError.value = ''
+	showInputError.value = false
 }
 
 const handleChooseFriend = (name: string, token: string) => {
@@ -140,6 +148,7 @@ const handlePrompt = () => {
 			inputPlayer.value === ''
 				? 'Please enter a name or choose below'
 				: 'Player does not exist'
+		showInputError.value = true
 		return
 	}
 	emits('invite', selectedPlayer)
