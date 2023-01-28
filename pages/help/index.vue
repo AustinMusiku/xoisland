@@ -103,6 +103,10 @@ const faqs = [
 			'The wait time is determined by the number of people currently playing the game. The less the number of people, the longer the wait time as there are less chances of finding a match.',
 	},
 	{
+		problem: 'I keep getting player does not exist error',
+		solution: 'Remember, the player name is case sensitive.',
+	},
+	{
 		problem: 'Is the source code available?',
 		solution: 'Yes, the source code is available on:',
 		links: [
@@ -112,9 +116,10 @@ const faqs = [
 			},
 			{
 				name: 'backend repository',
-				link: 'https://github.com/AustinMusiku/XOserver',
+				link: 'https://github.com/AustinMusiku/fcm-push-notifications',
 			},
 		],
+		note: "I'm improving and migrating the game server to the backend repository. The game server is currently a custom nuxt module(modules/ws) in the frontend repository. Keep an eye on the backend repository for updates",
 	},
 ]
 onMounted(() => {
