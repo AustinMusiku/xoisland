@@ -70,7 +70,16 @@ const { mode, gameId, opponent } = route.value.query
 const OpponentName: string =
 	opponent !== undefined ? (opponent as string) : 'Opponent'
 
-const opponentFirstName = OpponentName.split(' ')[0]
+// Select the shorter name of the opponent
+// then shorten it if it's too long
+const [opponentFirstName, opponentLastName] = OpponentName.split(' ')
+const prefferedOpponentName =
+	opponentFirstName.length > opponentLastName.length
+		? opponentLastName
+		: opponentFirstName
+
+const shortenedOpponentName =
+	prefferedOpponentName.length > 8 ? 'Opponent' : prefferedOpponentName
 
 const formattedOpponentName = formatName(OpponentName)
 
@@ -91,7 +100,7 @@ const state = reactive({
 	isLoading: true,
 	canTryAgain: true,
 	isTwoPlayers: false,
-	smallPromptMsg: `Add ${opponentFirstName} as a friend?`,
+	smallPromptMsg: `Add ${shortenedOpponentName} as a friend?`,
 	isGameOver: false,
 	winner: {
 		player: '',

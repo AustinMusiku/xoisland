@@ -70,11 +70,7 @@ onMounted(() => {
 </script>
 
 <style lang="scss">
-.content-wrapper.--horizontal {
-	grid-template-columns: 2fr 1fr;
-}
-
-.pop-up {
+.pop-up.pop-up--prompt {
 	position: absolute;
 	display: grid;
 	padding: 0.45em !important;
@@ -82,39 +78,47 @@ onMounted(() => {
 	top: 5%;
 	left: 50%;
 	transform: translateX(-50%);
-	width: 85%;
+	width: fit-content;
+	max-width: 90%;
 	background-color: $clr-light;
 	border-radius: 9px;
 	z-index: 1000000;
 
-	.pop-up__message {
-		margin-left: 0.45em;
-		color: $clr-light;
-	}
+	.content-wrapper.--horizontal {
+		grid-template-columns: 2fr 1fr;
+		width: 100%;
 
-	.prompt__controls {
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		gap: 0.25em;
-		place-items: center;
-		.control {
-			width: 100%;
-			.button {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				gap: 0.25em;
-				box-sizing: border-box;
-				padding: 0.25em 0;
+		.pop-up__message {
+			margin-left: 0.45em;
+			color: $clr-light;
+			line-height: 1.2;
+			width: max-content;
+		}
+
+		.prompt__controls {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 0.25em;
+			place-items: center;
+			.control {
 				width: 100%;
-				border-radius: 5px;
-				text-decoration: none;
+				.button {
+					display: flex;
+					align-items: center;
+					justify-content: center;
+					gap: 0.25em;
+					box-sizing: border-box;
+					padding: 0.25em;
+					width: 100%;
+					border-radius: 5px;
+					text-decoration: none;
 
-				&.accept {
-					background-color: $clr-accent;
+					&.accept {
+						background-color: $clr-accent;
 
-					.svg-container {
-						transform: scale(0.8);
+						.svg-container {
+							transform: scale(0.8);
+						}
 					}
 				}
 			}
