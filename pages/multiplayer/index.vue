@@ -2,7 +2,11 @@
 	<div class="grid">
 		<div class="grid__container">
 			<SmallPromptPopUp
-				v-if="state.smallPromptMsg && OpponentName !== 'Opponent'"
+				v-if="
+					state.smallPromptMsg &&
+						OpponentName !== 'Opponent' &&
+						!isFriend
+				"
 				:message="state.smallPromptMsg"
 				@accept="smallPrompt"
 			/>
@@ -46,12 +50,17 @@ import {
 	onMounted,
 	onUnmounted,
 	reactive,
+	ref,
 	useContext,
 	useRoute,
 } from '@nuxtjs/composition-api'
 import { useGameplayStore } from '../../store/gameplay'
 import { useAuthenticationStore } from '../../store/authentication'
-import { useSaveOutcome, useAddFriend } from '@/composables/database'
+import {
+	useSaveOutcome,
+	useAddFriend,
+	useIsFriend,
+} from '@/composables/database'
 
 const { redirect, isDev } = useContext()
 const route = useRoute()
@@ -60,6 +69,9 @@ const { mode, gameId, opponent } = route.value.query
 
 const OpponentName: string =
 	opponent !== undefined ? (opponent as string) : 'Opponent'
+
+const opponentFirstName = OpponentName.split(' ')[0]
+
 const formattedOpponentName = formatName(OpponentName)
 
 const authStore = useAuthenticationStore()
@@ -79,7 +91,7 @@ const state = reactive({
 	isLoading: true,
 	canTryAgain: true,
 	isTwoPlayers: false,
-	smallPromptMsg: `Add ${OpponentName} as a friend?`,
+	smallPromptMsg: `Add ${opponentFirstName} as a friend?`,
 	isGameOver: false,
 	winner: {
 		player: '',
@@ -92,6 +104,11 @@ const prompt = (value: boolean) => handlePrompt(value)
 const smallPrompt = (value: boolean) => handleSmallPrompt(value)
 
 const fillField = (cellId: string) => handleMove(cellId)
+
+const isFriend =
+	OpponentName !== 'Opponent'
+		? ref(useIsFriend(authStore.user.uid, OpponentName))
+		: ref(false)
 
 // initial websocket connection
 if (process.client) {

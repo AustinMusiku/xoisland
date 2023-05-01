@@ -101,7 +101,7 @@ export function useGetFriends(name: string): Promise<Player[]> {
 	})
 }
 
-export function isFriend(self: string, friend: string): boolean {
+export function useIsFriend(self: string, friend: string): boolean {
 	let isFriend = false
 	onValue(ref(db, `players/${self}/friends/${friend}`), (snapshot) => {
 		isFriend = snapshot.val()
@@ -113,7 +113,7 @@ export function isFriend(self: string, friend: string): boolean {
 export function useAddFriend(self: string, friend: string): void {
 	if (self === friend) return
 
-	if (isFriend(self, friend)) return
+	if (useIsFriend(self, friend)) return
 
 	const updates: any = {}
 
