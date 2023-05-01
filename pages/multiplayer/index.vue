@@ -2,7 +2,7 @@
 	<div class="grid">
 		<div class="grid__container">
 			<SmallPromptPopUp
-				v-if="state.smallPromptMsg && OpponentName == 'Opponent'"
+				v-if="state.smallPromptMsg && OpponentName !== 'Opponent'"
 				:message="state.smallPromptMsg"
 				@accept="smallPrompt"
 			/>
