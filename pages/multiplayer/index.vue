@@ -1,6 +1,12 @@
 <template>
 	<div class="grid">
 		<div class="grid__container">
+			<SmallPromptPopUp
+				v-if="state.smallPromptMsg && OpponentName == 'Opponent'"
+				:message="state.smallPromptMsg"
+				@accept="smallPrompt"
+			/>
+
 			<PromptPopUp
 				v-if="state.promptMsg.body"
 				:prompt-msg="state.promptMsg"
@@ -45,7 +51,7 @@ import {
 } from '@nuxtjs/composition-api'
 import { useGameplayStore } from '../../store/gameplay'
 import { useAuthenticationStore } from '../../store/authentication'
-import { useSaveOutcome } from '@/composables/database'
+import { useSaveOutcome, useAddFriend } from '@/composables/database'
 
 const { redirect, isDev } = useContext()
 const route = useRoute()
@@ -73,6 +79,7 @@ const state = reactive({
 	isLoading: true,
 	canTryAgain: true,
 	isTwoPlayers: false,
+	smallPromptMsg: `Add ${OpponentName} as a friend?`,
 	isGameOver: false,
 	winner: {
 		player: '',
@@ -82,16 +89,22 @@ const state = reactive({
 
 let ws: WebSocket
 const prompt = (value: boolean) => handlePrompt(value)
+const smallPrompt = (value: boolean) => handleSmallPrompt(value)
+
 const fillField = (cellId: string) => handleMove(cellId)
 
 // initial websocket connection
 if (process.client) {
 	state.message = 'Establishing connection...'
-	const WEBSOCKET_URL = 'ws://192.168.8.122:3000'
-	ws = isDev
-		? new WebSocket(WEBSOCKET_URL)
-		: new WebSocket('wss://xoisland.up.railway.app/')
+
+	// get client ip host
+	const WEBSOCKET_URL = isDev
+		? `ws://${window.location.host}`
+		: `wss://${window.location.host}`
+
+	ws = new WebSocket(WEBSOCKET_URL)
 }
+
 // do not add apostrophe if opponent's name ends with s
 function formatName(name: string) {
 	return name.endsWith('s') ? `${name}'` : `${name}'s`
@@ -100,6 +113,7 @@ function formatName(name: string) {
 function closePopUp() {
 	state.popUp = ''
 }
+
 function abortGame() {
 	// reset game data
 	gameStore.$reset()
@@ -114,6 +128,7 @@ function abortGame() {
 	state.gameId = state.clientId = ''
 	ws.send(JSON.stringify(payLoad))
 }
+
 function handleMove(cellId: string): void {
 	const payLoad = {
 		method: 'play',
@@ -124,6 +139,7 @@ function handleMove(cellId: string): void {
 	}
 	ws.send(JSON.stringify(payLoad))
 }
+
 function handlePlayAgain() {
 	const payLoad = {
 		method: 'play-again',
@@ -134,6 +150,7 @@ function handlePlayAgain() {
 	// ask to play game again
 	ws.send(JSON.stringify(payLoad))
 }
+
 function handleJoinAgain() {
 	state.isLoading = true
 	state.isTwoPlayers = false
@@ -147,6 +164,7 @@ function handleJoinAgain() {
 	// create/join game again
 	ws.send(JSON.stringify(payLoad))
 }
+
 function handlePrompt(value: boolean) {
 	state.promptMsg = {
 		head: '',
@@ -162,6 +180,15 @@ function handlePrompt(value: boolean) {
 	}
 	// create/join game again
 	ws.send(JSON.stringify(payLoad))
+}
+
+function handleSmallPrompt(value: boolean) {
+	state.smallPromptMsg = ''
+
+	if (!value) return
+
+	// add to friends list
+	useAddFriend(authStore.getUser.displayName, OpponentName)
 }
 
 onMounted(() => {

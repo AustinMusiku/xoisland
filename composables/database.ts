@@ -68,6 +68,25 @@ export function useCheckUserExists(name: string): Promise<boolean> {
 	})
 }
 
+// players:
+// 		henk:
+//          name: henk
+//          birthdate: 14-05-2016
+// 			friends:
+// 				priscilla: true,
+// 				prisca: true,
+
+//      priscilla:
+//          name: priscilla
+//          birthdate: 14-05-2016
+// 			friends:
+// 			    henk: true,
+// 		prisca:
+// 			name: prisca
+// 			birthdate: 14-05-2016
+// 			friends:
+// 				henk: true,
+
 // get users as a list
 export function useGetFriends(name: string): Promise<Player[]> {
 	const users: any[] = []
@@ -75,14 +94,33 @@ export function useGetFriends(name: string): Promise<Player[]> {
 		onValue(ref(db, `players/${name}/friends`), (snapshot) => {
 			const friends = snapshot.val()
 			for (const friend in friends) {
-				users.push({
-					name: friend,
-					token: friends[friend].msgToken,
-				})
+				users.push(friend)
 			}
-			resolve(users)
+			resolve(namesToUserObjects(users))
 		})
 	})
+}
+
+export function isFriend(self: string, friend: string): boolean {
+	let isFriend = false
+	onValue(ref(db, `players/${self}/friends/${friend}`), (snapshot) => {
+		isFriend = snapshot.val()
+	})
+	return isFriend
+}
+
+// Add friend to user's friend list and vice versa
+export function useAddFriend(self: string, friend: string): void {
+	if (self === friend) return
+
+	if (isFriend(self, friend)) return
+
+	const updates: any = {}
+
+	updates[`players/${self}/friends/${friend}`] = true
+	updates[`players/${friend}/friends/${self}`] = true
+
+	update(ref(db), updates)
 }
 
 // get token for a user
@@ -90,6 +128,25 @@ export function useGetToken(name: string): Promise<string> {
 	return new Promise((resolve) => {
 		onValue(ref(db, `players/${name}/msgToken`), (snapshot) => {
 			resolve(snapshot.val())
+		})
+	})
+}
+
+function namesToUserObjects(names: string[]): Promise<Player[]> {
+	const users: Player[] = []
+
+	return new Promise((resolve) => {
+		names.forEach((name) => {
+			onValue(ref(db, `players/${name}/msgToken`), (snapshot) => {
+				users.push({
+					name,
+					token: snapshot.val(),
+				})
+
+				if (users.length === names.length) {
+					resolve(users)
+				}
+			})
 		})
 	})
 }

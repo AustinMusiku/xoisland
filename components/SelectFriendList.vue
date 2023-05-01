@@ -35,7 +35,7 @@
 			<div class="prompt__list">
 				<div
 					v-for="friend in filteredFriends"
-					:key="friend.id"
+					:key="friend.token"
 					class="list__item"
 				>
 					<button
