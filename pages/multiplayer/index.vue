@@ -65,27 +65,17 @@ import {
 const { redirect, isDev } = useContext()
 const route = useRoute()
 
+const authStore = useAuthenticationStore()
+const gameStore = useGameplayStore()
+gameStore.$reset()
+
 const { mode, gameId, opponent } = route.value.query
 
 const OpponentName: string =
 	opponent !== undefined ? (opponent as string) : 'Opponent'
 
-// Select the shorter name of the opponent
-// then shorten it if it's too long
-const [opponentFirstName, opponentLastName] = OpponentName.split(' ')
-const prefferedOpponentName =
-	opponentFirstName.length > opponentLastName.length
-		? opponentLastName
-		: opponentFirstName
-
-const shortenedOpponentName =
-	prefferedOpponentName.length > 8 ? 'Opponent' : prefferedOpponentName
-
 const formattedOpponentName = formatName(OpponentName)
-
-const authStore = useAuthenticationStore()
-const gameStore = useGameplayStore()
-gameStore.$reset()
+const shortenedOpponentName = shortenName(OpponentName)
 
 const state = reactive({
 	clientId: '',
@@ -134,6 +124,16 @@ if (process.client) {
 // do not add apostrophe if opponent's name ends with s
 function formatName(name: string) {
 	return name.endsWith('s') ? `${name}'` : `${name}'s`
+}
+
+function shortenName(name: string) {
+	if (name === 'Opponent') return name
+
+	const [firstName, lastName] = name.split(' ')
+	const prefferedName =
+		firstName.length > lastName.length ? lastName : firstName
+
+	return prefferedName.length > 8 ? 'Opponent' : prefferedName
 }
 
 function closePopUp() {
